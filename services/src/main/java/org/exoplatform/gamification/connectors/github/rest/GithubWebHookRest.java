@@ -124,7 +124,7 @@ public class GithubWebHookRest implements ResourceContainer {
                 receiverId =
                         githubHooksManagement.getUserByGithubId(infoNode.get("pull_request").get("user").get("login").textValue());
                 ruleTitle = "pullRequestValidated";
-                githubHooksManagement.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
+                githubHooksManagement.broadcastGithubEvent(ruleTitle, receiverId, senderId, object);
               }
             }
           }

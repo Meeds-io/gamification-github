@@ -278,7 +278,7 @@ public class GithubHooksManagement {
       gam.put("receiverId", receiverId);
       gam.put("object", object);
       listenerService.broadcast("exo.gamification.generic.action", gam, "");
-      LOG.info("Github action {} gamified for user {} to {}", ruleTitle, senderId, receiverId);
+      LOG.info("Github action {} gamified for user {} {} {}", ruleTitle, senderId, (ruleTitle.equals("pullRequestValidated")) ? "from" : "to", receiverId);
     } catch (Exception e) {
       LOG.error("Cannot broadcast gamification event", e);
     }
