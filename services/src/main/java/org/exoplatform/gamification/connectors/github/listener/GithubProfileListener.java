@@ -3,6 +3,8 @@ package org.exoplatform.gamification.connectors.github.listener;
 import java.util.HashMap;
 import java.util.List;
 
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.gamification.connectors.github.dao.GitHubAccountDAO;
 import org.exoplatform.gamification.connectors.github.entity.GitHubAccountEntity;
 import org.exoplatform.services.log.ExoLogger;
@@ -45,24 +47,31 @@ public class GithubProfileListener extends ProfileListenerPlugin {
         gitHubId = map.get("value");
       }
     }
-    if (!gitHubId.equals("")) {
-      GitHubAccountEntity entity = gitHubAccountDAO.getAccountByUserName(event.getUsername());
-      if (entity == null || !entity.getGitHubId().equals(gitHubId)) {
-        GitHubAccountEntity existingEntity = gitHubAccountDAO.getAccountByGithubId(gitHubId);
-        if (existingEntity == null) {
-          if (entity == null) {
-            entity = new GitHubAccountEntity();
-            entity.setUserName(event.getUsername());
-            entity.setGitHubId(gitHubId);
-            gitHubAccountDAO.create(entity);
-          } else {
-            entity.setGitHubId(gitHubId);
-            gitHubAccountDAO.update(entity);
-          }
+    if (!gitHubId.isEmpty()) {
+      RequestLifeCycle.begin(PortalContainer.getInstance());
+      try {
+        GitHubAccountEntity entity = gitHubAccountDAO.getAccountByUserName(event.getUsername());
+        if (entity == null || !entity.getGitHubId().equals(gitHubId)) {
+          GitHubAccountEntity existingEntity = gitHubAccountDAO.getAccountByGithubId(gitHubId);
+          if (existingEntity == null) {
+            if (entity == null) {
+              entity = new GitHubAccountEntity();
+              entity.setUserName(event.getUsername());
+              entity.setGitHubId(gitHubId);
+              gitHubAccountDAO.create(entity);
+            } else {
+              entity.setGitHubId(gitHubId);
+              gitHubAccountDAO.update(entity);
+            }
 
-        } else {
-          LOG.warn("The provided Github ID {} is already used by {}", gitHubId, existingEntity.getUserName());
+          } else {
+            LOG.warn("The provided Github ID {} is already used by {}", gitHubId, existingEntity.getUserName());
+          }
         }
+      } catch (Exception e) {
+        LOG.error("Could not retrieve and save Github account in user profile");
+      } finally {
+        RequestLifeCycle.end();
       }
     }
   }
