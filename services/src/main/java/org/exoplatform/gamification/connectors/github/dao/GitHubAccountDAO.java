@@ -37,7 +37,7 @@ public class GitHubAccountDAO extends GenericDAOJPAImpl<GitHubAccountEntity, Lon
                                                               .setParameter("userName", userName);
 
     try {
-      return query.getSingleResult();
+      return query.getResultList() != null && query.getResultList().size() > 0 ? query.getResultList().get(0) : null;
     } catch (NoResultException e) {
       return null;
     } catch (Exception e) {
