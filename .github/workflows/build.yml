@@ -2,7 +2,7 @@ name: Sonar Analysis
 on:
   push:
     branches:
-      - develop
+      - master
   pull_request:
 jobs:
   build:
