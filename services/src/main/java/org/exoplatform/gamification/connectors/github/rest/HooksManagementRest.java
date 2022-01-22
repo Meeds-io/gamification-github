@@ -118,7 +118,7 @@ public class HooksManagementRest implements ResourceContainer {
   @GET
   @RolesAllowed("users")
   @Path("users/{id}")
-  public Response getUserIdByGithubId(@Context UriInfo uriInfo, @PathParam("id") String githubId) throws Exception {
+  public Response getUserIdByGithubId(@Context UriInfo uriInfo, @PathParam("id") String githubId) {
     String userId = githubHooksManagement.getUserByGithubId(githubId);
     if(StringUtils.isNotEmpty(userId)) {
       return Response.ok(userId).build();
