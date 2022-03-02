@@ -1,5 +1,5 @@
 <template>
-<v-app id="gitHubWebHookManagementApp" color="transaprent" class="VuetifyApp">
+<v-app id="gitHubWebHookManagementApp" color="transparent" class="VuetifyApp">
     <main>
         <div v-if="alert" class="alert" :class="alert_type" id="">
             <i :class="alertIcon"></i>{{message}}
