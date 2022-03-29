@@ -1,7 +1,6 @@
 {
-  "name": "github-connectors",
-  "version": "2.1.0",
-  "description": "Github connector Management",
+  "name": "meeds-gamification-github",
+  "description": "Github Gamification Connector Management UI",
   "repository": {
     "type": "git",
     "url": ""

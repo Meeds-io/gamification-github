@@ -23,7 +23,7 @@ module.exports = merge(webpackCommonConfig, {
     gitHubWebHookManagement: './src/main/webapp/vue-app/gitHubWebHookManagement-dev.js'
   },
   output: {
-    path: path.join(__dirname, 'target/gamification-connectors/'),
+    path: path.join(__dirname, 'target/gamification-github/'),
     filename: 'js/[name].bundle.js'
   },
   devServer: {

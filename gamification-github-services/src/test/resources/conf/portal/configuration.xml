@@ -6,18 +6,18 @@
                xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
     <component>
-        <type>org.exoplatform.gamification.connectors.github.dao.GitHubAccountDAO</type>
+        <type>org.exoplatform.gamification.github.dao.GitHubAccountDAO</type>
     </component>
     <component>
-        <type>org.exoplatform.gamification.connectors.github.dao.GitHubHookDAO</type>
-    </component>
-
-    <component>
-        <type>org.exoplatform.gamification.connectors.github.services.GithubHooksManagement</type>
+        <type>org.exoplatform.gamification.github.dao.GitHubHookDAO</type>
     </component>
 
     <component>
-        <type>org.exoplatform.gamification.connectors.github.services.GithubIMSetting</type>
+        <type>org.exoplatform.gamification.github.services.GithubHooksManagement</type>
+    </component>
+
+    <component>
+        <type>org.exoplatform.gamification.github.services.GithubIMSetting</type>
     </component>
 
     <component>

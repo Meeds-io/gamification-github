@@ -6,19 +6,19 @@
                xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
     <component>
-        <type>org.exoplatform.gamification.connectors.github.rest.GithubWebHookRest</type>
+        <type>org.exoplatform.gamification.github.rest.GithubWebHookRest</type>
     </component>
 
     <component>
-        <type>org.exoplatform.gamification.connectors.github.rest.HooksManagementRest</type>
+        <type>org.exoplatform.gamification.github.rest.HooksManagementRest</type>
     </component>
 
     <component>
-        <type>org.exoplatform.gamification.connectors.github.services.GithubHooksManagement</type>
+        <type>org.exoplatform.gamification.github.services.GithubHooksManagement</type>
     </component>
 
     <component>
-        <type>org.exoplatform.gamification.connectors.github.services.GithubIMSetting</type>
+        <type>org.exoplatform.gamification.github.services.GithubIMSetting</type>
     </component>
 
     <external-component-plugins>
@@ -26,7 +26,7 @@
         <component-plugin>
             <name>GamificationProfileTracker</name>
             <set-method>registerProfileListener</set-method>
-            <type>org.exoplatform.gamification.connectors.github.listener.GithubProfileListener</type>
+            <type>org.exoplatform.gamification.github.listener.GithubProfileListener</type>
         </component-plugin>
     </external-component-plugins>
 
@@ -35,7 +35,7 @@
         <component-plugin>
             <name>exo.github.event</name>
             <set-method>addListener</set-method>
-            <type>org.exoplatform.gamification.connectors.github.listener.GithubEventsListener</type>
+            <type>org.exoplatform.gamification.github.listener.GithubEventsListener</type>
         </component-plugin>
     </external-component-plugins>
 

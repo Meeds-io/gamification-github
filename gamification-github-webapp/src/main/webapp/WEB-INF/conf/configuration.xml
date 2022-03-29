@@ -23,8 +23,8 @@
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
 	xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
-	<import>war:/conf/gamification-connectors/portal/menu-configuration.xml</import>
-	<import>war:/conf/gamification-connectors/portal/portal-configuration.xml</import>
-    <import>war:/conf/gamification-connectors/bundle/bundle-configuration.xml</import>
+	<import>war:/conf/gamification-github/portal/menu-configuration.xml</import>
+	<import>war:/conf/gamification-github/portal/portal-configuration.xml</import>
+    <import>war:/conf/gamification-github/bundle/bundle-configuration.xml</import>
 
 </configuration>

@@ -7,10 +7,10 @@
 
     <!-- Github ID storage (JPA) -->
     <component>
-        <type>org.exoplatform.gamification.connectors.github.dao.GitHubAccountDAO</type>
+        <type>org.exoplatform.gamification.github.dao.GitHubAccountDAO</type>
     </component>
     <component>
-        <type>org.exoplatform.gamification.connectors.github.dao.GitHubHookDAO</type>
+        <type>org.exoplatform.gamification.github.dao.GitHubHookDAO</type>
     </component>
 
     <!-- Gamification Connector storage layout (Liquibase initializer) -->

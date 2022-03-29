@@ -33,7 +33,7 @@
     <set-method>registerChangePlugin</set-method>
     <!-- The full qualified name of the PortalContainerDefinitionChangePlugin -->
     <type>org.exoplatform.container.definition.PortalContainerDefinitionChangePlugin</type>
-    <priority>200</priority>
+    <priority>500</priority>
     <init-params>
       <value-param>
         <name>apply.default</name>
@@ -41,18 +41,14 @@
       </value-param>
       <object-param>
         <name>change</name>
-        <object type="org.exoplatform.container.definition.PortalContainerDefinitionChange$AddDependenciesAfter">
+        <object type="org.exoplatform.container.definition.PortalContainerDefinitionChange$AddDependencies">
           <!-- The list of name of the dependencies to add -->
           <field name="dependencies">
             <collection type="java.util.ArrayList">
               <value>
-                <string>gamification-connectors</string>
+                <string>gamification-github</string>
               </value>
             </collection>
-          </field>
-          <!-- The name of the target dependency -->
-          <field name="target">
-            <string>platform-extension</string>
           </field>
         </object>
       </object-param>

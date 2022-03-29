@@ -11,7 +11,7 @@ const config = merge(webpackCommonConfig, {
         use: {
           loader: "file-loader",
           options: {
-            name: "/gamification-connectors/fonts/[name].[ext]",
+            name: "/gamification-github/fonts/[name].[ext]",
             emitFile: false
           }
         }
@@ -23,7 +23,7 @@ const config = merge(webpackCommonConfig, {
 
   },
   output: {
-    path: path.join(__dirname, 'target/gamification-connectors/'),
+    path: path.join(__dirname, 'target/gamification-github/'),
     filename: 'js/[name].bundle.js'
   },
   externals: {

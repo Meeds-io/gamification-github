@@ -1,10 +1,1 @@
-= Meeds Add-on:: Gamification Connectors
-// GitHub/AsciiDoc Configuration
-ifdef::env-github[]
-:note-caption: :information_source:
-:tip-caption: :bulb:
-endif::[]
-
-Meeds Gamification Connectors
-
-image:https://ci.exoplatform.org/buildStatus/icon?job=addons-community/addon-gamification-connectors-master-ci["Build Status", link="https://ci.exoplatform.org/job/addons-community/job/addon-gamification-connectors-master-ci"]
+= Meeds Add-on:: Gamification Github Connector
