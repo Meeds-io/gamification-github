@@ -1,3 +1,18 @@
+/*
+ * This file is part of the Meeds project (https://meeds.io/).
+ * Copyright (C) 2020 - 2022 Meeds Association contact@meeds.io
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
 package org.exoplatform.gamification.github.listener;
 
 import java.util.HashMap;
@@ -26,16 +41,17 @@ public class GithubProfileListener extends ProfileListenerPlugin {
 
   @Override
   public void avatarUpdated(ProfileLifeCycleEvent event) {
-
+    // Not used
   }
 
   @Override
   public void bannerUpdated(ProfileLifeCycleEvent event) {
-
+    // Not used
   }
 
   @Override
   public void basicInfoUpdated(ProfileLifeCycleEvent event) {
+    // Not used
   }
 
   @Override
@@ -78,22 +94,22 @@ public class GithubProfileListener extends ProfileListenerPlugin {
 
   @Override
   public void experienceSectionUpdated(ProfileLifeCycleEvent event) {
-
+    // Not used
   }
 
   @Override
   public void headerSectionUpdated(ProfileLifeCycleEvent event) {
-
+    // Not used
   }
 
   @Override
   public void createProfile(ProfileLifeCycleEvent event) {
-
+    // Not used
   }
 
   @Override
   public void aboutMeUpdated(ProfileLifeCycleEvent event) {
-
+    // Not used
   }
 
 }

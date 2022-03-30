@@ -14,15 +14,25 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 
 @Path("/gamification/connectors/github/")
 @Produces(MediaType.APPLICATION_JSON)
-
 public class GithubWebHookRest implements ResourceContainer {
 
-  private final Log             LOG = ExoLogger.getLogger(GithubWebHookRest.class);
+  private static final String   PULL_REQUEST_REVIEW_NODE_NAME          = "review";
+
+  private static final String   PULL_REQUEST_REVIEW_EVENT_NAME         = "pull_request_review";
+
+  private static final String   PULL_REQUEST_REVIEW_COMMENT_EVENT_NAME = "pull_request_review_comment";
+
+  private static final String   PUSH_EVENT_NAME                        = "push";
+
+  private static final String   GITHUB_USERNAME                        = "login";
+
+  private static final String   PULL_REQUEST_EVENT_NAME                = "pull_request";
+
+  private static final Log      LOG                                    = ExoLogger.getLogger(GithubWebHookRest.class);
 
   private GithubHooksManagement githubHooksManagement;
 
@@ -33,10 +43,12 @@ public class GithubWebHookRest implements ResourceContainer {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("webhooks")
-  public Response gitHubEvent(@HeaderParam("x-github-event") String event,
-                              @HeaderParam("x-hub-signature") String signature,
+  public Response githubEvent(// NOSONAR
+                              @HeaderParam("x-github-event")
+                              String event,
+                              @HeaderParam("x-hub-signature")
+                              String signature,
                               String obj) {
-
     if (Utils.verifySignature(obj, signature, githubHooksManagement.getSecret())) {
 
       try {
@@ -46,91 +58,80 @@ public class GithubWebHookRest implements ResourceContainer {
         String senderId = "";
         String receiverId = "";
         String object = "";
-        String repository = "";
         String githubId = "";
 
         switch (event) {
-        case "push": {
-          ruleTitle = "pushCode";
-          githubId=infoNode.get("pusher").get("name").textValue();
-          senderId = githubHooksManagement.getUserByGithubId(githubId);
-          repository = infoNode.get("repository").get("full_name").textValue();
-          LOG.info("Github hook for the push event is called by {} with githubId : {}  on the repository : {}",senderId, githubId, repository);
-          if (senderId != null) {
-            Identity socialIdentity = getUserSocialId(senderId);
-            if (socialIdentity != null) {
-              receiverId = senderId;
-              object = infoNode.get("head_commit").get("url").textValue();
-              LOG.info("service=gamification-github-connector operation=push parameters=\"user_social_id:{},repository:{}\"", socialIdentity.getId(), repository);
-              githubHooksManagement.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
-            }
-          }
-        }
-
-          break;
-        case "pull_request": {
-          githubId=infoNode.get("sender").get("login").textValue();
-          senderId = githubHooksManagement.getUserByGithubId(githubId);
-          repository = infoNode.get("repository").get("full_name").textValue();
-          LOG.info("Github hook for the pull_request event is called by {} with githubId : {}  on the repository : {}",senderId, githubId, repository);
-          if (infoNode.get("action").textValue().equals("opened")) {
-            ruleTitle = "creatPullRequest";
+          case PUSH_EVENT_NAME: {
+            ruleTitle = "pushCode";
+            githubId = infoNode.get("pusher").get("name").textValue();
+            senderId = githubHooksManagement.getUserByGithubId(githubId);
             if (senderId != null) {
               Identity socialIdentity = getUserSocialId(senderId);
               if (socialIdentity != null) {
                 receiverId = senderId;
-                object = infoNode.get("pull_request").get("html_url").textValue();
-                LOG.info("service=gamification-github-connector operation=pull_request parameters=\"user_social_id:{},repository:{}\"", socialIdentity.getId(), repository);
+                object = infoNode.get("head_commit").get("url").textValue();
                 githubHooksManagement.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
               }
             }
           }
-
-        }
-          break;
-        case "pull_request_review_comment": {
-          ruleTitle = "commentPullRequest";
-          githubId=infoNode.get("comment").get("user").get("login").textValue();
-          senderId = githubHooksManagement.getUserByGithubId(githubId);
-          repository = infoNode.get("repository").get("full_name").textValue();
-          LOG.info("Github hook for the pull_request_review_comment event is called by {} with githubId : {}  on the repository : {}",senderId, githubId, repository);
-          if (senderId != null) {
-            Identity socialIdentity = getUserSocialId(senderId);
-            if (socialIdentity != null) {
-              receiverId = senderId;
-              object = infoNode.get("comment").get("_links").get("html").get("href").textValue();
-              LOG.info("service=gamification-github-connector operation=pull_request_review_comment parameters=\"user_social_id:{},repository:{}\"", socialIdentity.getId(), repository);
-              githubHooksManagement.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
+            break;
+          case PULL_REQUEST_EVENT_NAME: {
+            githubId = infoNode.get("sender").get(GITHUB_USERNAME).textValue();
+            senderId = githubHooksManagement.getUserByGithubId(githubId);
+            if (infoNode.get("action").textValue().equals("opened")) {
+              ruleTitle = "creatPullRequest";
+              if (senderId != null) {
+                Identity socialIdentity = getUserSocialId(senderId);
+                if (socialIdentity != null) {
+                  receiverId = senderId;
+                  object = infoNode.get(PULL_REQUEST_EVENT_NAME).get("html_url").textValue();
+                  githubHooksManagement.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
+                }
+              }
             }
+
           }
-        }
-          break;
-        case "pull_request_review": {
-          ruleTitle = "reviewPullRequest";
-          githubId=infoNode.get("review").get("user").get("login").textValue();
-          senderId = githubHooksManagement.getUserByGithubId(githubId);
-          repository = infoNode.get("repository").get("full_name").textValue();
-          LOG.info("Github hook for the pull_request_review event is called by {} with githubId : {}  on the repository : {}",senderId, githubId, repository);
-          if (senderId != null) {
-            Identity socialIdentity = getUserSocialId(senderId);
-            if (socialIdentity != null) {
-              receiverId = senderId;
-              object = infoNode.get("review").get("html_url").textValue();
-              LOG.info("service=gamification-github-connector operation=pull_request_review parameters=\"user_social_id:{},repository:{}\"", socialIdentity.getId(), repository);
-              if (!infoNode.get("review").get("state").textValue().equals("commented")) {
+            break;
+          case PULL_REQUEST_REVIEW_COMMENT_EVENT_NAME: {
+            ruleTitle = "commentPullRequest";
+            githubId = infoNode.get("comment").get("user").get(GITHUB_USERNAME).textValue();
+            senderId = githubHooksManagement.getUserByGithubId(githubId);
+            if (senderId != null) {
+              Identity socialIdentity = getUserSocialId(senderId);
+              if (socialIdentity != null) {
+                receiverId = senderId;
+                object = infoNode.get("comment").get("_links").get("html").get("href").textValue();
                 githubHooksManagement.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
               }
-              if (infoNode.get("review").get("state").textValue().equals("approved")) {
-                receiverId =
-                        githubHooksManagement.getUserByGithubId(infoNode.get("pull_request").get("user").get("login").textValue());
-                ruleTitle = "pullRequestValidated";
-                githubHooksManagement.broadcastGithubEvent(ruleTitle, receiverId, senderId, object);
+            }
+          }
+            break;
+          case PULL_REQUEST_REVIEW_EVENT_NAME: {
+            ruleTitle = "reviewPullRequest";
+            githubId = infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("user").get(GITHUB_USERNAME).textValue();
+            senderId = githubHooksManagement.getUserByGithubId(githubId);
+            if (senderId != null) {
+              Identity socialIdentity = getUserSocialId(senderId);
+              if (socialIdentity != null) {
+                receiverId = senderId;
+                object = infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("html_url").textValue();
+                if (!infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("state").textValue().equals("commented")) {
+                  githubHooksManagement.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
+                }
+                if (infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("state").textValue().equals("approved")) {
+                  receiverId =
+                             githubHooksManagement.getUserByGithubId(infoNode.get(PULL_REQUEST_EVENT_NAME)
+                                                                             .get("user")
+                                                                             .get(GITHUB_USERNAME)
+                                                                             .textValue());
+                  ruleTitle = "pullRequestValidated";
+                  githubHooksManagement.broadcastGithubEvent(ruleTitle, receiverId, senderId, object);
+                }
               }
             }
           }
-        }
-          break;
-
+            break;
+          default:
         }
 
         return Response.ok().build();
@@ -145,11 +146,9 @@ public class GithubWebHookRest implements ResourceContainer {
 
   }
 
-
-  public Identity getUserSocialId(String userName){
+  public Identity getUserSocialId(String userName) {
     IdentityManager identityManager = PortalContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);
-    return identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, false);
-
+    return identityManager.getOrCreateUserIdentity(userName);
   }
 
 }

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  This file is part of the Meeds project (https://meeds.io/).
+  Copyright (C) 2022 Meeds Association contact@meeds.io
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or (at your option) any later version.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+  You should have received a copy of the GNU Lesser General Public License
+  along with this program; if not, write to the Free Software Foundation,
+  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+               xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.addons.gamification.service.setting.zone.ZoneRegistry</target-component>
+    <component-plugin>
+      <name>developer.zone</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.addons.gamification.service.setting.zone.model.ZoneConfig</type>
+      <init-params>
+        <value-param>
+          <name>zone-name</name>
+          <value>Development</value>
+        </value-param>
+        <value-param>
+          <name>zone-description</name>
+          <value>Development</value>
+        </value-param>
+        <value-param>
+          <name>zone-priority</name>
+          <value>5</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.addons.gamification.service.setting.rule.RuleRegistry</target-component>
+    <component-plugin>
+      <name>rule.PushCode</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.addons.gamification.service.setting.rule.model.RuleConfig</type>
+      <init-params>
+        <value-param>
+          <name>rule-title</name>
+          <value>pushCode</value>
+        </value-param>
+        <value-param>
+          <name>rule-description</name>
+          <value>You pushed a code</value>
+        </value-param>
+        <value-param>
+          <name>rule-score</name>
+          <value>15</value>
+        </value-param>
+        <value-param>
+          <name>rule-zone</name>
+          <value>Development</value>
+        </value-param>
+        <value-param>
+          <name>rule-enable</name>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>rule.CreatPullRequest</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.addons.gamification.service.setting.rule.model.RuleConfig</type>
+      <init-params>
+        <value-param>
+          <name>rule-title</name>
+          <value>creatPullRequest</value>
+        </value-param>
+        <value-param>
+          <name>rule-description</name>
+          <value>You created Pull Request</value>
+        </value-param>
+        <value-param>
+          <name>rule-score</name>
+          <value>5</value>
+        </value-param>
+        <value-param>
+          <name>rule-zone</name>
+          <value>Development</value>
+        </value-param>
+        <value-param>
+          <name>rule-enable</name>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>rule.ReviewPullRequest</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.addons.gamification.service.setting.rule.model.RuleConfig</type>
+      <init-params>
+        <value-param>
+          <name>rule-title</name>
+          <value>reviewPullRequest</value>
+        </value-param>
+        <value-param>
+          <name>rule-description</name>
+          <value>You Reviewed a Pull Request</value>
+        </value-param>
+        <value-param>
+          <name>rule-score</name>
+          <value>20</value>
+        </value-param>
+        <value-param>
+          <name>rule-zone</name>
+          <value>Development</value>
+        </value-param>
+        <value-param>
+          <name>rule-enable</name>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>rule.CommentPullRequest</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.addons.gamification.service.setting.rule.model.RuleConfig</type>
+      <init-params>
+        <value-param>
+          <name>rule-title</name>
+          <value>commentPullRequest</value>
+        </value-param>
+        <value-param>
+          <name>rule-description</name>
+          <value>You Commented a Pull Request</value>
+        </value-param>
+        <value-param>
+          <name>rule-score</name>
+          <value>5</value>
+        </value-param>
+        <value-param>
+          <name>rule-zone</name>
+          <value>Development</value>
+        </value-param>
+        <value-param>
+          <name>rule-enable</name>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>rule.PullRequestValidated</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.addons.gamification.service.setting.rule.model.RuleConfig</type>
+      <init-params>
+        <value-param>
+          <name>rule-title</name>
+          <value>pullRequestValidated</value>
+        </value-param>
+        <value-param>
+          <name>rule-description</name>
+          <value>Your Pull Request is validated</value>
+        </value-param>
+        <value-param>
+          <name>rule-score</name>
+          <value>30</value>
+        </value-param>
+        <value-param>
+          <name>rule-zone</name>
+          <value>Development</value>
+        </value-param>
+        <value-param>
+          <name>rule-enable</name>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.addons.gamification.service.setting.badge.BadgeRegistry</target-component>
+    <component-plugin>
+      <name>badge.DeveloperNovice</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.addons.gamification.service.setting.badge.model.BadgeConfig</type>
+      <init-params>
+        <value-param>
+          <name>badge-title</name>
+          <value>Developer Novice</value>
+        </value-param>
+        <value-param>
+          <name>badge-description</name>
+          <value>new developer</value>
+        </value-param>
+        <value-param>
+          <name>badge-domain</name>
+          <value>Development</value>
+        </value-param>
+        <value-param>
+          <name>badge-icon</name>
+          <value>test.png</value>
+        </value-param>
+        <value-param>
+          <name>badge-neededScore</name>
+          <value>500</value>
+        </value-param>
+        <value-param>
+          <name>badge-enable</name>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+</configuration>

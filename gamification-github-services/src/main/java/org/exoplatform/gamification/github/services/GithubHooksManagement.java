@@ -28,20 +28,20 @@ import org.exoplatform.services.log.Log;
 
 public class GithubHooksManagement {
 
-  private final Log        LOG            = ExoLogger.getLogger(GithubHooksManagement.class);
+  private final Log        LOG             = ExoLogger.getLogger(GithubHooksManagement.class);
 
-  private final String[]   EVENTS         = { "push", "pull_request", "pull_request_review", "pull_request_review_comment",
+  private final String[]   EVENTS          = { "push", "pull_request", "pull_request_review", "pull_request_review_comment",
       "pull_request_review_comment" };
 
-  private String           TOKEN          = "";
+  private String           TOKEN           = "";
 
-  private String           SECRET         = "";
+  private String           SECRET          = "";
 
-  private String           EXO_ENVIRONMENT         = "";
+  private String           EXO_ENVIRONMENT = "";
 
-  private String           GITHUB_API_URL = "https://api.github.com/repos";
+  private String           GITHUB_API_URL  = "https://api.github.com/repos";
 
-  private String          WEBHOOK_URL = "portal/rest/gamification/connectors/github/webhooks";
+  private String           WEBHOOK_URL     = "portal/rest/gamification/connectors/github/webhooks";
 
   private ListenerService  listenerService;
 
@@ -56,7 +56,7 @@ public class GithubHooksManagement {
     this.SECRET = System.getProperty("gamification.connectors.github.hook.secret");
     this.TOKEN = System.getProperty("gamification.connectors.github.hook.token");
     this.EXO_ENVIRONMENT = System.getProperty("gamification.connectors.github.exo.environment");
-    if(System.getProperty("gamification.connectors.github.hook.url")!=null){
+    if (System.getProperty("gamification.connectors.github.hook.url") != null) {
       this.WEBHOOK_URL = System.getProperty("gamification.connectors.github.hook.url");
     }
   }
@@ -83,7 +83,7 @@ public class GithubHooksManagement {
   }
 
   public Long addHook(String webhook, String org, String repo, boolean active) throws IOException, GithubHookException {
-    if(getHooksByOrgRepoAndEnvironment(org,repo,EXO_ENVIRONMENT).size()>0){
+    if (getHooksByOrgRepoAndEnvironment(org, repo, EXO_ENVIRONMENT).size() > 0) {
       throw new GithubHookException("WebHook already exists");
     }
 
@@ -243,8 +243,8 @@ public class GithubHooksManagement {
     return gitHubHookDAO.getHooksByExoEnvironment(environment);
   }
 
-  public List<GitHubHookEntity> getHooksByOrgRepoAndEnvironment(String org,String repo,String env) {
-    return gitHubHookDAO.getHooksByOrgRepoAndEnvironment(org,repo,env);
+  public List<GitHubHookEntity> getHooksByOrgRepoAndEnvironment(String org, String repo, String env) {
+    return gitHubHookDAO.getHooksByOrgRepoAndEnvironment(org, repo, env);
   }
 
   public GitHubHookEntity createHook(Long id, GitHubHookEntity hook, boolean enabled) {
@@ -278,7 +278,11 @@ public class GithubHooksManagement {
       gam.put("receiverId", receiverId);
       gam.put("object", object);
       listenerService.broadcast("exo.gamification.generic.action", gam, "");
-      LOG.info("Github action {} gamified for user {} {} {}", ruleTitle, senderId, (ruleTitle.equals("pullRequestValidated")) ? "from" : "to", receiverId);
+      LOG.info("Github action {} gamified for user {} {} {}",
+               ruleTitle,
+               senderId,
+               (ruleTitle.equals("pullRequestValidated")) ? "from" : "to",
+               receiverId);
     } catch (Exception e) {
       LOG.error("Cannot broadcast gamification event", e);
     }
@@ -306,7 +310,7 @@ public class GithubHooksManagement {
     } catch (NullPointerException e) {
       LOG.error("Cannot get user with GithubId {}", id);
       return null;
-    }catch (Exception e) {
+    } catch (Exception e) {
       LOG.error("Cannot get user with GithubId {}", id, e);
       return null;
     }

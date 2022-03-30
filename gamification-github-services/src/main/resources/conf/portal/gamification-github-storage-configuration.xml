@@ -21,40 +21,27 @@
                xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
-    <type>org.exoplatform.gamification.github.rest.GithubWebHookRest</type>
+    <type>org.exoplatform.gamification.github.dao.GitHubAccountDAO</type>
   </component>
 
   <component>
-    <type>org.exoplatform.gamification.github.rest.HooksManagementRest</type>
-  </component>
-
-  <component>
-    <type>org.exoplatform.gamification.github.services.GithubHooksManagement</type>
-  </component>
-
-  <component>
-    <type>org.exoplatform.gamification.github.services.GithubIMSetting</type>
+    <type>org.exoplatform.gamification.github.dao.GitHubHookDAO</type>
   </component>
 
   <external-component-plugins>
-    <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
+    <target-component>org.exoplatform.commons.api.persistence.DataInitializer</target-component>
     <component-plugin>
-      <name>GamificationProfileTracker</name>
-      <set-method>registerProfileListener</set-method>
-      <type>org.exoplatform.gamification.github.listener.GithubProfileListener</type>
+      <name>GamificationChangeLogsPlugin</name>
+      <set-method>addChangeLogsPlugin</set-method>
+      <type>org.exoplatform.commons.persistence.impl.ChangeLogsPlugin</type>
+      <init-params>
+        <values-param>
+          <name>changelogs</name>
+          <description>Change logs of GitHub Connector</description>
+          <value>db/changelog/github-connector.db.changelog-1.0.0.xml</value>
+        </values-param>
+      </init-params>
     </component-plugin>
   </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.services.listener.ListenerService</target-component>
-    <component-plugin>
-      <name>exo.github.event</name>
-      <set-method>addListener</set-method>
-      <type>org.exoplatform.gamification.github.listener.GithubEventsListener</type>
-    </component-plugin>
-  </external-component-plugins>
-
-  <import>jar:/conf/portal/gamification-github-connector-configuration.xml</import>
-  <import>jar:/conf/portal/gamification-github-storage-configuration.xml</import>
 
 </configuration>

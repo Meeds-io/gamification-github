@@ -12,20 +12,20 @@ import org.exoplatform.gamification.github.services.GithubHooksManagement;
 
 public class GithubHooksManagementTest extends BaseGithubConnectorsTest {
 
-  protected long    id           = 1111;
+  protected long    id             = 1111;
 
-  protected String  organization = "organization";
+  protected String  organization   = "organization";
 
-  protected String  repo         = "repository";
+  protected String  repo           = "repository";
 
-  protected String  webhook      = "webhook";
+  protected String  webhook        = "webhook";
 
-  protected String  eXoEnvironment     = "testEnvironment";
+  protected String  eXoEnvironment = "testEnvironment";
 
-  protected String  events       =
+  protected String  events         =
                            "push, pull_request,pull_request_review,pull_request_review_comment,pull_request_review_comment";
 
-  protected boolean enabled      = true;
+  protected boolean enabled        = true;
 
   /**
    * Check that service is instantiated and functional
