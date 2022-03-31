@@ -27,30 +27,27 @@ import lombok.Data;
 @ExoEntity
 @Table(name = "GAM_GITHUB_ACCOUNTS")
 @Data
-@NamedQueries(
-  {
-      @NamedQuery(
-          name = "GitHubAccountEntity.getAccountByGithubId",
-          query = "SELECT account FROM GitHubAccountEntity account where account.gitHubId = :gitHubId "
-      ),
-      @NamedQuery(
-          name = "GitHubAccountEntity.getAccountByUserName",
-          query = "SELECT account FROM GitHubAccountEntity account where account.userName = :userName "
-      )
-
-  }
+@NamedQuery(
+    name = "GitHubAccountEntity.getAccountByGithubId",
+    query = "SELECT account FROM GitHubAccountEntity account where account.gitHubId = :gitHubId "
+)
+@NamedQuery(
+    name = "GitHubAccountEntity.getAccountByUserName",
+    query = "SELECT account FROM GitHubAccountEntity account where account.userName = :userName "
 )
 public class GitHubAccountEntity implements Serializable {
+
+  private static final long serialVersionUID = -7713022850418780035L;
 
   @Id
   @SequenceGenerator(name = "SEQ_GAM_GITHUB_ACCOUNTS_ID", sequenceName = "SEQ_GAM_GITHUB_ACCOUNTS_ID", allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_GAM_GITHUB_ACCOUNTS_ID")
   @Column(name = "ID")
-  protected Long   id;
+  protected Long            id;
 
   @Column(name = "GITHUB_ID", unique = true, nullable = false)
-  protected String gitHubId;
+  protected String          gitHubId;
 
   @Column(name = "USER_NAME", unique = true, nullable = false)
-  protected String userName;
+  protected String          userName;
 }

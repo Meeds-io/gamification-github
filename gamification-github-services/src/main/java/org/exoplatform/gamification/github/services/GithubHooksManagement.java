@@ -1,16 +1,25 @@
+/*
+ * This file is part of the Meeds project (https://meeds.io/).
+ * Copyright (C) 2020 - 2022 Meeds Association contact@meeds.io
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
 package org.exoplatform.gamification.github.services;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +27,7 @@ import org.json.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.exoplatform.commons.utils.IOUtil;
 import org.exoplatform.gamification.github.dao.GitHubAccountDAO;
 import org.exoplatform.gamification.github.dao.GitHubHookDAO;
 import org.exoplatform.gamification.github.entity.GitHubHookEntity;
@@ -28,62 +38,54 @@ import org.exoplatform.services.log.Log;
 
 public class GithubHooksManagement {
 
-  private final Log        LOG             = ExoLogger.getLogger(GithubHooksManagement.class);
+  /**
+   * 
+   */
+  private static final String   ERRORS_GITHUB_NODE  = "errors";
 
-  private final String[]   EVENTS          = { "push", "pull_request", "pull_request_review", "pull_request_review_comment",
-      "pull_request_review_comment" };
+  private static final Log      LOG                 = ExoLogger.getLogger(GithubHooksManagement.class);
 
-  private String           TOKEN           = "";
+  private static final String   GITHUB_API_URL      = "https://api.github.com/repos";
 
-  private String           SECRET          = "";
+  private static final String   MESSAGE_GITHUB_NODE = "message";
 
-  private String           EXO_ENVIRONMENT = "";
+  private static final String[] GITHUB_EVENTS       = {
+      "push",
+      "pull_request",
+      "pull_request_review",
+      "pull_request_review_comment",
+      "pull_request_review_comment"
+  };
 
-  private String           GITHUB_API_URL  = "https://api.github.com/repos";
+  private String                token               = "";
 
-  private String           WEBHOOK_URL     = "portal/rest/gamification/connectors/github/webhooks";
+  private String                secret              = "";
 
-  private ListenerService  listenerService;
+  private String                environment         = "";
 
-  private GitHubAccountDAO gitHubAccountDAO;
+  private String                webhookUrl          = "portal/rest/gamification/connectors/github/webhooks";
 
-  private GitHubHookDAO    gitHubHookDAO;
+  private ListenerService       listenerService;
+
+  private GitHubAccountDAO      gitHubAccountDAO;
+
+  private GitHubHookDAO         gitHubHookDAO;
 
   public GithubHooksManagement(ListenerService listenerService, GitHubAccountDAO gitHubAccountDAO, GitHubHookDAO gitHubHookDAO) {
     this.listenerService = listenerService;
     this.gitHubAccountDAO = gitHubAccountDAO;
     this.gitHubHookDAO = gitHubHookDAO;
-    this.SECRET = System.getProperty("gamification.connectors.github.hook.secret");
-    this.TOKEN = System.getProperty("gamification.connectors.github.hook.token");
-    this.EXO_ENVIRONMENT = System.getProperty("gamification.connectors.github.exo.environment");
+    this.secret = System.getProperty("gamification.connectors.github.hook.secret");
+    this.token = System.getProperty("gamification.connectors.github.hook.token");
+    this.environment = System.getProperty("gamification.connectors.github.exo.environment");
     if (System.getProperty("gamification.connectors.github.hook.url") != null) {
-      this.WEBHOOK_URL = System.getProperty("gamification.connectors.github.hook.url");
+      this.webhookUrl = System.getProperty("gamification.connectors.github.hook.url");
     }
-  }
-
-  public int getHooksFromGithub(String org, String repo) throws IOException {
-    String url = GITHUB_API_URL + "/" + org + "/" + repo + "/hooks";
-    URL urlForGetRequest = new URL(url);
-    String readLine = null;
-    HttpURLConnection conection = (HttpURLConnection) urlForGetRequest.openConnection();
-    conection.setRequestMethod("GET");
-    conection.setRequestProperty("Authorization", "token " + TOKEN);
-    int responseCode = conection.getResponseCode();
-    if (responseCode == HttpURLConnection.HTTP_OK) {
-      try (BufferedReader in = new BufferedReader(new InputStreamReader(conection.getInputStream()))) {
-        StringBuffer response = new StringBuffer();
-        while ((readLine = in.readLine()) != null) {
-          response.append(readLine);
-        }
-      } catch (IOException e) {
-        LOG.error(e);
-      }
-    }
-    return responseCode;
   }
 
   public Long addHook(String webhook, String org, String repo, boolean active) throws IOException, GithubHookException {
-    if (getHooksByOrgRepoAndEnvironment(org, repo, EXO_ENVIRONMENT).size() > 0) {
+    List<GitHubHookEntity> webhooks = getHooksByOrgRepoAndEnvironment(org, repo, environment);
+    if (!webhooks.isEmpty()) {
       throw new GithubHookException("WebHook already exists");
     }
 
@@ -94,11 +96,11 @@ public class GithubHooksManagement {
       config.put("url", webhook);
       config.put("content_type", "json");
       config.put("insecure_ssl", "0");
-      config.put("secret", SECRET);
+      config.put("secret", secret);
       hook.put("name", "web");
       hook.put("active", active);
       hook.put("config", config);
-      hook.put("events", EVENTS);
+      hook.put("events", GITHUB_EVENTS);
     } catch (JSONException e) {
       LOG.error(e);
     }
@@ -106,7 +108,7 @@ public class GithubHooksManagement {
     URL obj = new URL(url);
     HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
     postConnection.setRequestMethod("POST");
-    postConnection.setRequestProperty("Authorization", "token " + TOKEN);
+    setAuthorizationHeader(postConnection);
     postConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
     postConnection.setDoOutput(true);
     try (OutputStream os = postConnection.getOutputStream()) {
@@ -117,30 +119,26 @@ public class GithubHooksManagement {
     }
     int responseCode = postConnection.getResponseCode();
     if (responseCode == HttpURLConnection.HTTP_CREATED) { // success
-      try (BufferedReader in = new BufferedReader(new InputStreamReader(postConnection.getInputStream()))) {
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-          response.append(inputLine);
-        }
+      try (InputStream in = postConnection.getInputStream()) {
+        String response = IOUtil.getStreamContentAsString(in);
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode infoNode = objectMapper.readTree(response.toString());
+        JsonNode infoNode = objectMapper.readTree(response);
         return infoNode.get("id").longValue();
       } catch (IOException e) {
         LOG.error(e);
       }
     } else {
-      try (BufferedReader in = new BufferedReader(new InputStreamReader(postConnection.getErrorStream()))) {
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-          response.append(inputLine);
-        }
+      try (InputStream in = postConnection.getInputStream()) {
+        String response = IOUtil.getStreamContentAsString(in);
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode infoNode = objectMapper.readTree(response.toString());
-        String errMessage = infoNode.get("message").textValue();
-        if (infoNode.get("errors") != null) {
-          errMessage = errMessage + ": " + infoNode.get("errors").elements().next().get("message").textValue();
+        JsonNode infoNode = objectMapper.readTree(response);
+        String errMessage = infoNode.get(MESSAGE_GITHUB_NODE).textValue();
+        if (infoNode.get(ERRORS_GITHUB_NODE) != null) {
+          errMessage = errMessage + ": " + infoNode.get(ERRORS_GITHUB_NODE)
+                                                   .elements()
+                                                   .next()
+                                                   .get(MESSAGE_GITHUB_NODE)
+                                                   .textValue();
         }
         throw new GithubHookException(errMessage);
       } catch (IOException e) {
@@ -158,11 +156,11 @@ public class GithubHooksManagement {
       config.put("url", fullPath);
       config.put("content_type", "json");
       config.put("insecure_ssl", "0");
-      config.put("secret", SECRET);
+      config.put("secret", secret);
       hook.put("name", "web");
       hook.put("active", webhook.getEnabled());
       hook.put("config", config);
-      hook.put("events", EVENTS);
+      hook.put("events", GITHUB_EVENTS);
     } catch (JSONException e) {
       LOG.error(e);
     }
@@ -171,7 +169,7 @@ public class GithubHooksManagement {
     HttpURLConnection patchConnection = (HttpURLConnection) obj.openConnection();
     patchConnection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
     patchConnection.setRequestMethod("POST");
-    patchConnection.setRequestProperty("Authorization", "token " + TOKEN);
+    setAuthorizationHeader(patchConnection);
     patchConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
     patchConnection.setDoOutput(true);
     try (OutputStream os = patchConnection.getOutputStream()) {
@@ -184,17 +182,14 @@ public class GithubHooksManagement {
     if (responseCode == HttpURLConnection.HTTP_OK) { // success
       updateHookEntity(webhook);
     } else {
-      try (BufferedReader in = new BufferedReader(new InputStreamReader(patchConnection.getErrorStream()))) {
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-          response.append(inputLine);
-        }
+      try (InputStream in = patchConnection.getInputStream()) {
+        String response = IOUtil.getStreamContentAsString(in);
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode infoNode = objectMapper.readTree(response.toString());
-        String errMessage = infoNode.get("message").textValue();
-        if (infoNode.get("errors") != null) {
-          errMessage = errMessage + ": " + infoNode.get("errors").elements().next().get("message").textValue();
+        JsonNode infoNode = objectMapper.readTree(response);
+        String errMessage = infoNode.get(MESSAGE_GITHUB_NODE).textValue();
+        if (infoNode.get(ERRORS_GITHUB_NODE) != null) {
+          errMessage =
+                     errMessage + ": " + infoNode.get(ERRORS_GITHUB_NODE).elements().next().get(MESSAGE_GITHUB_NODE).textValue();
         }
         throw new GithubHookException(errMessage);
       } catch (Exception e) {
@@ -204,29 +199,24 @@ public class GithubHooksManagement {
   }
 
   public void deleteHook(GitHubHookEntity webhook) throws IOException, GithubHookException {
-    JSONObject config = new JSONObject();
-    JSONObject hook = new JSONObject();
     String url = GITHUB_API_URL + "/" + webhook.getOrganization() + "/" + webhook.getRepo() + "/hooks/" + webhook.getGithubId();
 
     URL obj = new URL(url);
     HttpURLConnection deleteConnection = (HttpURLConnection) obj.openConnection();
     deleteConnection.setRequestMethod("DELETE");
-    deleteConnection.setRequestProperty("Authorization", "token " + TOKEN);
+    setAuthorizationHeader(deleteConnection);
     int responseCode = deleteConnection.getResponseCode();
     if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) { // success
       deleteHookEntity(webhook);
     } else {
-      try (BufferedReader in = new BufferedReader(new InputStreamReader(deleteConnection.getErrorStream()))) {
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-          response.append(inputLine);
-        }
+      try (InputStream in = deleteConnection.getInputStream()) {
+        String response = IOUtil.getStreamContentAsString(in);
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode infoNode = objectMapper.readTree(response.toString());
-        String errMessage = infoNode.get("message").textValue();
-        if (infoNode.get("errors") != null) {
-          errMessage = errMessage + ": " + infoNode.get("errors").elements().next().get("message").textValue();
+        JsonNode infoNode = objectMapper.readTree(response);
+        String errMessage = infoNode.get(MESSAGE_GITHUB_NODE).textValue();
+        if (infoNode.get(ERRORS_GITHUB_NODE) != null) {
+          errMessage =
+                     errMessage + ": " + infoNode.get(ERRORS_GITHUB_NODE).elements().next().get(MESSAGE_GITHUB_NODE).textValue();
         }
         throw new GithubHookException(errMessage);
       } catch (Exception e) {
@@ -236,7 +226,7 @@ public class GithubHooksManagement {
   }
 
   public List<GitHubHookEntity> getAllHooks() {
-    return getHooksByExoEnvironment(EXO_ENVIRONMENT);
+    return getHooksByExoEnvironment(environment);
   }
 
   public List<GitHubHookEntity> getHooksByExoEnvironment(String environment) {
@@ -251,7 +241,7 @@ public class GithubHooksManagement {
     hook.setGithubId(id);
     hook.setEvents("push, pull_request,pull_request_review,pull_request_review_comment,pull_request_review_comment");
     hook.setEnabled(enabled);
-    hook.setExoEnvironment(EXO_ENVIRONMENT);
+    hook.setExoEnvironment(environment);
     hook.setCreatedDate(new Date());
     hook.setUpdatedDate(new Date());
     return gitHubHookDAO.create(hook);
@@ -317,18 +307,23 @@ public class GithubHooksManagement {
   }
 
   public String getToken() {
-    return TOKEN;
+    return token;
   }
 
   public String getSecret() {
-    return SECRET;
+    return secret;
   }
 
   public String getExoEnvironment() {
-    return EXO_ENVIRONMENT;
+    return environment;
   }
 
-  public String getWEBHOOK_URL() {
-    return WEBHOOK_URL;
+  public String getWebhookUrl() {
+    return webhookUrl;
   }
+
+  private void setAuthorizationHeader(HttpURLConnection conection) {
+    conection.setRequestProperty("Authorization", "token " + token);
+  }
+
 }

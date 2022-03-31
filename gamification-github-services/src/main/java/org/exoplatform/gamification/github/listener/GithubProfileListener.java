@@ -18,12 +18,15 @@ package org.exoplatform.gamification.github.listener;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.gamification.github.dao.GitHubAccountDAO;
 import org.exoplatform.gamification.github.entity.GitHubAccountEntity;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileLifeCycleEvent;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
 
@@ -56,14 +59,8 @@ public class GithubProfileListener extends ProfileListenerPlugin {
 
   @Override
   public void contactSectionUpdated(ProfileLifeCycleEvent event) {
-    String gitHubId = "";
-    List<HashMap<String, String>> ims = (List<HashMap<String, String>>) event.getProfile().getProperty("ims");
-    for (HashMap<String, String> map : ims) {
-      if (map.get("key").equals(GITHUB_TYPE)) {
-        gitHubId = map.get("value");
-      }
-    }
-    if (!gitHubId.isEmpty()) {
+    String gitHubId = getGithubUserId(event.getProfile());
+    if (StringUtils.isNotBlank(gitHubId)) {
       RequestLifeCycle.begin(PortalContainer.getInstance());
       try {
         GitHubAccountEntity entity = gitHubAccountDAO.getAccountByUserName(event.getUsername());
@@ -79,13 +76,12 @@ public class GithubProfileListener extends ProfileListenerPlugin {
               entity.setGitHubId(gitHubId);
               gitHubAccountDAO.update(entity);
             }
-
           } else {
             LOG.warn("The provided Github ID {} is already used by {}", gitHubId, existingEntity.getUserName());
           }
         }
       } catch (Exception e) {
-        LOG.error("Could not retrieve and save Github account in user profile");
+        LOG.error("Could not retrieve and save Github account in user profile", e);
       } finally {
         RequestLifeCycle.end();
       }
@@ -110,6 +106,17 @@ public class GithubProfileListener extends ProfileListenerPlugin {
   @Override
   public void aboutMeUpdated(ProfileLifeCycleEvent event) {
     // Not used
+  }
+
+  private String getGithubUserId(Profile profile) {
+    @SuppressWarnings("unchecked")
+    List<HashMap<String, String>> ims = (List<HashMap<String, String>>) profile.getProperty("ims");
+    for (HashMap<String, String> map : ims) {
+      if (map.get("key").equals(GITHUB_TYPE)) {
+        return map.get("value");
+      }
+    }
+    return null;
   }
 
 }

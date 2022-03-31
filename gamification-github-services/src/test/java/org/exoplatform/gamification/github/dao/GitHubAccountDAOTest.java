@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import org.exoplatform.gamification.github.BaseGithubConnectorsTest;
-import org.exoplatform.gamification.github.dao.GitHubAccountDAO;
 import org.exoplatform.gamification.github.entity.GitHubAccountEntity;
 
 public class GitHubAccountDAOTest extends BaseGithubConnectorsTest {
