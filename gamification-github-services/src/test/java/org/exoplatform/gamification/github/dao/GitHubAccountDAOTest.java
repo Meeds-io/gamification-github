@@ -29,8 +29,10 @@ public class GitHubAccountDAOTest extends BaseGithubConnectorsTest {
     GitHubAccountEntity entity = gitHubHookDAO.getAccountByGithubId(gitHubId);
     assertEquals(null, entity);
     newGitHubAccountEntity(gitHubId, userName);
+    newGitHubAccountEntity(gitHubId, userName);
     entity = gitHubHookDAO.getAccountByGithubId(gitHubId);
     assertNotNull(entity);
+    assertEquals(2, gitHubHookDAO.count().intValue());
   }
 
   @Test
@@ -39,8 +41,10 @@ public class GitHubAccountDAOTest extends BaseGithubConnectorsTest {
     GitHubAccountEntity entity = gitHubHookDAO.getAccountByUserName(userName);
     assertEquals(null, entity);
     newGitHubAccountEntity(gitHubId, userName);
+    newGitHubAccountEntity(gitHubId, userName);
     entity = gitHubHookDAO.getAccountByUserName(userName);
     assertNotNull(entity);
+    assertEquals(2, gitHubHookDAO.count().intValue());
   }
 
 }

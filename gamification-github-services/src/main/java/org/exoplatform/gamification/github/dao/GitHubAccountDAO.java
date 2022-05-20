@@ -16,11 +16,15 @@
 package org.exoplatform.gamification.github.dao;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import javax.persistence.*;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.TypedQuery;
 
-import org.apache.commons.collections.CollectionUtils;
-
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.gamification.github.entity.GitHubAccountEntity;
 import org.exoplatform.services.log.ExoLogger;
@@ -43,13 +47,17 @@ public class GitHubAccountDAO extends GenericDAOJPAImpl<GitHubAccountEntity, Lon
       return null;
     } catch (NonUniqueResultException e) {
       List<GitHubAccountEntity> list = query.getResultList();
-      GitHubAccountEntity gitHubAccountEntity = CollectionUtils.isEmpty(list) ? null : list.get(0);
-
-      LOG.warn("Not only one single user found for github account {}. Try to retrieve only first one for user {}",
-               gitHubId,
-               gitHubAccountEntity == null ? null : gitHubAccountEntity.getUserName(),
-               e);
-
+      GitHubAccountEntity gitHubAccountEntity = list.stream().filter(Objects::nonNull).findFirst().orElse(null);
+      if (gitHubAccountEntity != null) {
+        Set<String> usernames = list.stream().map(GitHubAccountEntity::getUserName).collect(Collectors.toSet());
+        if (usernames.size() > 1) {
+          LOG.warn("Not only one single user found for github account {}. Associated usernames: {}. Try to retrieve only first one for user {}",
+                   gitHubId,
+                   StringUtils.join(usernames, ","),
+                   gitHubAccountEntity.getUserName(),
+                   e);
+        }
+      }
       return gitHubAccountEntity;
     }
   }
@@ -67,13 +75,17 @@ public class GitHubAccountDAO extends GenericDAOJPAImpl<GitHubAccountEntity, Lon
       return null;
     } catch (NonUniqueResultException e) {
       List<GitHubAccountEntity> list = query.getResultList();
-      GitHubAccountEntity gitHubAccountEntity = CollectionUtils.isEmpty(list) ? null : list.get(0);
-
-      LOG.warn("Not only one single github account found for user {}. Try to retrieve only first one for github account {}",
-               userName,
-               gitHubAccountEntity == null ? null : gitHubAccountEntity.getGitHubId(),
-               e);
-
+      GitHubAccountEntity gitHubAccountEntity = list.stream().filter(Objects::nonNull).findFirst().orElse(null);
+      if (gitHubAccountEntity != null) {
+        Set<String> githubIds = list.stream().map(GitHubAccountEntity::getGitHubId).collect(Collectors.toSet());
+        if (githubIds.size() > 1) {
+          LOG.warn("Not only one single github account found for user {}. Associated accounts: {}. Try to retrieve only first one for githubId {}",
+                   userName,
+                   StringUtils.join(githubIds, ","),
+                   gitHubAccountEntity.getGitHubId(),
+                   e);
+        }
+      }
       return gitHubAccountEntity;
     }
   }
