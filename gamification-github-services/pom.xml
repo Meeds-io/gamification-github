@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.exoplatform.addons.gamification-github</groupId>
         <artifactId>gamification-github</artifactId>
-        <version>1.1.x-maintenance-SNAPSHOT</version>
+        <version>1.1.x-devx-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>gamification-github-services</artifactId>
