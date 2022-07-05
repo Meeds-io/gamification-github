@@ -23,7 +23,7 @@
   <page-nodes>
     <node>
       <name>hook_management</name>
-      <label>#{administration.gamificationGithubWebHook}</label>
+      <label>#{gamification.gamificationGithubWebHook}</label>
       <page-reference>group::/platform/administrators::hook_management</page-reference>
     </node>
   </page-nodes>
