@@ -26,7 +26,7 @@
   </parent>
   <groupId>io.meeds.gamification-github</groupId>
   <artifactId>gamification-github</artifactId>
-  <version>7.0.x-SNAPSHOT</version>
+  <version>7.0.x-meed-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Gamification - Github Connector - Parent POM</name>
   <description>Meeds Add-on for github gamification add-on connector</description>
@@ -42,10 +42,10 @@
     <url>https://github.com/meeds-io/gamification-github</url>
   </scm>
   <properties>
-    <io.meeds.social.version>7.0.x-SNAPSHOT</io.meeds.social.version>
-    <io.meeds.platform-ui.version>7.0.x-SNAPSHOT</io.meeds.platform-ui.version>
+    <io.meeds.social.version>7.0.x-meed-SNAPSHOT</io.meeds.social.version>
+    <io.meeds.platform-ui.version>7.0.x-meed-SNAPSHOT</io.meeds.platform-ui.version>
     <org.jackson.version>2.4.2</org.jackson.version>
-    <addon.meeds.gamification.version>7.0.x-SNAPSHOT</addon.meeds.gamification.version>
+    <addon.meeds.gamification.version>7.0.x-meed-SNAPSHOT</addon.meeds.gamification.version>
 
     <!-- Sonar properties -->
     <sonar.organization>meeds-io</sonar.organization>
