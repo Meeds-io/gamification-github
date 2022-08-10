@@ -206,7 +206,7 @@
         </value-param>
         <value-param>
           <name>badge-icon</name>
-          <value>test.png</value>
+          <value>developerNovice.png</value>
         </value-param>
         <value-param>
           <name>badge-neededScore</name>
