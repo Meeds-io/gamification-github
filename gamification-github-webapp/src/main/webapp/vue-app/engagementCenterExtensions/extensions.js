@@ -1,5 +1,3 @@
-import './initComponents.js';
-
 const githubUserActions = ['commentPullRequest', 'creatPullRequest', 'reviewPullRequest', 'pullRequestValidated', 'pushCode'];
 
 export function init() {
@@ -7,8 +5,9 @@ export function init() {
     type: 'github',
     options: {
       rank: 60,
-      vueComponent: Vue.options.components['github-action-value'],
+      icon: 'mdi-github',
       match: (actionLabel) => githubUserActions.includes(actionLabel),
+      getLabel: () => ''
     },
   });
 }
