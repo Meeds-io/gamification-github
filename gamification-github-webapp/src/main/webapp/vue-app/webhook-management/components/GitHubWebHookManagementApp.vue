@@ -247,8 +247,7 @@ export default {
         credentials: 'include',
       })
         .then((resp) => resp.json())
-        .then((resp) => this.hookList = resp)
-        .finally(() => this.$root.applicationLoaded());
+        .then((resp) => this.hookList = resp);
     },
     editItem(item) {
       return fetch(`/portal/rest/gamification/connectors/github/hooksmanagement/hooks/${  item.id}`, {

@@ -25,14 +25,17 @@
     <title>Github Webhook Management</title>
     <access-permissions>manager:/platform/administrators</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>gamification-github</application-ref>
-        <portlet-ref>GitHubWebHookManagement</portlet-ref>
-      </portlet>
-      <title>GitHub WebHook Management Portlet</title>
-      <access-permissions>*:/platform/administrators</access-permissions>
-      <show-info-bar>false</show-info-bar>
-    </portlet-application>
+    <container id="singlePageApplicationContainer" template="system:/groovy/portal/webui/container/UIContainer.gtmpl" cssClass="singlePageApplication">
+      <access-permissions>*:/platform/users</access-permissions>
+      <portlet-application>
+        <portlet>
+          <application-ref>gamification-github</application-ref>
+          <portlet-ref>GitHubWebHookManagement</portlet-ref>
+        </portlet>
+        <title>GitHub WebHook Management Portlet</title>
+        <access-permissions>*:/platform/administrators</access-permissions>
+        <show-info-bar>false</show-info-bar>
+      </portlet-application>
+    </container>
   </page>
 </page-set>
