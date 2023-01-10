@@ -48,7 +48,7 @@
               <boolean>${meeds.gamification.github.portalConfig.metadata.override:true}</boolean>
             </field>
             <field name="importMode">
-              <string>${meeds.gamification.github.portalConfig.metadata.importmode:insert}</string>
+              <string>${meeds.gamification.github.portalConfig.metadata.importmode:merge}</string>
             </field>
           </object>
         </object-param>
