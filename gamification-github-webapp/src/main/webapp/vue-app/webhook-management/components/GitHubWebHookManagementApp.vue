@@ -16,8 +16,7 @@
           :headers="headers"
           :items="hookList"
           :search="search"
-          sort-by="id"
-          class="elevation-1">
+          sort-by="id">
           <template v-slot:top>
             <v-toolbar
               flat
