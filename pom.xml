@@ -42,8 +42,8 @@
     <url>https://github.com/meeds-io/gamification-github</url>
   </scm>
   <properties>
-    <org.exoplatform.social.version>6.4.x-exo-SNAPSHOT</org.exoplatform.social.version>
-    <org.exoplatform.platform-ui.version>6.4.x-exo-SNAPSHOT</org.exoplatform.platform-ui.version>
+    <org.exoplatform.social.version>6.4.0-exo-20230115</org.exoplatform.social.version>
+    <org.exoplatform.platform-ui.version>6.4.0-exo-20230115</org.exoplatform.platform-ui.version>
     <org.jackson.version>2.4.2</org.jackson.version>
 
     <!-- Sonar properties -->
