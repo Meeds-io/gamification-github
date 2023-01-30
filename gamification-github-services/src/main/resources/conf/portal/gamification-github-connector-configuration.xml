@@ -20,31 +20,6 @@
                xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
                xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.addons.gamification.service.setting.zone.ZoneRegistry</target-component>
-    <component-plugin>
-      <name>developer.zone</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.addons.gamification.service.setting.zone.model.ZoneConfig</type>
-      <init-params>
-        <value-param>
-          <name>zone-name</name>
-          <value>Development</value>
-        </value-param>
-        <value-param>
-          <name>zone-description</name>
-          <value>Development</value>
-        </value-param>
-        <value-param>
-          <name>zone-priority</name>
-          <value>5</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-
   <external-component-plugins>
     <target-component>org.exoplatform.addons.gamification.service.setting.rule.RuleRegistry</target-component>
     <component-plugin>
@@ -65,12 +40,8 @@
           <value>15</value>
         </value-param>
         <value-param>
-          <name>rule-zone</name>
-          <value>Development</value>
-        </value-param>
-        <value-param>
           <name>rule-enable</name>
-          <value>true</value>
+          <value>false</value>
         </value-param>
       </init-params>
     </component-plugin>
@@ -92,12 +63,8 @@
           <value>5</value>
         </value-param>
         <value-param>
-          <name>rule-zone</name>
-          <value>Development</value>
-        </value-param>
-        <value-param>
           <name>rule-enable</name>
-          <value>true</value>
+          <value>false</value>
         </value-param>
       </init-params>
     </component-plugin>
@@ -119,12 +86,8 @@
           <value>20</value>
         </value-param>
         <value-param>
-          <name>rule-zone</name>
-          <value>Development</value>
-        </value-param>
-        <value-param>
           <name>rule-enable</name>
-          <value>true</value>
+          <value>false</value>
         </value-param>
       </init-params>
     </component-plugin>
@@ -146,12 +109,8 @@
           <value>5</value>
         </value-param>
         <value-param>
-          <name>rule-zone</name>
-          <value>Development</value>
-        </value-param>
-        <value-param>
           <name>rule-enable</name>
-          <value>true</value>
+          <value>false</value>
         </value-param>
       </init-params>
     </component-plugin>
@@ -173,12 +132,8 @@
           <value>30</value>
         </value-param>
         <value-param>
-          <name>rule-zone</name>
-          <value>Development</value>
-        </value-param>
-        <value-param>
           <name>rule-enable</name>
-          <value>true</value>
+          <value>false</value>
         </value-param>
       </init-params>
     </component-plugin>
