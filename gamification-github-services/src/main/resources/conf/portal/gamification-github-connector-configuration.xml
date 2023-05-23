@@ -21,11 +21,11 @@
                xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <external-component-plugins>
-    <target-component>org.exoplatform.addons.gamification.service.setting.rule.RuleRegistry</target-component>
+    <target-component>io.meeds.gamification.service.RuleRegistry</target-component>
     <component-plugin>
       <name>rule.PushCode</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.addons.gamification.service.setting.rule.model.RuleConfig</type>
+      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
       <init-params>
         <value-param>
           <name>rule-title</name>
@@ -48,7 +48,7 @@
     <component-plugin>
       <name>rule.CreatPullRequest</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.addons.gamification.service.setting.rule.model.RuleConfig</type>
+      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
       <init-params>
         <value-param>
           <name>rule-title</name>
@@ -71,7 +71,7 @@
     <component-plugin>
       <name>rule.ReviewPullRequest</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.addons.gamification.service.setting.rule.model.RuleConfig</type>
+      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
       <init-params>
         <value-param>
           <name>rule-title</name>
@@ -94,7 +94,7 @@
     <component-plugin>
       <name>rule.CommentPullRequest</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.addons.gamification.service.setting.rule.model.RuleConfig</type>
+      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
       <init-params>
         <value-param>
           <name>rule-title</name>
@@ -117,7 +117,7 @@
     <component-plugin>
       <name>rule.PullRequestValidated</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.addons.gamification.service.setting.rule.model.RuleConfig</type>
+      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
       <init-params>
         <value-param>
           <name>rule-title</name>
@@ -141,11 +141,11 @@
 
 
   <external-component-plugins>
-    <target-component>org.exoplatform.addons.gamification.service.setting.badge.BadgeRegistry</target-component>
+    <target-component>io.meeds.gamification.service.BadgeRegistry</target-component>
     <component-plugin>
       <name>badge.DeveloperNovice</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.addons.gamification.service.setting.badge.model.BadgeConfig</type>
+      <type>io.meeds.gamification.plugin.BadgeConfigPlugin</type>
       <init-params>
         <value-param>
           <name>badge-title</name>
