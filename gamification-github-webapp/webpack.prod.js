@@ -23,7 +23,8 @@ const config = {
   },
   entry: {
     gitHubWebHookManagement: './src/main/webapp/vue-app/webhook-management/main.js',
-    engagementCenterExtensions: './src/main/webapp/vue-app/engagementCenterExtensions/extensions.js'
+    engagementCenterExtensions: './src/main/webapp/vue-app/engagementCenterExtensions/extensions.js',
+    connectorExtension: './src/main/webapp/vue-app/connectorExtension/extension.js'
   },
   output: {
     path: path.join(__dirname, 'target/gamification-github/'),

@@ -72,5 +72,25 @@
     </depends>
   </module>
 
+  <module>
+    <name>gamificationConnectorsExtensionsGitHub</name>
+    <load-group>gamification-connectors</load-group>
+    <script>
+      <path>/js/connectorExtension.bundle.js</path>
+    </script>
+    <depends>
+      <module>vue</module>
+    </depends>
+    <depends>
+      <module>vuetify</module>
+    </depends>
+    <depends>
+      <module>eXoVueI18n</module>
+    </depends>
+    <depends>
+      <module>extensionRegistry</module>
+    </depends>
+  </module>
+
 </gatein-resources>
 

@@ -106,6 +106,22 @@
             <artifactId>hsqldb</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.scribejava</groupId>
+            <artifactId>scribejava-apis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.exoplatform.social</groupId>
+            <artifactId>social-component-oauth-auth</artifactId>
+            <version>6.5.x-meedsv2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.exoplatform.addons.gamification</groupId>
+            <artifactId>gamification-services</artifactId>
+            <version>2.5.x-meedsv2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <build>
         <finalName>gamification-github-services</finalName>
