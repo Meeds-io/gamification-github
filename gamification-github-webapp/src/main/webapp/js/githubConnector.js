@@ -25,12 +25,14 @@ export default {
   identifier: '',
   user: '',
   rank: 10,
+  REDIRECT_URL: `${window.location.protocol}//${window.location.hostname}${window.location.port && ':' || ''}${window.location.port || ''}${eXo.env.portal.context}/githubAuth/callback`,
+  PROFILE_BASER_URL: 'https://github.com',
   openOauthPopup(connector) {
     const width = 500;
     const height = 600;
     const left = window.innerWidth / 2 - width / 2;
     const top = window.innerHeight / 2 - height / 2;
-    const authUrl = `https://github.com/login/oauth/authorize?client_id=${connector.apiKey}&redirect_uri=${connector.redirectURL}`;
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=98f2cb1bad3d5ab6ebb4&redirect_uri=${connector.REDIRECT_URL}`;
     return window.open(authUrl, 'Github OAuth', `width=${width}, height=${height}, left=${left}, top=${top}`);
   },
 };

@@ -63,15 +63,11 @@
       <init-params>
         <value-param>
           <name>connectorAPIKey</name>
-          <value>${meeds.gamification.connector.github.key:}</value>
+          <value></value>
         </value-param>
         <value-param>
           <name>connectorSecretKey</name>
-          <value>${meeds.gamification.connector.github.secret:}</value>
-        </value-param>
-        <value-param>
-          <name>connectorRedirectURL</name>
-          <value>${meeds.gamification.connector.github.redirectURL:}</value>
+          <value></value>
         </value-param>
       </init-params>
     </component-plugin>

@@ -9,6 +9,7 @@ import io.meeds.oauth.exception.OAuthException;
 import io.meeds.oauth.exception.OAuthExceptionCode;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.ObjectAlreadyExistsException;
+import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.gamification.github.model.GithubAccessTokenContext;
@@ -25,17 +26,17 @@ import java.util.concurrent.ExecutionException;
 
 public class GithubConnectorPlugin extends ConnectorPlugin {
 
-  private static final String        CONNECTOR_NAME     = "github";
+  private static final String        CONNECTOR_NAME          = "github";
 
-  private static final String        CONNECTOR_SCOPE    = "user:email";
+  private static final String        CONNECTOR_SCOPE         = "user:email";
 
-  private static final String        CONNECTOR_REST_API = "https://api.github.com/user";
+  private static final String        CONNECTOR_REST_API      = "https://api.github.com/user";
+
+  public static final Scope          CONNECTOR_SETTING_SCOPE = Scope.APPLICATION.id("Github");
 
   private final String               connectorAPIKey;
 
   private final String               connectorSecretKey;
-
-  private final String               connectorRedirectURL;
 
   private final GithubAccountService githubAccountService;
 
@@ -51,13 +52,7 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
                                                                                        .getValue()
                                                                            : null;
 
-    this.connectorRedirectURL = initParams.containsKey("connectorRedirectURL") ? initParams.getValueParam("connectorRedirectURL")
-                                                                                           .getValue()
-                                                                               : null;
-
-    this.oAuth20Service = new ServiceBuilder(connectorAPIKey).apiSecret(connectorSecretKey)
-                                                             .callback(connectorRedirectURL)
-                                                             .build(GitHubApi.instance());
+    this.oAuth20Service = new ServiceBuilder(connectorAPIKey).apiSecret(connectorSecretKey).build(GitHubApi.instance());
 
   }
 
@@ -66,7 +61,6 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
                         Identity identity) throws IOException, ExecutionException, ObjectAlreadyExistsException {
     oAuth20Service = new ServiceBuilder(connectorAPIKey).apiSecret(connectorSecretKey)
                                                         .defaultScope(CONNECTOR_SCOPE)
-                                                        .callback(connectorRedirectURL)
                                                         .build(GitHubApi.instance());
     if (StringUtils.isNotBlank(accessToken)) {
       OAuth2AccessToken oAuth2AccessToken = null;
@@ -91,11 +85,6 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
   }
 
   @Override
-  public boolean isConnected(String username) {
-    return githubAccountService.getAccountByUserName(username) != null;
-  }
-
-  @Override
   public String getIdentifier(String username) {
     GithubAccount gitHubAccount = githubAccountService.getAccountByUserName(username);
     return gitHubAccount != null ? gitHubAccount.getGitHubId() : null;
@@ -107,13 +96,8 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
   }
 
   @Override
-  public String getConnectorApiKey() {
-    return connectorAPIKey;
-  }
-
-  @Override
-  public String getConnectorRedirectURL() {
-    return connectorRedirectURL;
+  public Scope getConnectorSettingsScope() {
+    return CONNECTOR_SETTING_SCOPE;
   }
 
   private static String fetchUsernameFromAccessToken(GithubAccessTokenContext accessToken) throws IOException {
