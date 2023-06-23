@@ -60,16 +60,6 @@
       <name>github</name>
       <set-method>addPlugin</set-method>
       <type>org.exoplatform.gamification.github.plugin.GithubConnectorPlugin</type>
-      <init-params>
-        <value-param>
-          <name>connectorAPIKey</name>
-          <value></value>
-        </value-param>
-        <value-param>
-          <name>connectorSecretKey</name>
-          <value></value>
-        </value-param>
-      </init-params>
     </component-plugin>
   </external-component-plugins>
 

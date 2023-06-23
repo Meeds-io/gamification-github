@@ -17,22 +17,21 @@
  */
 export default {
   name: 'github',
-  title: 'Github Profile',
-  description: 'Connect your Github account so your actions from there can be gamified and recognized',
-  icon: 'mdi-github',
+  title: 'githubConnector.label.profile',
+  description: 'githubConnector.label.description',
+  logo: '/gamification-github/skin/images/GitHub-Mark.png',
   initialized: true,
   isSignedIn: true,
   identifier: '',
   user: '',
   rank: 10,
-  REDIRECT_URL: `${window.location.protocol}//${window.location.hostname}${window.location.port && ':' || ''}${window.location.port || ''}${eXo.env.portal.context}/githubAuth/callback`,
   PROFILE_BASER_URL: 'https://github.com',
   openOauthPopup(connector) {
     const width = 500;
     const height = 600;
     const left = window.innerWidth / 2 - width / 2;
     const top = window.innerHeight / 2 - height / 2;
-    const authUrl = `https://github.com/login/oauth/authorize?client_id=98f2cb1bad3d5ab6ebb4&redirect_uri=${connector.REDIRECT_URL}`;
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=${connector.apiKey}&redirect_uri=${connector.redirectUrl}`;
     return window.open(authUrl, 'Github OAuth', `width=${width}, height=${height}, left=${left}, top=${top}`);
   },
 };

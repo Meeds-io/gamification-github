@@ -1,20 +1,37 @@
+/*
+ * This file is part of the Meeds project (https://meeds.io/).
+ * Copyright (C) 2020 - 2023 Meeds Association contact@meeds.io
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
 package org.exoplatform.gamification.github.plugin;
 
 import com.github.scribejava.apis.GitHubApi;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import io.meeds.gamification.model.RemoteConnectorSettings;
 import io.meeds.gamification.plugin.ConnectorPlugin;
+import io.meeds.gamification.service.ConnectorSettingService;
 import io.meeds.oauth.exception.OAuthException;
 import io.meeds.oauth.exception.OAuthExceptionCode;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.ObjectAlreadyExistsException;
-import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
-import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.gamification.github.model.GithubAccessTokenContext;
 import org.exoplatform.gamification.github.model.GithubAccount;
 import org.exoplatform.gamification.github.services.GithubAccountService;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.Identity;
 
 import java.io.BufferedReader;
@@ -26,40 +43,45 @@ import java.util.concurrent.ExecutionException;
 
 public class GithubConnectorPlugin extends ConnectorPlugin {
 
-  private static final String        CONNECTOR_NAME          = "github";
+  private static final Log              LOG                = ExoLogger.getLogger(GithubConnectorPlugin.class);
 
-  private static final String        CONNECTOR_SCOPE         = "user:email";
+  private static final String           CONNECTOR_NAME     = "github";
 
-  private static final String        CONNECTOR_REST_API      = "https://api.github.com/user";
+  private static final String           CONNECTOR_SCOPE    = "user:email";
 
-  public static final Scope          CONNECTOR_SETTING_SCOPE = Scope.APPLICATION.id("Github");
+  private static final String           CONNECTOR_REST_API = "https://api.github.com/user";
 
-  private final String               connectorAPIKey;
+  private final GithubAccountService    githubAccountService;
 
-  private final String               connectorSecretKey;
+  private final ConnectorSettingService connectorSettingService;
 
-  private final GithubAccountService githubAccountService;
+  private String                        connectorAPIKey;
 
-  private OAuth20Service             oAuth20Service;
+  private String                        connectorSecretKey;
 
-  public GithubConnectorPlugin(GithubAccountService githubAccountService, InitParams initParams) {
+  private String                        connectorRedirectUrl;
+
+  private OAuth20Service                oAuth20Service;
+
+  public GithubConnectorPlugin(GithubAccountService githubAccountService, ConnectorSettingService connectorSettingService) {
     this.githubAccountService = githubAccountService;
-
-    this.connectorAPIKey = initParams.containsKey("connectorAPIKey") ? initParams.getValueParam("connectorAPIKey").getValue()
-                                                                     : null;
-
-    this.connectorSecretKey = initParams.containsKey("connectorSecretKey") ? initParams.getValueParam("connectorSecretKey")
-                                                                                       .getValue()
-                                                                           : null;
-
-    this.oAuth20Service = new ServiceBuilder(connectorAPIKey).apiSecret(connectorSecretKey).build(GitHubApi.instance());
-
+    this.connectorSettingService = connectorSettingService;
   }
 
   @Override
   public String connect(String accessToken,
                         Identity identity) throws IOException, ExecutionException, ObjectAlreadyExistsException {
+
+    RemoteConnectorSettings remoteConnectorSettings = connectorSettingService.getConnectorSettings(CONNECTOR_NAME);
+    if (StringUtils.isBlank(remoteConnectorSettings.getApiKey()) || StringUtils.isBlank(remoteConnectorSettings.getSecretKey())) {
+      LOG.warn("Missing '{}' connector settings", CONNECTOR_NAME);
+      return null;
+    }
+    connectorAPIKey = remoteConnectorSettings.getApiKey();
+    connectorSecretKey = remoteConnectorSettings.getSecretKey();
+    connectorRedirectUrl = remoteConnectorSettings.getRedirectUrl();
     oAuth20Service = new ServiceBuilder(connectorAPIKey).apiSecret(connectorSecretKey)
+                                                        .callback(connectorRedirectUrl)
                                                         .defaultScope(CONNECTOR_SCOPE)
                                                         .build(GitHubApi.instance());
     if (StringUtils.isNotBlank(accessToken)) {
@@ -93,11 +115,6 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
   @Override
   public String getConnectorName() {
     return CONNECTOR_NAME;
-  }
-
-  @Override
-  public Scope getConnectorSettingsScope() {
-    return CONNECTOR_SETTING_SCOPE;
   }
 
   private static String fetchUsernameFromAccessToken(GithubAccessTokenContext accessToken) throws IOException {
