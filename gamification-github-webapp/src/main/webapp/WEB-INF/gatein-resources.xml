@@ -72,5 +72,45 @@
     </depends>
   </module>
 
+  <module>
+    <name>gamificationUserConnectorsExtensionsGitHub</name>
+    <load-group>gamification-user-connectors</load-group>
+    <script>
+      <path>/js/githubUserConnectorExtension.bundle.js</path>
+    </script>
+    <depends>
+      <module>vue</module>
+    </depends>
+    <depends>
+      <module>vuetify</module>
+    </depends>
+    <depends>
+      <module>eXoVueI18n</module>
+    </depends>
+    <depends>
+      <module>extensionRegistry</module>
+    </depends>
+  </module>
+
+  <module>
+    <name>gamificationAdminConnectorsExtensionsGitHub</name>
+    <load-group>gamification-admin-connectors</load-group>
+    <script>
+      <path>/js/githubAdminConnectorExtension.bundle.js</path>
+    </script>
+    <depends>
+      <module>vue</module>
+    </depends>
+    <depends>
+      <module>vuetify</module>
+    </depends>
+    <depends>
+      <module>eXoVueI18n</module>
+    </depends>
+    <depends>
+      <module>extensionRegistry</module>
+    </depends>
+  </module>
+
 </gatein-resources>
 

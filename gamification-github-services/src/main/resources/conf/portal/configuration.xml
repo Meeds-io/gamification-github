@@ -36,14 +36,14 @@
     <type>org.exoplatform.gamification.github.services.GithubIMSetting</type>
   </component>
 
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
-    <component-plugin>
-      <name>GamificationProfileTracker</name>
-      <set-method>registerProfileListener</set-method>
-      <type>org.exoplatform.gamification.github.listener.GithubProfileListener</type>
-    </component-plugin>
-  </external-component-plugins>
+  <component>
+    <type>org.exoplatform.gamification.github.plugin.GithubConnectorPlugin</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.gamification.github.services.GithubAccountService</key>
+    <type>org.exoplatform.gamification.github.services.impl.GithubAccountServiceImpl</type>
+  </component>
 
   <external-component-plugins>
     <target-component>org.exoplatform.services.listener.ListenerService</target-component>
@@ -51,6 +51,15 @@
       <name>exo.github.event</name>
       <set-method>addListener</set-method>
       <type>org.exoplatform.gamification.github.listener.GithubEventsListener</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>io.meeds.gamification.service.ConnectorService</target-component>
+    <component-plugin>
+      <name>github</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.gamification.github.plugin.GithubConnectorPlugin</type>
     </component-plugin>
   </external-component-plugins>
 
