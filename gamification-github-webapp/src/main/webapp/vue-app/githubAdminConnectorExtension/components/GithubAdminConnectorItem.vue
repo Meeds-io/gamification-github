@@ -52,81 +52,92 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         {{ $t('githubConnector.admin.label.instructions.stepTwo') }}
       </span>
     </div>
-    <v-card
-      class="d-flex flex-row"
-      flat>
-      <div>
-        <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left ps-0 pt-0 pb-2">
-          {{ $t('gamification.connectors.settings.apiKey') }}
-        </v-card-text>
-        <v-card-text class="d-flex py-0 ps-0">
-          <input
-            ref="connectorApiKey"
-            v-model="apiKey"
-            :disabled="!editing"
-            :placeholder="$t('gamification.connectors.settings.apiKey.placeholder')"
-            type="text"
-            class="ignore-vuetify-classes flex-grow-1"
-            required>
-        </v-card-text>
-      </div>
-      <div>
-        <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left ps-0 pt-0 pb-2">
-          {{ $t('gamification.connectors.settings.secretKey') }}
-        </v-card-text>
-        <v-card-text class="d-flex py-0 ps-0">
-          <input
-            ref="connectorSecretKey"
-            v-model="secretKey"
-            :disabled="!editing"
-            :placeholder="$t('gamification.connectors.settings.secretKey.placeholder')"
-            type="text"
-            class="ignore-vuetify-classes flex-grow-1"
-            required>
-        </v-card-text>
-      </div>
-      <div>
-        <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left ps-0 pt-0 pb-2">
-          {{ $t('gamification.connectors.settings.redirectUrl') }}
-        </v-card-text>
-        <v-card-text class="d-flex py-0 ps-0">
-          <input
-            ref="connectorRedirectUrl"
-            v-model="redirectUrl"
-            :disabled="!editing"
-            :placeholder="$t('gamification.connectors.settings.redirectUrl.placeholder')"
-            type="text"
-            class="ignore-vuetify-classes flex-grow-1"
-            required>
-        </v-card-text>
-      </div>
+    <div class="d-flex flex-row">
+      <v-card
+        class="d-flex flex-row"
+        flat>
+        <div>
+          <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left ps-0 pt-0 pb-2">
+            {{ $t('gamification.connectors.settings.apiKey') }}
+          </v-card-text>
+          <v-card-text class="d-flex py-0 ps-0">
+            <input
+              ref="connectorApiKey"
+              v-model="apiKey"
+              :disabled="!editing"
+              :placeholder="$t('gamification.connectors.settings.apiKey.placeholder')"
+              type="text"
+              class="ignore-vuetify-classes flex-grow-1"
+              required>
+          </v-card-text>
+        </div>
+        <div>
+          <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left ps-0 pt-0 pb-2">
+            {{ $t('gamification.connectors.settings.secretKey') }}
+          </v-card-text>
+          <v-card-text class="d-flex py-0 ps-0">
+            <input
+              ref="connectorSecretKey"
+              v-model="secretKey"
+              :disabled="!editing"
+              :placeholder="$t('gamification.connectors.settings.secretKey.placeholder')"
+              type="text"
+              class="ignore-vuetify-classes flex-grow-1"
+              required>
+          </v-card-text>
+        </div>
+        <div>
+          <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left ps-0 pt-0 pb-2">
+            {{ $t('gamification.connectors.settings.redirectUrl') }}
+          </v-card-text>
+          <v-card-text class="d-flex py-0 ps-0">
+            <input
+              ref="connectorRedirectUrl"
+              v-model="redirectUrl"
+              :disabled="!editing"
+              :placeholder="$t('gamification.connectors.settings.redirectUrl.placeholder')"
+              type="text"
+              class="ignore-vuetify-classes flex-grow-1"
+              required>
+          </v-card-text>
+        </div>
+        <v-card-actions>
+          <v-btn
+            v-if="editing"
+            :disabled="disabledSave"
+            class="btn btn-primary ms-2 my-6"
+            height="28"
+            width="50"
+            @click="saveConnectorSetting">
+            {{ $t('gamification.connectors.settings.apply') }}
+          </v-btn>
+          <v-template v-else>
+            <v-btn
+              class="py-6"
+              icon
+              outlined
+              small
+              @click="editing = true">
+              <v-icon class="primary--text" size="18">fas fa-edit</v-icon>
+            </v-btn>
+            <v-btn
+              icon
+              outlined
+              small
+              @click="deleteConfirmDialog">
+              <v-icon class="error-color" size="18">fas fa-trash-alt</v-icon>
+            </v-btn>
+          </v-template>
+        </v-card-actions>
+      </v-card>
       <v-spacer />
-      <v-card-actions>
-        <v-btn
-          v-if="editing"
-          class="btn btn-primary ms-2"
-          small
-          @click="saveConnectorSetting">
-          {{ $t('gamification.connectors.settings.apply') }}
-        </v-btn>
-        <v-template v-else>
-          <v-btn
-            icon
-            outlined
-            small
-            @click="editing = true">
-            <v-icon size="18">fas fa-edit</v-icon>
-          </v-btn>
-          <v-btn
-            icon
-            outlined
-            small
-            @click="deleteConfirmDialog">
-            <v-icon size="18">fas fa-trash-alt</v-icon>
-          </v-btn>
-        </v-template>
-      </v-card-actions>
-    </v-card>
+      <v-switch
+        v-if="canUpdateStatus"
+        v-model="enabled"
+        color="primary"
+        class="py-6"
+        @change="saveConnectorSetting" />
+    </div>
     <exo-confirm-dialog
       ref="deleteConfirmDialog"
       :message="$t('gamification.connectors.message.confirmDeleteConnectorSetting')"
@@ -161,6 +172,16 @@ export default {
     return {
       editing: false,
     };
+  },
+  computed: {
+    disabledSave() {
+      return !this.apiKey
+          || !this.secretKey
+          || !this.redirectUrl;
+    },
+    canUpdateStatus() {
+      return !this.editing && this.apiKey && this.secretKey && this.redirectUrl;
+    }
   },
   created() {
     if (!this.apiKey && !this.secretKey && !this.redirectUrl) {
