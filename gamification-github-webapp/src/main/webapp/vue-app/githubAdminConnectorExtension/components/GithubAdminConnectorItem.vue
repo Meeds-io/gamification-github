@@ -52,9 +52,9 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         {{ $t('githubConnector.admin.label.instructions.stepTwo') }}
       </span>
     </div>
-    <div class="d-flex flex-row">
+    <div class="d-flex flex-row flex-wrap">
       <v-card
-        class="d-flex flex-row"
+        class="d-flex flex-row xs12 sm6"
         flat>
         <div>
           <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left ps-0 pt-0 pb-2">
@@ -67,7 +67,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
               :disabled="!editing"
               :placeholder="$t('gamification.connectors.settings.apiKey.placeholder')"
               type="text"
-              class="ignore-vuetify-classes flex-grow-1"
+              class="ignore-vuetify-classes width-fit-content"
               required>
           </v-card-text>
         </div>
@@ -82,7 +82,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
               :disabled="!editing"
               :placeholder="$t('gamification.connectors.settings.secretKey.placeholder')"
               type="text"
-              class="ignore-vuetify-classes flex-grow-1"
+              class="ignore-vuetify-classes width-fit-content"
               required>
           </v-card-text>
         </div>
@@ -97,46 +97,45 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
               :disabled="!editing"
               :placeholder="$t('gamification.connectors.settings.redirectUrl.placeholder')"
               type="text"
-              class="ignore-vuetify-classes flex-grow-1"
+              class="ignore-vuetify-classes width-fit-content"
               required>
           </v-card-text>
         </div>
-        <v-card-actions>
-          <v-btn
-            v-if="editing"
-            :disabled="disabledSave"
-            class="btn btn-primary ms-2 my-6"
-            height="28"
-            width="50"
-            @click="saveConnectorSetting">
-            {{ $t('gamification.connectors.settings.apply') }}
-          </v-btn>
-          <v-template v-else>
-            <v-btn
-              class="py-6"
-              icon
-              outlined
-              small
-              @click="editing = true">
-              <v-icon class="primary--text" size="18">fas fa-edit</v-icon>
-            </v-btn>
-            <v-btn
-              icon
-              outlined
-              small
-              @click="deleteConfirmDialog">
-              <v-icon class="error-color" size="18">fas fa-trash-alt</v-icon>
-            </v-btn>
-          </v-template>
-        </v-card-actions>
       </v-card>
       <v-spacer />
-      <v-switch
-        v-if="canUpdateStatus"
-        v-model="enabled"
-        color="primary"
-        class="py-6"
-        @change="saveConnectorSetting" />
+      <v-card-actions class="flex-wrap">
+        <v-switch
+          v-if="canUpdateStatus"
+          v-model="enabled"
+          color="primary"
+          class="mt-1 px-2"
+          @change="saveConnectorSetting(enabled)" />
+        <v-btn
+          v-if="editing"
+          :disabled="disabledSave"
+          class="btn btn-primary ms-2 my-6"
+          height="28"
+          width="50"
+          @click="saveConnectorSetting(true)">
+          {{ $t('gamification.connectors.settings.save') }}
+        </v-btn>
+        <v-template v-else>
+          <v-btn
+            icon
+            outlined
+            small
+            @click="editing = true">
+            <v-icon class="primary--text" size="18">fas fa-edit</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            outlined
+            small
+            @click="deleteConfirmDialog">
+            <v-icon class="error-color" size="18">fas fa-trash-alt</v-icon>
+          </v-btn>
+        </v-template>
+      </v-card-actions>
     </div>
     <exo-confirm-dialog
       ref="deleteConfirmDialog"
@@ -189,13 +188,13 @@ export default {
     }
   },
   methods: {
-    saveConnectorSetting() {
+    saveConnectorSetting(status) {
       const settings = {
         name: 'github',
         apiKey: this.apiKey,
         secretKey: this.secretKey,
         redirectUrl: this.redirectUrl,
-        enabled: this.enabled
+        enabled: status
       };
       this.editing = false;
       document.dispatchEvent(new CustomEvent('save-connector-settings', {detail: settings}));
