@@ -21,7 +21,6 @@ export default {
   description: 'githubConnector.label.description',
   logo: '/gamification-github/skin/images/GitHub-Mark.png',
   initialized: true,
-  isSignedIn: true,
   identifier: '',
   user: '',
   rank: 10,

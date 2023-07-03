@@ -103,12 +103,13 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         </div>
       </v-card>
       <v-spacer />
-      <v-card-actions class="flex-wrap">
+      <v-card-actions class="flex-wrap align-end">
         <v-switch
           v-if="canUpdateStatus"
           v-model="enabled"
           color="primary"
-          class="mt-1 px-2"
+          class="px-2"
+          hide-details
           @change="saveConnectorSetting(enabled)" />
         <v-btn
           v-if="editing"
