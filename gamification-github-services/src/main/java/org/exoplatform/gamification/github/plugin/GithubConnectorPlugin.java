@@ -55,39 +55,37 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
 
   private final ConnectorSettingService connectorSettingService;
 
+  private OAuth20Service                oAuthService;
+
+  private long                          remoteConnectorId;
+
   public GithubConnectorPlugin(GithubAccountService githubAccountService, ConnectorSettingService connectorSettingService) {
     this.githubAccountService = githubAccountService;
     this.connectorSettingService = connectorSettingService;
   }
 
   @Override
-  public String connect(String accessToken,
-                        Identity identity) throws IOException, ExecutionException, ObjectAlreadyExistsException {
-
+  public String connect(String accessToken, Identity identity) throws OAuthException, ObjectAlreadyExistsException {
     RemoteConnectorSettings remoteConnectorSettings = connectorSettingService.getConnectorSettings(CONNECTOR_NAME);
     if (StringUtils.isBlank(remoteConnectorSettings.getApiKey()) || StringUtils.isBlank(remoteConnectorSettings.getSecretKey())) {
       LOG.warn("Missing '{}' connector settings", CONNECTOR_NAME);
       return null;
     }
-    String connectorAPIKey = remoteConnectorSettings.getApiKey();
-    String connectorSecretKey = remoteConnectorSettings.getSecretKey();
-    String connectorRedirectUrl = remoteConnectorSettings.getRedirectUrl();
-    OAuth20Service oAuth20Service = new ServiceBuilder(connectorAPIKey).apiSecret(connectorSecretKey)
-                                                                       .callback(connectorRedirectUrl)
-                                                                       .defaultScope(CONNECTOR_SCOPE)
-                                                                       .build(GitHubApi.instance());
     if (StringUtils.isNotBlank(accessToken)) {
-      OAuth2AccessToken oAuth2AccessToken = null;
       try {
-        oAuth2AccessToken = oAuth20Service.getAccessToken(accessToken);
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
+        OAuth2AccessToken oAuth2AccessToken = getOAuthService(remoteConnectorSettings).getAccessToken(accessToken);
+        GithubAccessTokenContext accessTokenContext = new GithubAccessTokenContext(oAuth2AccessToken);
+        String githubIdentifier = fetchUsernameFromAccessToken(accessTokenContext);
+        if (StringUtils.isBlank(githubIdentifier)) {
+          throw new OAuthException(OAuthExceptionCode.INVALID_STATE, "User Github identifier is empty");
+        }
+        githubAccountService.saveGithubAccount(githubIdentifier, identity.getUserId());
+        return githubIdentifier;
+      } catch (InterruptedException | IOException e) { // NOSONAR
+        throw new OAuthException(OAuthExceptionCode.IO_ERROR, e);
+      } catch (ExecutionException e) {
+        throw new OAuthException(OAuthExceptionCode.UNKNOWN_ERROR, e);
       }
-      GithubAccessTokenContext accessTokenContext = new GithubAccessTokenContext(oAuth2AccessToken);
-      String githubIdentifier = fetchUsernameFromAccessToken(accessTokenContext);
-      githubAccountService.saveGithubAccount(githubIdentifier, identity.getUserId());
-
-      return githubIdentifier;
     } else {
       throw new OAuthException(OAuthExceptionCode.USER_DENIED_SCOPE, "User denied scope on Github authorization page");
     }
@@ -128,4 +126,16 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
       throw new IOException("Error retrieving user information from GitHub. Response code: " + responseCode);
     }
   }
+
+  public OAuth20Service getOAuthService(RemoteConnectorSettings remoteConnectorSettings) {
+    if (oAuthService == null || remoteConnectorSettings.hashCode() != remoteConnectorId) {
+      remoteConnectorId = remoteConnectorSettings.hashCode();
+      oAuthService = new ServiceBuilder(remoteConnectorSettings.getApiKey()).apiSecret(remoteConnectorSettings.getSecretKey())
+                                                                            .callback(remoteConnectorSettings.getRedirectUrl())
+                                                                            .defaultScope(CONNECTOR_SCOPE)
+                                                                            .build(GitHubApi.instance());
+    }
+    return oAuthService;
+  }
+
 }
