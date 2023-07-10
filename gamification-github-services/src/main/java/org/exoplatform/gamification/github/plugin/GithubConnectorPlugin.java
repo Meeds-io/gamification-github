@@ -25,14 +25,9 @@ import io.meeds.gamification.service.ConnectorSettingService;
 import io.meeds.oauth.exception.OAuthException;
 import io.meeds.oauth.exception.OAuthExceptionCode;
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.commons.ObjectAlreadyExistsException;
-import org.exoplatform.commons.exception.ObjectNotFoundException;
 import org.exoplatform.gamification.github.model.GithubAccessTokenContext;
-import org.exoplatform.gamification.github.model.GithubAccount;
-import org.exoplatform.gamification.github.services.GithubAccountService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.security.Identity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,11 +42,9 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
 
   private static final String           CONNECTOR_NAME     = "github";
 
-  private static final String           CONNECTOR_SCOPE    = "user:email";
+  private static final String           CONNECTOR_SCOPE    = "read:user";
 
   private static final String           CONNECTOR_REST_API = "https://api.github.com/user";
-
-  private final GithubAccountService    githubAccountService;
 
   private final ConnectorSettingService connectorSettingService;
 
@@ -59,13 +52,12 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
 
   private long                          remoteConnectorId;
 
-  public GithubConnectorPlugin(GithubAccountService githubAccountService, ConnectorSettingService connectorSettingService) {
-    this.githubAccountService = githubAccountService;
+  public GithubConnectorPlugin(ConnectorSettingService connectorSettingService) {
     this.connectorSettingService = connectorSettingService;
   }
 
   @Override
-  public String connect(String accessToken, Identity identity) throws OAuthException, ObjectAlreadyExistsException {
+  public String validateToken(String accessToken) throws OAuthException {
     RemoteConnectorSettings remoteConnectorSettings = connectorSettingService.getConnectorSettings(CONNECTOR_NAME);
     if (StringUtils.isBlank(remoteConnectorSettings.getApiKey()) || StringUtils.isBlank(remoteConnectorSettings.getSecretKey())) {
       LOG.warn("Missing '{}' connector settings", CONNECTOR_NAME);
@@ -79,7 +71,6 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
         if (StringUtils.isBlank(githubIdentifier)) {
           throw new OAuthException(OAuthExceptionCode.INVALID_STATE, "User Github identifier is empty");
         }
-        githubAccountService.saveGithubAccount(githubIdentifier, identity.getUserId());
         return githubIdentifier;
       } catch (InterruptedException | IOException e) { // NOSONAR
         throw new OAuthException(OAuthExceptionCode.IO_ERROR, e);
@@ -89,17 +80,6 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
     } else {
       throw new OAuthException(OAuthExceptionCode.USER_DENIED_SCOPE, "User denied scope on Github authorization page");
     }
-  }
-
-  @Override
-  public void disconnect(String username) throws ObjectNotFoundException {
-    githubAccountService.deleteAccountByUsername(username);
-  }
-
-  @Override
-  public String getIdentifier(String username) {
-    GithubAccount gitHubAccount = githubAccountService.getAccountByUserName(username);
-    return gitHubAccount != null ? gitHubAccount.getGitHubId() : null;
   }
 
   @Override

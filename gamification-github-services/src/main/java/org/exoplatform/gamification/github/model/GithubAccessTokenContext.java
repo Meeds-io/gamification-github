@@ -16,9 +16,11 @@
 package org.exoplatform.gamification.github.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import io.meeds.oauth.spi.AccessTokenContext;
+import org.apache.commons.lang.StringUtils;
 
 public class GithubAccessTokenContext extends AccessTokenContext implements Serializable {
 
@@ -33,17 +35,16 @@ public class GithubAccessTokenContext extends AccessTokenContext implements Seri
     return accessToken.getAccessToken();
   }
 
-  @Override
-  public boolean equals(Object that) {
-    if (!super.equals(that)) {
+  public boolean equals(Object obj) {
+    if (!super.equals(obj)) {
       return false;
     }
-    GithubAccessTokenContext thatt = (GithubAccessTokenContext) that;
-    return this.accessToken.getAccessToken().equals(thatt.getAccessToken());
+    GithubAccessTokenContext accessTokenContext = (GithubAccessTokenContext) obj;
+    return StringUtils.equals(this.accessToken.getAccessToken(), accessTokenContext.getAccessToken());
   }
 
   @Override
   public int hashCode() {
-    return super.hashCode() * 13 + accessToken.getAccessToken().hashCode();
+    return super.hashCode() * 13 + Objects.hash(accessToken);
   }
 }

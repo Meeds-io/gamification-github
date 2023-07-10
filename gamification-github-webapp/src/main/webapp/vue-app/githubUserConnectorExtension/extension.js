@@ -17,8 +17,5 @@
 import githubConnector from './js/githubConnector';
 
 export function init() {
-  const lang = window.eXo?.env?.portal?.language || 'en';
-  const url = `${eXo.env.portal.context}/${eXo.env.portal.rest}/i18n/bundle/locale.portlet.GitHubWebHookManagement-${lang}.json`;
-  exoi18n.loadLanguageAsync(lang, url);
   extensionRegistry.registerExtension('gamification', 'connectors', githubConnector);
 }

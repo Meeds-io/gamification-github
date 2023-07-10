@@ -25,6 +25,11 @@ export default {
   user: '',
   rank: 10,
   PROFILE_BASER_URL: 'https://github.com',
+  init: () => {
+    const lang = window.eXo?.env?.portal?.language || 'en';
+    const url = `${eXo.env.portal.context}/${eXo.env.portal.rest}/i18n/bundle/locale.portlet.GitHubWebHookManagement-${lang}.json`;
+    return exoi18n.loadLanguageAsync(lang, url);
+  },
   openOauthPopup(connector) {
     const width = 500;
     const height = 600;

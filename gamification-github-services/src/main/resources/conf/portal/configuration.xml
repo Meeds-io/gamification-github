@@ -33,16 +33,7 @@
   </component>
 
   <component>
-    <type>org.exoplatform.gamification.github.services.GithubIMSetting</type>
-  </component>
-
-  <component>
     <type>org.exoplatform.gamification.github.plugin.GithubConnectorPlugin</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.gamification.github.services.GithubAccountService</key>
-    <type>org.exoplatform.gamification.github.services.impl.GithubAccountServiceImpl</type>
   </component>
 
   <external-component-plugins>
