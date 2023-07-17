@@ -87,6 +87,8 @@
 
   <changeSet id="1.0.0-4" author="exo-github-connector">
     <dropTable tableName="GAM_GITHUB_ACCOUNTS"/>
+  </changeSet>
+  <changeSet id="1.0.0-5" author="exo-github-connector" dbms="hsqldb">
     <dropSequence sequenceName="SEQ_GAM_GITHUB_ACCOUNTS_ID"/>
   </changeSet>
 </databaseChangeLog>
