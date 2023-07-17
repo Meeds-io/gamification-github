@@ -7,8 +7,7 @@
       <div
         v-if="alert"
         class="alert"
-        :class="alert_type"
-        id="">
+        :class="alert_type">
         <i :class="alertIcon"></i>{{ message }}
       </div>
       <v-layout>
@@ -17,7 +16,7 @@
           :items="hookList"
           :search="search"
           sort-by="id">
-          <template v-slot:top>
+          <template #top>
             <v-toolbar
               flat
               color="white"
@@ -38,7 +37,7 @@
                 inset
                 vertical />
               <v-dialog v-model="dialog" max-width="500px">
-                <template v-slot:activator="{ on }">
+                <template #activator="{ on }">
                   <v-btn
                     color="primary"
                     dark
@@ -138,7 +137,7 @@
               </v-dialog>
             </v-toolbar>
           </template>
-          <template v-slot:item.enabled="{ item }">
+          <template #[`item.enabled`]="{ item }">
             <form class="switchEnabled">
               <label class="switch">
                 <input
@@ -150,13 +149,13 @@
               </label>
             </form>
           </template>
-          <template v-slot:item.action="{ item }">
+          <template #[`item.action`]="{ item }">
             <a
               role="button"
               class="actionIcon"
-              @click="deleteItem(item)"><i class="uiIconRemoveStyle uiIconLightGray"></i></a>
+              @click="deleteItem(item)"><v-icon class="error-color" size="18">fas fa-trash-alt</v-icon></a>
           </template>
-          <template v-slot:no-data>
+          <template #no-data>
             {{ $t('githubWebhookManagement.noWebhooks') }}
           </template>
         </v-data-table>
@@ -228,6 +227,7 @@ export default {
         text: this.$t('githubWebhookManagement.actions'),
         align: 'center',
         value: 'action',
+        name: 'action',
         sortable: false
       }];
     }
