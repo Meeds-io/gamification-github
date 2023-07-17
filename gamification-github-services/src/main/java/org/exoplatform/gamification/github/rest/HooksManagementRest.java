@@ -137,22 +137,4 @@ public class HooksManagementRest implements ResourceContainer {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
   }
-
-  @GET
-  @RolesAllowed("users")
-  @Produces(MediaType.TEXT_PLAIN)
-  @Path("users/{id}")
-  public Response getUserIdByGithubId(
-                                      @Context
-                                      UriInfo uriInfo,
-                                      @PathParam("id")
-                                      String githubId) {
-    String userId = githubHooksManagement.getUserByGithubId(githubId);
-    if (StringUtils.isNotEmpty(userId)) {
-      return Response.ok(userId).build();
-    } else {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-  }
-
 }
