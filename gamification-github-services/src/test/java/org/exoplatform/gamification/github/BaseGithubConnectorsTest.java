@@ -9,9 +9,7 @@ import org.junit.*;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
-import org.exoplatform.gamification.github.dao.GitHubAccountDAO;
 import org.exoplatform.gamification.github.dao.GitHubHookDAO;
-import org.exoplatform.gamification.github.entity.GitHubAccountEntity;
 import org.exoplatform.gamification.github.entity.GitHubHookEntity;
 
 public abstract class BaseGithubConnectorsTest {
@@ -35,17 +33,12 @@ public abstract class BaseGithubConnectorsTest {
   @After
   public void afterMethodTest() {
     GitHubHookDAO gitHubHookDAO = getService(GitHubHookDAO.class);
-    GitHubAccountDAO gitHubAccountDAO = getService(GitHubAccountDAO.class);
-
     RequestLifeCycle.end();
     RequestLifeCycle.begin(container);
-
     if (!entitiesToClean.isEmpty()) {
       for (Serializable entity : entitiesToClean) {
         if (entity instanceof GitHubHookEntity) {
           gitHubHookDAO.delete((GitHubHookEntity) entity);
-        } else if (entity instanceof GitHubAccountEntity) {
-          gitHubAccountDAO.delete((GitHubAccountEntity) entity);
         } else {
           throw new IllegalStateException("Entity not managed" + entity);
         }
@@ -85,16 +78,6 @@ public abstract class BaseGithubConnectorsTest {
     gitHubHookEntity = gitHubHookDAO.create(gitHubHookEntity);
     entitiesToClean.add(gitHubHookEntity);
     return gitHubHookEntity;
-  }
-
-  protected GitHubAccountEntity newGitHubAccountEntity(String gitHubId, String userName) {
-    GitHubAccountDAO gitHubAccountDAO = getService(GitHubAccountDAO.class);
-    GitHubAccountEntity gitHubAccountEntity = new GitHubAccountEntity();
-    gitHubAccountEntity.setGitHubId(gitHubId);
-    gitHubAccountEntity.setUserName(userName);
-    gitHubAccountEntity = gitHubAccountDAO.create(gitHubAccountEntity);
-    entitiesToClean.add(gitHubAccountEntity);
-    return gitHubAccountEntity;
   }
 
 }
