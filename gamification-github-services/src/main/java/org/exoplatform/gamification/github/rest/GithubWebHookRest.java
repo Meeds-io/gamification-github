@@ -22,6 +22,8 @@ import javax.ws.rs.core.Response;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.meeds.gamification.service.ConnectorService;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.gamification.github.services.GithubHooksManagement;
 import org.exoplatform.gamification.github.utils.Utils;
@@ -33,6 +35,8 @@ import org.exoplatform.social.core.manager.IdentityManager;
 
 @Path("/gamification/connectors/github/")
 public class GithubWebHookRest implements ResourceContainer {
+
+  public static final String    CONNECTOR_NAME                         = "github";
 
   private static final String   PULL_REQUEST_REVIEW_NODE_NAME          = "review";
 
@@ -66,6 +70,7 @@ public class GithubWebHookRest implements ResourceContainer {
     if (Utils.verifySignature(obj, signature, githubHooksManagement.getSecret())) {
 
       try {
+        ConnectorService connectorService = CommonsUtils.getService(ConnectorService.class);
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode infoNode = objectMapper.readTree(obj);
         String ruleTitle = "";
@@ -78,7 +83,9 @@ public class GithubWebHookRest implements ResourceContainer {
           case PUSH_EVENT_NAME: {
             ruleTitle = "pushCode";
             githubId = infoNode.get("pusher").get("name").textValue();
-            senderId = githubHooksManagement.getUserByGithubId(githubId);
+            // TO DO
+            // to move to gamification service after the implementation of the gamification trigger service
+            senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
             if (senderId != null) {
               Identity socialIdentity = getUserSocialId(senderId);
               if (socialIdentity != null) {
@@ -91,7 +98,7 @@ public class GithubWebHookRest implements ResourceContainer {
             break;
           case PULL_REQUEST_EVENT_NAME: {
             githubId = infoNode.get("sender").get(GITHUB_USERNAME).textValue();
-            senderId = githubHooksManagement.getUserByGithubId(githubId);
+            senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
             if (infoNode.get("action").textValue().equals("opened")) {
               ruleTitle = "creatPullRequest";
               if (senderId != null) {
@@ -109,7 +116,7 @@ public class GithubWebHookRest implements ResourceContainer {
           case PULL_REQUEST_REVIEW_COMMENT_EVENT_NAME: {
             ruleTitle = "commentPullRequest";
             githubId = infoNode.get("comment").get("user").get(GITHUB_USERNAME).textValue();
-            senderId = githubHooksManagement.getUserByGithubId(githubId);
+            senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
             if (senderId != null) {
               Identity socialIdentity = getUserSocialId(senderId);
               if (socialIdentity != null) {
@@ -123,7 +130,7 @@ public class GithubWebHookRest implements ResourceContainer {
           case PULL_REQUEST_REVIEW_EVENT_NAME: {
             ruleTitle = "reviewPullRequest";
             githubId = infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("user").get(GITHUB_USERNAME).textValue();
-            senderId = githubHooksManagement.getUserByGithubId(githubId);
+            senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
             if (senderId != null) {
               Identity socialIdentity = getUserSocialId(senderId);
               if (socialIdentity != null) {
@@ -133,11 +140,11 @@ public class GithubWebHookRest implements ResourceContainer {
                   githubHooksManagement.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
                 }
                 if (infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("state").textValue().equals("approved")) {
-                  receiverId =
-                             githubHooksManagement.getUserByGithubId(infoNode.get(PULL_REQUEST_EVENT_NAME)
-                                                                             .get("user")
-                                                                             .get(GITHUB_USERNAME)
-                                                                             .textValue());
+                  githubId = infoNode.get(PULL_REQUEST_EVENT_NAME)
+                          .get("user")
+                          .get(GITHUB_USERNAME)
+                          .textValue();
+                  receiverId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
                   ruleTitle = "pullRequestValidated";
                   githubHooksManagement.broadcastGithubEvent(ruleTitle, receiverId, senderId, object);
                 }

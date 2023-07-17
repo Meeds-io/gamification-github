@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.exoplatform.commons.utils.IOUtil;
-import org.exoplatform.gamification.github.dao.GitHubAccountDAO;
 import org.exoplatform.gamification.github.dao.GitHubHookDAO;
 import org.exoplatform.gamification.github.entity.GitHubHookEntity;
 import org.exoplatform.gamification.github.exception.GithubHookException;
@@ -67,13 +66,10 @@ public class GithubHooksManagement {
 
   private ListenerService       listenerService;
 
-  private GitHubAccountDAO      gitHubAccountDAO;
-
   private GitHubHookDAO         gitHubHookDAO;
 
-  public GithubHooksManagement(ListenerService listenerService, GitHubAccountDAO gitHubAccountDAO, GitHubHookDAO gitHubHookDAO) {
+  public GithubHooksManagement(ListenerService listenerService, GitHubHookDAO gitHubHookDAO) {
     this.listenerService = listenerService;
-    this.gitHubAccountDAO = gitHubAccountDAO;
     this.gitHubHookDAO = gitHubHookDAO;
     this.secret = System.getProperty("gamification.connectors.github.hook.secret");
     this.token = System.getProperty("gamification.connectors.github.hook.token");
@@ -289,20 +285,6 @@ public class GithubHooksManagement {
       LOG.info("Github action {} brodcasted for user {}", ruleTitle, senderId);
     } catch (Exception e) {
       LOG.error("Cannot broadcast github event", e);
-    }
-  }
-
-  public String getUserByGithubId(String id) {
-    if (id == null)
-      return null;
-    try {
-      return gitHubAccountDAO.getAccountByGithubId(id).getUserName();
-    } catch (NullPointerException e) {
-      LOG.error("Cannot get user with GithubId {}", id);
-      return null;
-    } catch (Exception e) {
-      LOG.error("Cannot get user with GithubId {}", id, e);
-      return null;
     }
   }
 

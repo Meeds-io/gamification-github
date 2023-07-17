@@ -21,10 +21,6 @@
                xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
-    <type>org.exoplatform.gamification.github.dao.GitHubAccountDAO</type>
-  </component>
-
-  <component>
     <type>org.exoplatform.gamification.github.dao.GitHubHookDAO</type>
   </component>
 
