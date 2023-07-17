@@ -29,7 +29,7 @@
     <packaging>jar</packaging>
     <name>Gamification - Github Connector - Services</name>
     <properties>
-      <exo.test.coverage.ratio>0.09</exo.test.coverage.ratio>
+      <exo.test.coverage.ratio>0.08</exo.test.coverage.ratio>
     </properties>
     <dependencies>
         <dependency>

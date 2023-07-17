@@ -26,6 +26,19 @@
 
     <!-- Definition of GITHUB_ACCOUNT table -->
     <changeSet author="exo-github-connector" id="1.0.0-1">
+        <createTable tableName="GAM_GITHUB_ACCOUNTS">
+
+            <column name="ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GAM_GITHUB_ACCOUNTS"/>
+            </column>
+
+            <column name="GITHUB_ID" type="NVARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER_NAME" type="NVARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
 
         <createTable tableName="GAM_GITHUB_HOOKS">
 
@@ -69,5 +82,13 @@
     </changeSet>
     <changeSet author="exo-github-connector" id="1.0.0-3" dbms="hsqldb">
         <createSequence sequenceName="SEQ_GAM_GITHUB_HOOKS_ID" startValue="1"/>
+        <createSequence sequenceName="SEQ_GAM_GITHUB_ACCOUNTS_ID" startValue="1"/>
     </changeSet>
+
+  <changeSet id="1.0.0-4" author="exo-github-connector">
+    <dropTable tableName="GAM_GITHUB_ACCOUNTS"/>
+    <dropSequence sequenceName="SEQ_GAM_GITHUB_ACCOUNTS_ID"/>
+  </changeSet>
 </databaseChangeLog>
+
+
