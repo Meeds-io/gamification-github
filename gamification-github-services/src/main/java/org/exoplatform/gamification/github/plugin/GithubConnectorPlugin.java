@@ -59,6 +59,7 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
   @Override
   public String validateToken(String accessToken) throws OAuthException {
     RemoteConnectorSettings remoteConnectorSettings = connectorSettingService.getConnectorSettings(CONNECTOR_NAME);
+    remoteConnectorSettings.setSecretKey(connectorSettingService.getConnectorSecretKey(CONNECTOR_NAME));
     if (StringUtils.isBlank(remoteConnectorSettings.getApiKey()) || StringUtils.isBlank(remoteConnectorSettings.getSecretKey())) {
       LOG.warn("Missing '{}' connector settings", CONNECTOR_NAME);
       return null;

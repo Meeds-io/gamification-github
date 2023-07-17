@@ -21,71 +21,53 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-  <property name="autoIncrement" value="true" dbms="mysql,mssql,h2,sybase,db2,hsqldb"/>
-  <property name="autoIncrement" value="false" dbms="oracle,postgresql"/>
+    <property name="autoIncrement" value="true" dbms="mysql,mssql,h2,sybase,db2,hsqldb"/>
+    <property name="autoIncrement" value="false" dbms="oracle,postgresql"/>
 
-  <!-- Definition of GITHUB_ACCOUNT table -->
-  <changeSet author="exo-github-connector" id="1.0.0-1">
-    <createTable tableName="GAM_GITHUB_ACCOUNTS">
+    <!-- Definition of GITHUB_ACCOUNT table -->
+    <changeSet author="exo-github-connector" id="1.0.0-1">
 
-      <column name="ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GAM_GITHUB_ACCOUNTS"/>
-      </column>
+        <createTable tableName="GAM_GITHUB_HOOKS">
 
-      <column name="GITHUB_ID" type="NVARCHAR(250)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="USER_NAME" type="NVARCHAR(250)">
-        <constraints nullable="false"/>
-      </column>
-    </createTable>
+            <column name="ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GAM_GITHUB_HOOKS"/>
+            </column>
 
-    <createTable tableName="GAM_GITHUB_HOOKS">
+            <column name="GITHUB_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
 
-      <column name="ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GAM_GITHUB_HOOKS"/>
-      </column>
+            <column name="HOOK_URL" type="NVARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ORGANIZATION" type="NVARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REPO" type="NVARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EVENTS" type="NVARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ENABLED" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_DATE" type="TIMESTAMP"/>
+            <column name="UPDATED_DATE" type="TIMESTAMP"/>
+        </createTable>
+        <modifySql dbms="mysql">
+            <append value=" ENGINE=INNODB CHARSET=UTF8 COLLATE utf8_general_ci"/>
+        </modifySql>
+    </changeSet>
 
-      <column name="GITHUB_ID" type="BIGINT">
-        <constraints nullable="false"/>
-      </column>
-
-      <column name="HOOK_URL" type="NVARCHAR(250)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="ORGANIZATION" type="NVARCHAR(250)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="REPO" type="NVARCHAR(250)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="EVENTS" type="NVARCHAR(250)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="ENABLED" type="BOOLEAN">
-        <constraints nullable="false"/>
-      </column>
-      <column name="CREATED_DATE" type="TIMESTAMP"/>
-      <column name="UPDATED_DATE" type="TIMESTAMP"/>
-    </createTable>
-    <modifySql dbms="mysql">
-      <append value=" ENGINE=INNODB CHARSET=UTF8 COLLATE utf8_general_ci"/>
-    </modifySql>
-  </changeSet>
-
-  <changeSet author="exo-github-connector" id="1.0.0-2">
-    <addColumn tableName="GAM_GITHUB_HOOKS">
-      <column name="EXO_ENVIRONMENT" type="NVARCHAR(250)">
-        <constraints nullable="false"/>
-      </column>
-    </addColumn>
-  </changeSet>
-  <changeSet author="exo-github-connector" id="1.0.0-3" dbms="hsqldb">
-    <createSequence sequenceName="SEQ_GAM_GITHUB_HOOKS_ID" startValue="1"/>
-    <createSequence sequenceName="SEQ_GAM_GITHUB_ACCOUNTS_ID" startValue="1"/>
-  </changeSet>
-
-  <changeSet id="1.0.0-4" author="exo-github-connector">
-    <dropTable tableName="GAM_GITHUB_ACCOUNTS"/>
-  </changeSet>
+    <changeSet author="exo-github-connector" id="1.0.0-2">
+        <addColumn tableName="GAM_GITHUB_HOOKS">
+            <column name="EXO_ENVIRONMENT" type="NVARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="exo-github-connector" id="1.0.0-3" dbms="hsqldb">
+        <createSequence sequenceName="SEQ_GAM_GITHUB_HOOKS_ID" startValue="1"/>
+    </changeSet>
 </databaseChangeLog>

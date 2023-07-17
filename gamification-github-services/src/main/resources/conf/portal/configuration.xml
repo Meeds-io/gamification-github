@@ -32,10 +32,6 @@
     <type>org.exoplatform.gamification.github.services.GithubHooksManagement</type>
   </component>
 
-  <component>
-    <type>org.exoplatform.gamification.github.plugin.GithubConnectorPlugin</type>
-  </component>
-
   <external-component-plugins>
     <target-component>org.exoplatform.services.listener.ListenerService</target-component>
     <component-plugin>
