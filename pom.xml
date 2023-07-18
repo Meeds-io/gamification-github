@@ -42,10 +42,10 @@
     <url>https://github.com/meeds-io/gamification-github</url>
   </scm>
   <properties>
-    <org.exoplatform.social.version>6.5.x-meed-SNAPSHOT</org.exoplatform.social.version>
-    <org.exoplatform.platform-ui.version>6.5.x-meed-SNAPSHOT</org.exoplatform.platform-ui.version>
+    <org.exoplatform.social.version>6.5.0-meed-20230718</org.exoplatform.social.version>
+    <org.exoplatform.platform-ui.version>6.5.0-meed-20230718</org.exoplatform.platform-ui.version>
     <org.jackson.version>2.4.2</org.jackson.version>
-    <addon.exo.gamification.version>2.5.x-meed-SNAPSHOT</addon.exo.gamification.version>
+    <addon.exo.gamification.version>2.5.0-meed-20230718</addon.exo.gamification.version>
 
     <!-- Sonar properties -->
     <sonar.organization>meeds-io</sonar.organization>
