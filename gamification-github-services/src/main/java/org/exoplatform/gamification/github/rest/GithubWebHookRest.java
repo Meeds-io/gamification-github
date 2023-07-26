@@ -22,8 +22,8 @@ import javax.ws.rs.core.Response;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.meeds.gamification.service.ConnectorHookService;
 import io.meeds.gamification.service.ConnectorService;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.gamification.github.services.GithubHooksManagement;
 import org.exoplatform.gamification.github.utils.Utils;
@@ -52,25 +52,29 @@ public class GithubWebHookRest implements ResourceContainer {
 
   private static final Log      LOG                                    = ExoLogger.getLogger(GithubWebHookRest.class);
 
-  private GithubHooksManagement githubHooksManagement;
+  private final GithubHooksManagement githubHooksManagement;
 
-  public GithubWebHookRest(GithubHooksManagement githubHooksManagement) {
+  private final ConnectorHookService  connectorHookService;
+
+  private final ConnectorService      connectorService;
+
+  public GithubWebHookRest(GithubHooksManagement githubHooksManagement,
+                           ConnectorHookService connectorHookService,
+                           ConnectorService connectorService) {
     this.githubHooksManagement = githubHooksManagement;
+    this.connectorHookService = connectorHookService;
+    this.connectorService = connectorService;
   }
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("webhooks")
   public Response githubEvent(// NOSONAR
-                              @HeaderParam("x-github-event")
-                              String event,
-                              @HeaderParam("x-hub-signature")
-                              String signature,
+                              @HeaderParam("x-github-event") String event,
+                              @HeaderParam("x-hub-signature") String signature,
                               String obj) {
-    if (Utils.verifySignature(obj, signature, githubHooksManagement.getSecret())) {
-
+    if (Utils.verifySignature(connectorHookService, obj, signature)) {
       try {
-        ConnectorService connectorService = CommonsUtils.getService(ConnectorService.class);
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode infoNode = objectMapper.readTree(obj);
         String ruleTitle = "";
@@ -171,5 +175,4 @@ public class GithubWebHookRest implements ResourceContainer {
     IdentityManager identityManager = PortalContainer.getInstance().getComponentInstanceOfType(IdentityManager.class);
     return identityManager.getOrCreateUserIdentity(userName);
   }
-
 }

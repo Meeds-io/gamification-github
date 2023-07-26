@@ -15,9 +15,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import GithubAdminConnectorItem from './components/GithubAdminConnectorItem.vue';
+import GithubAdminHookSettingDrawer from './components/GithubAdminHookSettingDrawer.vue';
+import GithubAdminHookFormDrawer from './components/GithubAdminHookFormDrawer.vue';
 
 const components = {
   'github-admin-connector-item': GithubAdminConnectorItem,
+  'github-admin-hook-setting-drawer': GithubAdminHookSettingDrawer,
+  'github-admin-hook-form-drawer': GithubAdminHookFormDrawer,
 };
 
 for (const key in components) {

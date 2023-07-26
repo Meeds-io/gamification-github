@@ -21,8 +21,11 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import io.meeds.gamification.model.ConnectorHook;
+import io.meeds.gamification.service.ConnectorHookService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.json.JSONObject;
 
 public class Utils {
 
@@ -37,10 +40,18 @@ public class Utils {
     // Private constructor for Utils class
   }
 
-  public static boolean verifySignature(String payload, String signature, String secret) {
+  public static boolean verifySignature(ConnectorHookService connectorHookService, String payload, String signature) {
+    JSONObject jsonPayload = new JSONObject(payload);
+
+    // Extract the "organization" field
+    JSONObject organization = jsonPayload.getJSONObject("organization");
+
+    // Extract the organization ID
+    long organizationId = organization.getLong("id");
+    String secret = connectorHookService.getConnectorHookSecret("github", organizationId);
     boolean isValid = false;
 
-    if (payload == null || signature == null || secret == null) {
+    if (signature == null || secret == null) {
       return false;
     }
 
