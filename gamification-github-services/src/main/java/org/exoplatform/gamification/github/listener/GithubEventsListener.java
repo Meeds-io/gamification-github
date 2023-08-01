@@ -17,24 +17,24 @@ package org.exoplatform.gamification.github.listener;
 
 import java.util.Map;
 
-import org.exoplatform.gamification.github.services.GithubHooksManagement;
+import org.exoplatform.gamification.github.services.impl.WebhookServiceImpl;
 import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
 
 public class GithubEventsListener extends Listener<Map<String, String>, String> {
 
-  private GithubHooksManagement githubHooksManagement;
+  private final WebhookServiceImpl webhookService;
 
-  public GithubEventsListener(GithubHooksManagement githubHooksManagement) {
-    this.githubHooksManagement = githubHooksManagement;
+  public GithubEventsListener(WebhookServiceImpl webhookService) {
+    this.webhookService = webhookService;
   }
 
   @Override
-  public void onEvent(Event<Map<String, String>, String> event) throws Exception {
+  public void onEvent(Event<Map<String, String>, String> event) {
     String ruleTitle = event.getSource().get("ruleTitle");
     String senderId = event.getSource().get("senderId");
     String receiverId = event.getSource().get("receiverId");
     String object = event.getSource().get("object");
-    githubHooksManagement.createGamificationHistory(ruleTitle, senderId, receiverId, object);
+    webhookService.createGamificationHistory(ruleTitle, senderId, receiverId, object);
   }
 }

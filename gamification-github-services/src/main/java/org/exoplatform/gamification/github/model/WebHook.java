@@ -14,21 +14,31 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import './initComponents';
-import './services.js';
+package org.exoplatform.gamification.github.model;
 
-export function init() {
-  extensionRegistry.registerComponent('gamification-admin-connector', 'admin-connector-item', {
-    id: 'githubSetting',
-    name: 'github',
-    logo: '/gamification-github/skin/images/GitHub-Mark.png',
-    title: 'Github',
-    description: 'githubConnector.admin.label.description',
-    init: () => {
-      const lang = window.eXo?.env?.portal?.language || 'en';
-      const url = `${eXo.env.portal.context}/${eXo.env.portal.rest}/i18n/bundle/locale.portlet.GitHubWebHookManagement-${lang}.json`;
-      return exoi18n.loadLanguageAsync(lang, url);
-    },
-    vueComponent: Vue.options.components['github-admin-connector-item'],
-  });
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class WebHook implements Cloneable {
+
+  private Long    webhookId;
+
+  private Long    organizationId;
+
+  private Boolean enabled;
+
+  private String  watchedDate;
+
+  private String  watchedBy;
+
+  private String  updatedDate;
+
+  public WebHook clone() { // NOSONAR
+    return new WebHook(webhookId, organizationId, enabled, watchedDate, watchedBy, updatedDate);
+  }
+
 }

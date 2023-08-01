@@ -21,8 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import io.meeds.gamification.model.ConnectorHook;
-import io.meeds.gamification.service.ConnectorHookService;
+import org.exoplatform.gamification.github.services.WebhookService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.json.JSONObject;
@@ -40,7 +39,7 @@ public class Utils {
     // Private constructor for Utils class
   }
 
-  public static boolean verifySignature(ConnectorHookService connectorHookService, String payload, String signature) {
+  public static boolean verifySignature(WebhookService webhookService, String payload, String signature) {
     JSONObject jsonPayload = new JSONObject(payload);
 
     // Extract the "organization" field
@@ -48,13 +47,12 @@ public class Utils {
 
     // Extract the organization ID
     long organizationId = organization.getLong("id");
-    String secret = connectorHookService.getConnectorHookSecret("github", organizationId);
+    String secret = webhookService.getHookSecret(organizationId);
     boolean isValid = false;
 
     if (signature == null || secret == null) {
       return false;
     }
-
     try {
       Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
       SecretKeySpec signingKey = new SecretKeySpec(secret.getBytes(), HMAC_SHA1_ALGORITHM);
@@ -76,5 +74,4 @@ public class Utils {
     }
     return isValid;
   }
-
 }

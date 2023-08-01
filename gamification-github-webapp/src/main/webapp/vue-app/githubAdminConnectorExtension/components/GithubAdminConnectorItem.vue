@@ -138,8 +138,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         </v-template>
       </v-card-actions>
     </div>
-    <github-admin-hook-form-drawer/>
-    <github-admin-hook-setting-drawer/>
+    <github-admin-connector-hook-list />
+    <github-admin-hook-form-drawer />
     <exo-confirm-dialog
       ref="deleteConfirmDialog"
       :message="$t('gamification.connectors.message.confirmDeleteConnectorSetting')"
@@ -186,9 +186,6 @@ export default {
     }
   },
   created() {
-    this.$root.$on('save-connector-accessToken', this.saveConnectorAccessToken);
-    this.$root.$on('save-connector-hook', this.saveConnectorHook);
-
     if (!this.apiKey && !this.secretKey && !this.redirectUrl) {
       this.editing = true;
     }
@@ -204,21 +201,6 @@ export default {
       };
       this.editing = false;
       document.dispatchEvent(new CustomEvent('save-connector-settings', {detail: settings}));
-    },
-    saveConnectorAccessToken(accessToken) {
-      const settings = {
-        name: 'github',
-        accessToken: accessToken,
-      };
-      document.dispatchEvent(new CustomEvent('gamification-save-connector-accessToken', {detail: settings}));
-    },
-    saveConnectorHook(organizationName, organizationSecret) {
-      const settings = {
-        name: 'github',
-        hookName: organizationName,
-        hookSecret: organizationSecret,
-      };
-      document.dispatchEvent(new CustomEvent('gamification-save-connector-hook', {detail: settings}));
     },
     backToConnectorDetail() {
       document.dispatchEvent(new CustomEvent('close-connector-settings'));

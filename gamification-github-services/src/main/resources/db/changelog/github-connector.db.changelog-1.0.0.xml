@@ -91,6 +91,46 @@
   <changeSet id="1.0.0-5" author="exo-github-connector" dbms="hsqldb">
     <dropSequence sequenceName="SEQ_GAM_GITHUB_ACCOUNTS_ID"/>
   </changeSet>
+  <changeSet id="1.0.0-6" author="exo-github-connector">
+    <dropTable tableName="GAM_GITHUB_HOOKS"/>
+  </changeSet>
+  <changeSet id="1.0.0-7" author="exo-github-connector" dbms="hsqldb">
+    <dropSequence sequenceName="SEQ_GAM_GITHUB_HOOKS_ID"/>
+  </changeSet>
+  <changeSet id="1.0.0-8" author="exo-github-connector">
+    <createTable tableName="GITHUB_WEBHOOKS">
+      <column name="ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GITHUB_WEBHOOKS"/>
+      </column>
+      <column name="WEBHOOK_ID" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="ORGANIZATION_ID" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="ENABLED" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="WATCHED_BY" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="WATCHED_DATE" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_DATE" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="SECRET" type="NVARCHAR(250)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="TOKEN" type="NVARCHAR(250)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="exo-gamification" id="1.0.0-9" dbms="oracle,postgresql">
+    <createSequence sequenceName="SEQ_GITHUB_WEBHOOKS_ID" startValue="1"/>
+  </changeSet>
 </databaseChangeLog>
 
 
