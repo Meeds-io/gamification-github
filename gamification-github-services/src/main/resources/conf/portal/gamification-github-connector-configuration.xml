@@ -28,20 +28,8 @@
       <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
       <init-params>
         <value-param>
-          <name>rule-title</name>
+          <name>rule-event</name>
           <value>pushCode</value>
-        </value-param>
-        <value-param>
-          <name>rule-description</name>
-          <value>You pushed a code</value>
-        </value-param>
-        <value-param>
-          <name>rule-score</name>
-          <value>15</value>
-        </value-param>
-        <value-param>
-          <name>rule-enable</name>
-          <value>false</value>
         </value-param>
       </init-params>
     </component-plugin>
@@ -51,20 +39,8 @@
       <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
       <init-params>
         <value-param>
-          <name>rule-title</name>
+          <name>rule-event</name>
           <value>creatPullRequest</value>
-        </value-param>
-        <value-param>
-          <name>rule-description</name>
-          <value>You created Pull Request</value>
-        </value-param>
-        <value-param>
-          <name>rule-score</name>
-          <value>5</value>
-        </value-param>
-        <value-param>
-          <name>rule-enable</name>
-          <value>false</value>
         </value-param>
       </init-params>
     </component-plugin>
@@ -74,20 +50,8 @@
       <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
       <init-params>
         <value-param>
-          <name>rule-title</name>
+          <name>rule-event</name>
           <value>reviewPullRequest</value>
-        </value-param>
-        <value-param>
-          <name>rule-description</name>
-          <value>You Reviewed a Pull Request</value>
-        </value-param>
-        <value-param>
-          <name>rule-score</name>
-          <value>20</value>
-        </value-param>
-        <value-param>
-          <name>rule-enable</name>
-          <value>false</value>
         </value-param>
       </init-params>
     </component-plugin>
@@ -97,20 +61,8 @@
       <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
       <init-params>
         <value-param>
-          <name>rule-title</name>
+          <name>rule-event</name>
           <value>commentPullRequest</value>
-        </value-param>
-        <value-param>
-          <name>rule-description</name>
-          <value>You Commented a Pull Request</value>
-        </value-param>
-        <value-param>
-          <name>rule-score</name>
-          <value>5</value>
-        </value-param>
-        <value-param>
-          <name>rule-enable</name>
-          <value>false</value>
         </value-param>
       </init-params>
     </component-plugin>
@@ -120,20 +72,8 @@
       <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
       <init-params>
         <value-param>
-          <name>rule-title</name>
+          <name>rule-event</name>
           <value>pullRequestValidated</value>
-        </value-param>
-        <value-param>
-          <name>rule-description</name>
-          <value>Your Pull Request is validated</value>
-        </value-param>
-        <value-param>
-          <name>rule-score</name>
-          <value>30</value>
-        </value-param>
-        <value-param>
-          <name>rule-enable</name>
-          <value>false</value>
         </value-param>
       </init-params>
     </component-plugin>
