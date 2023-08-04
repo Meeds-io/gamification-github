@@ -36,7 +36,7 @@ public class WebHookRestEntity extends WebHook {
 
   private String avatarUrl;
 
-  public WebHookRestEntity(long id,
+  public WebHookRestEntity(long id, // NOSONAR
                            long webhookId,
                            long organizationId,
                            List<String> event,
@@ -48,7 +48,7 @@ public class WebHookRestEntity extends WebHook {
                            String name,
                            String title,
                            String description,
-                           String avatarUrl) { // NOSONAR
+                           String avatarUrl) {
     super(id, webhookId, organizationId, event, enabled, watchedDate, watchedBy, updatedDate, refreshDate);
     this.name = name;
     this.title = title;

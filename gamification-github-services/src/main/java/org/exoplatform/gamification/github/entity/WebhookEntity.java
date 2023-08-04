@@ -50,32 +50,32 @@ public class WebhookEntity implements Serializable {
   @SequenceGenerator(name = "SEQ_GITHUB_WEBHOOKS_ID", sequenceName = "SEQ_GITHUB_WEBHOOKS_ID", allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_GITHUB_WEBHOOKS_ID")
   @Column(name = "ID")
-  protected Long            id;
+  private Long            id;
 
   @Column(name = "WEBHOOK_ID")
-  protected Long            webhookId;
+  private Long            webhookId;
 
   @Column(name = "ORGANIZATION_ID", nullable = false)
-  protected Long            organizationId;
+  private Long            organizationId;
 
   @Convert(converter = StringListConverter.class)
   @Column(name = "EVENTS", nullable = false)
-  protected List<String>    events;
+  private List<String>    events;
 
   @Column(name = "ENABLED", nullable = false)
-  protected Boolean         enabled;
+  private Boolean         enabled;
 
   @Column(name = "WATCHED_DATE", nullable = false)
-  protected Date            watchedDate;
+  private Date            watchedDate;
 
   @Column(name = "WATCHED_BY", nullable = false)
-  protected Long            watchedBy;
+  private Long            watchedBy;
 
   @Column(name = "UPDATED_DATE", nullable = false)
-  protected Date            updatedDate;
+  private Date            updatedDate;
 
   @Column(name = "REFRESH_DATE", nullable = false)
-  protected Date            refreshDate;
+  private Date            refreshDate;
 
   @Column(name = "SECRET", nullable = false)
   private String            secret;
