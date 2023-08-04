@@ -42,11 +42,13 @@ import org.apache.http.protocol.HTTP;
 import org.exoplatform.commons.ObjectAlreadyExistsException;
 import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.gamification.github.exception.GithubConnectionException;
 import org.exoplatform.gamification.github.model.WebHook;
 import org.exoplatform.gamification.github.model.RemoteOrganization;
 import org.exoplatform.gamification.github.services.WebhookService;
 import org.exoplatform.gamification.github.storage.WebHookStorage;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.json.JSONObject;
 
 import org.exoplatform.services.listener.ListenerService;
@@ -132,9 +134,7 @@ public class WebhookServiceImpl implements WebhookService {
     JSONObject config = new JSONObject();
     JSONObject hook = new JSONObject();
     String url = GITHUB_API_URL + organizationName + "/hooks";
-    config.put("url",
-               "https://ab76-2a01-cb05-890f-e600-4630-ff46-ffe7-f3df.ngrok-free.app"
-                   + "/portal/rest/gamification/connectors/github/webhooks");
+    config.put("url", CommonsUtils.getCurrentDomain() + "/portal/rest/gamification/connectors/github/webhooks");
     config.put("content_type", "json");
     config.put("insecure_ssl", "0");
     config.put("secret", secret);
