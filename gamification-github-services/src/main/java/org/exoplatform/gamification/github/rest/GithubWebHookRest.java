@@ -25,9 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.meeds.gamification.service.ConnectorService;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.gamification.github.services.impl.WebhookServiceImpl;
-import org.exoplatform.gamification.github.utils.Utils;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -49,8 +46,6 @@ public class GithubWebHookRest implements ResourceContainer {
 
   private static final String      PULL_REQUEST_EVENT_NAME                = "pull_request";
 
-  private static final Log         LOG                                    = ExoLogger.getLogger(GithubWebHookRest.class);
-
   private final ConnectorService   connectorService;
 
   private final WebhookServiceImpl webhookService;
@@ -67,100 +62,94 @@ public class GithubWebHookRest implements ResourceContainer {
                               @HeaderParam("x-github-event") String event,
                               @HeaderParam("x-hub-signature") String signature,
                               String obj) {
-    if (Utils.verifySignature(webhookService, obj, signature)) {
-      try {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode infoNode = objectMapper.readTree(obj);
-        String ruleTitle = "";
-        String senderId = "";
-        String receiverId = "";
-        String object = "";
-        String githubId = "";
 
-        switch (event) {
-        case PUSH_EVENT_NAME: {
-          ruleTitle = "pushCode";
-          githubId = infoNode.get("pusher").get("name").textValue();
-          // TO DO
-          // to move to gamification service after the implementation of the gamification
-          // trigger service
-          senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
-          if (senderId != null) {
-            Identity socialIdentity = getUserSocialId(senderId);
-            if (socialIdentity != null) {
-              receiverId = senderId;
-              object = infoNode.get("head_commit").get("url").textValue();
-              webhookService.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
-            }
-          }
-        }
-          break;
-        case PULL_REQUEST_EVENT_NAME: {
-          githubId = infoNode.get("sender").get(GITHUB_USERNAME).textValue();
-          senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
-          if (infoNode.get("action").textValue().equals("opened")) {
-            ruleTitle = "creatPullRequest";
-            if (senderId != null) {
-              Identity socialIdentity = getUserSocialId(senderId);
-              if (socialIdentity != null) {
-                receiverId = senderId;
-                object = infoNode.get(PULL_REQUEST_EVENT_NAME).get("html_url").textValue();
-                webhookService.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
-              }
-            }
-          }
-
-        }
-          break;
-        case PULL_REQUEST_REVIEW_COMMENT_EVENT_NAME: {
-          ruleTitle = "commentPullRequest";
-          githubId = infoNode.get("comment").get("user").get(GITHUB_USERNAME).textValue();
-          senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
-          if (senderId != null) {
-            Identity socialIdentity = getUserSocialId(senderId);
-            if (socialIdentity != null) {
-              receiverId = senderId;
-              object = infoNode.get("comment").get("_links").get("html").get("href").textValue();
-              webhookService.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
-            }
-          }
-        }
-          break;
-        case PULL_REQUEST_REVIEW_EVENT_NAME: {
-          ruleTitle = "reviewPullRequest";
-          githubId = infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("user").get(GITHUB_USERNAME).textValue();
-          senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
-          if (senderId != null) {
-            Identity socialIdentity = getUserSocialId(senderId);
-            if (socialIdentity != null) {
-              receiverId = senderId;
-              object = infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("html_url").textValue();
-              if (!infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("state").textValue().equals("commented")) {
-                webhookService.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
-              }
-              if (infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("state").textValue().equals("approved")) {
-                githubId = infoNode.get(PULL_REQUEST_EVENT_NAME).get("user").get(GITHUB_USERNAME).textValue();
-                receiverId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
-                ruleTitle = "pullRequestValidated";
-                webhookService.broadcastGithubEvent(ruleTitle, receiverId, senderId, object);
-              }
-            }
-          }
-        }
-          break;
-        default:
-        }
-
-        return Response.ok().build();
-      } catch (Exception e) {
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-      }
-
-    } else {
-      LOG.warn("Github hook Rest invoked with wrong secret key");
+    if (!webhookService.verifyWebhookSecret(obj, signature)) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
-
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      JsonNode infoNode = objectMapper.readTree(obj);
+      String ruleTitle;
+      String senderId;
+      String receiverId;
+      String object;
+      String githubId;
+      switch (event) {
+      case PUSH_EVENT_NAME: {
+        ruleTitle = "pushCode";
+        githubId = infoNode.get("pusher").get("name").textValue();
+        // TO DO
+        // to move to gamification service after the implementation of the gamification
+        // trigger service
+        senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
+        if (senderId != null) {
+          Identity socialIdentity = getUserSocialId(senderId);
+          if (socialIdentity != null) {
+            receiverId = senderId;
+            object = infoNode.get("head_commit").get("url").textValue();
+            webhookService.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
+          }
+        }
+      }
+        break;
+      case PULL_REQUEST_EVENT_NAME: {
+        githubId = infoNode.get("sender").get(GITHUB_USERNAME).textValue();
+        senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
+        if (infoNode.get("action").textValue().equals("opened")) {
+          ruleTitle = "creatPullRequest";
+          if (senderId != null) {
+            Identity socialIdentity = getUserSocialId(senderId);
+            if (socialIdentity != null) {
+              receiverId = senderId;
+              object = infoNode.get(PULL_REQUEST_EVENT_NAME).get("html_url").textValue();
+              webhookService.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
+            }
+          }
+        }
+      }
+        break;
+      case PULL_REQUEST_REVIEW_COMMENT_EVENT_NAME: {
+        ruleTitle = "commentPullRequest";
+        githubId = infoNode.get("comment").get("user").get(GITHUB_USERNAME).textValue();
+        senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
+        if (senderId != null) {
+          Identity socialIdentity = getUserSocialId(senderId);
+          if (socialIdentity != null) {
+            receiverId = senderId;
+            object = infoNode.get("comment").get("_links").get("html").get("href").textValue();
+            webhookService.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
+          }
+        }
+      }
+        break;
+      case PULL_REQUEST_REVIEW_EVENT_NAME: {
+        ruleTitle = "reviewPullRequest";
+        githubId = infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("user").get(GITHUB_USERNAME).textValue();
+        senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
+        if (senderId != null) {
+          Identity socialIdentity = getUserSocialId(senderId);
+          if (socialIdentity != null) {
+            receiverId = senderId;
+            object = infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("html_url").textValue();
+            if (!infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("state").textValue().equals("commented")) {
+              webhookService.broadcastGithubEvent(ruleTitle, senderId, receiverId, object);
+            }
+            if (infoNode.get(PULL_REQUEST_REVIEW_NODE_NAME).get("state").textValue().equals("approved")) {
+              githubId = infoNode.get(PULL_REQUEST_EVENT_NAME).get("user").get(GITHUB_USERNAME).textValue();
+              receiverId = connectorService.getAssociatedUsername(CONNECTOR_NAME, githubId);
+              ruleTitle = "pullRequestValidated";
+              webhookService.broadcastGithubEvent(ruleTitle, receiverId, senderId, object);
+            }
+          }
+        }
+      }
+        break;
+      default:
+      }
+      return Response.ok().build();
+    } catch (Exception e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
 
   public Identity getUserSocialId(String userName) {

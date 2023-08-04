@@ -24,8 +24,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
             :src="avatarUrl"
             :alt="title"
             height="60"
-            width="60"
-            @load="handleImageLoad" />
+            width="60" />
         </div>
         <v-list class="ms-3">
           <v-list-item-title>
@@ -123,9 +122,6 @@ export default {
       return this.$githubConnectorService.deleteGithubWebHook(this.organizationId).then(() => {
         this.$root.$emit('github-hooks-updated');
       });
-    },
-    handleImageLoad() {
-      this.$set(this.hook, 'loaded', true);
     },
     editGithubWebHook() {
       this.$root.$emit('github-hook-form-drawer', this.hook);

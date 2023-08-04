@@ -17,7 +17,6 @@
  */
 package org.exoplatform.gamification.github.rest.builder;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,21 +35,20 @@ public class WebHookBuilder {
     if (webHook == null) {
       return null;
     }
-    RemoteOrganization remoteOrganization;
-    try {
-      remoteOrganization =
-                         webhookService.retrieveRemoteOrganization(webHook.getOrganizationId(),
-                                                                   webhookService.getHookAccessToken(webHook.getOrganizationId()));
-    } catch (IOException e) {
-      throw new IllegalStateException("Unable to retrieve GitHub organization info with organization id: "
-          + webHook.getOrganizationId());
-    }
-    return new WebHookRestEntity(webHook.getWebhookId(),
+
+    RemoteOrganization remoteOrganization =
+                                          webhookService.retrieveRemoteOrganization(webHook.getOrganizationId(),
+                                                                                    webhookService.getHookAccessToken(webHook.getOrganizationId()));
+
+    return new WebHookRestEntity(webHook.getId(),
+                                 webHook.getWebhookId(),
                                  webHook.getOrganizationId(),
+                                 webHook.getEvent(),
                                  webHook.getEnabled(),
                                  webHook.getWatchedDate(),
                                  webHook.getWatchedBy(),
                                  webHook.getUpdatedDate(),
+                                 webHook.getRefreshDate(),
                                  remoteOrganization.getName(),
                                  remoteOrganization.getTitle(),
                                  remoteOrganization.getDescription(),

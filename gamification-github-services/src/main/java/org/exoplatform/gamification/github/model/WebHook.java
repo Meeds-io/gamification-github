@@ -20,25 +20,33 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class WebHook implements Cloneable {
 
-  private Long    webhookId;
+  private long         id;
 
-  private Long    organizationId;
+  private long         webhookId;
 
-  private Boolean enabled;
+  private long         organizationId;
 
-  private String  watchedDate;
+  private List<String> event;
 
-  private String  watchedBy;
+  private Boolean      enabled;
 
-  private String  updatedDate;
+  private String       watchedDate;
+
+  private String       watchedBy;
+
+  private String       updatedDate;
+
+  private String       refreshDate;
 
   public WebHook clone() { // NOSONAR
-    return new WebHook(webhookId, organizationId, enabled, watchedDate, watchedBy, updatedDate);
+    return new WebHook(id, webhookId, organizationId, event, enabled, watchedDate, watchedBy, updatedDate, refreshDate);
   }
 
 }

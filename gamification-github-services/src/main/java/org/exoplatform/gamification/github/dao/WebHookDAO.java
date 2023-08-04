@@ -1,6 +1,6 @@
 /*
  * This file is part of the Meeds project (https://meeds.io/).
- * Copyright (C) 2020 - 2022 Meeds Association contact@meeds.io
+ * Copyright (C) 2020 - 2023 Meeds Association contact@meeds.io
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -15,16 +15,14 @@
  */
 package org.exoplatform.gamification.github.dao;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.gamification.github.entity.WebhookEntity;
 
 import javax.persistence.NoResultException;
-import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class WebHookDAO extends GenericDAOJPAImpl<WebhookEntity, Long> {
 
@@ -42,21 +40,23 @@ public class WebHookDAO extends GenericDAOJPAImpl<WebhookEntity, Long> {
     }
   }
 
+  @Override
+  @ExoTransactional
+  public WebhookEntity update(WebhookEntity entity) {
+    entity.setUpdatedDate(new Date());
+    return super.update(entity);
+  }
+
+  @ExoTransactional
   public List<Long> getWebhookIds(int offset, int limit) {
-    TypedQuery<Tuple> query = getEntityManager().createNamedQuery("GitHubWebhooks.getWebhookIds", Tuple.class);
-    List<Tuple> result = query.getResultList();
-    if (CollectionUtils.isEmpty(result)) {
-      return Collections.emptyList();
-    } else {
-      Stream<Long> resultStream = result.stream().map(tuple -> tuple.get(0, Long.class));
-      if (offset > 0) {
-        resultStream = resultStream.skip(offset);
-      }
-      if (limit > 0) {
-        resultStream = resultStream.limit(limit);
-      }
-      return resultStream.toList();
+    TypedQuery<Long> query = getEntityManager().createNamedQuery("GitHubWebhooks.getWebhookIds", Long.class);
+    if (offset > 0) {
+      query.setFirstResult(offset);
     }
+    if (limit > 0) {
+      query.setMaxResults(limit);
+    }
+    return query.getResultList();
   }
 
   public String getWebHookHookSecret(long organizationId) {

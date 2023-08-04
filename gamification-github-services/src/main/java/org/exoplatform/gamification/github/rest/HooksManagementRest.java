@@ -33,6 +33,7 @@ import org.exoplatform.gamification.github.rest.builder.WebHookBuilder;
 import org.exoplatform.gamification.github.rest.model.WebHookList;
 import org.exoplatform.gamification.github.rest.model.WebHookRestEntity;
 import org.exoplatform.gamification.github.services.WebhookService;
+import org.exoplatform.services.rest.http.PATCH;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 
@@ -67,7 +68,7 @@ public class HooksManagementRest implements ResourceContainer {
       WebHookList webHookList = new WebHookList();
       webHookRestEntities = getWebHookRestEntities(currentUser);
       if (returnSize) {
-        int webHookSize = webhookService.countWebhooks(currentUser);
+        int webHookSize = webhookService.countWebhooks(currentUser, false);
         webHookList.setSize(webHookSize);
       }
       webHookList.setWebhooks(webHookRestEntities);
@@ -88,9 +89,8 @@ public class HooksManagementRest implements ResourceContainer {
           @ApiResponse(responseCode = "400", description = "Invalid query input"),
           @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
           @ApiResponse(responseCode = "500", description = "Internal server error") })
-  public Response createGitHubHook(@Parameter(description = "GitHub organization name", required = true) @FormParam("organizationName") String organizationName,
-                                   @Parameter(description = "GitHub webHook secret", required = true) @FormParam("hookSecret") String hookSecret,
-                                   @Parameter(description = "GitHub personal access token", required = true) @FormParam("accessToken") String accessToken) {
+  public Response createWebhookHook(@Parameter(description = "GitHub organization name", required = true) @FormParam("organizationName") String organizationName,
+                                    @Parameter(description = "GitHub personal access token", required = true) @FormParam("accessToken") String accessToken) {
 
     if (StringUtils.isBlank(organizationName)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("'organizationName' parameter is mandatory").build();
@@ -98,17 +98,43 @@ public class HooksManagementRest implements ResourceContainer {
     if (StringUtils.isBlank(accessToken)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("'accessToken' parameter is mandatory").build();
     }
-    if (StringUtils.isBlank(hookSecret)) {
-      return Response.status(Response.Status.BAD_REQUEST).entity("'hookSecret' parameter is mandatory").build();
-    }
     String currentUser = ConversationState.getCurrent().getIdentity().getUserId();
     try {
-      webhookService.createWebhook(organizationName, hookSecret, accessToken, currentUser);
+      webhookService.createWebhook(organizationName, accessToken, currentUser);
       return Response.status(Response.Status.CREATED).build();
     } catch (IllegalAccessException e) {
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
     } catch (ObjectAlreadyExistsException e) {
       return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+    }
+  }
+
+  @PATCH
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  @RolesAllowed("users")
+  @Operation(summary = "Update a organization webhook personal access token.", description = "Update a organization webhook personal access token.", method = "PATCH")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "Request fulfilled"),
+          @ApiResponse(responseCode = "400", description = "Invalid query input"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
+          @ApiResponse(responseCode = "500", description = "Internal server error") })
+  public Response updateWebHookAccessToken(@Parameter(description = "webHook id", required = true) @FormParam("webHookId") long webHookId,
+                                           @Parameter(description = "GitHub personal access token", required = true) @FormParam("accessToken") String accessToken) {
+
+    if (webHookId <= 0) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("'webHookId' must be positive").build();
+    }
+    if (StringUtils.isBlank(accessToken)) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("'accessToken' parameter is mandatory").build();
+    }
+    String currentUser = ConversationState.getCurrent().getIdentity().getUserId();
+    try {
+      webhookService.updateWebHookAccessToken(webHookId, accessToken, currentUser);
+      return Response.status(Response.Status.CREATED).build();
+    } catch (IllegalAccessException e) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
+    } catch (ObjectNotFoundException e) {
+      return Response.status(Response.Status.NOT_FOUND).entity("The GitHub hook doesn't exit").build();
     }
   }
 
@@ -121,13 +147,13 @@ public class HooksManagementRest implements ResourceContainer {
           @ApiResponse(responseCode = "400", description = "Bad request"),
           @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
           @ApiResponse(responseCode = "500", description = "Internal server error"), })
-  public Response deleteGitHubHook(@Parameter(description = "GitHub organization id", required = true) @PathParam("organizationId") long organizationId) {
+  public Response deleteWebhookHook(@Parameter(description = "GitHub organization id", required = true) @PathParam("organizationId") long organizationId) {
     if (organizationId <= 0) {
       return Response.status(Response.Status.BAD_REQUEST).entity("'hookName' parameter is mandatory").build();
     }
     String currentUser = ConversationState.getCurrent().getIdentity().getUserId();
     try {
-      webhookService.deleteConnectorHook(organizationId, currentUser);
+      webhookService.deleteWebhookHook(organizationId, currentUser);
       return Response.noContent().build();
     } catch (IllegalAccessException e) {
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
@@ -137,7 +163,7 @@ public class HooksManagementRest implements ResourceContainer {
   }
 
   private List<WebHookRestEntity> getWebHookRestEntities(String username) throws IllegalAccessException {
-    Collection<WebHook> webHooks = webhookService.getWebhooks(username, 0, 20);
+    Collection<WebHook> webHooks = webhookService.getWebhooks(username, 0, 20, false);
     return WebHookBuilder.toRestEntities(webhookService, webHooks);
   }
 }

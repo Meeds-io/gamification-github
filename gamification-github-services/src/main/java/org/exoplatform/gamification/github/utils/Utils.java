@@ -15,16 +15,21 @@
  */
 package org.exoplatform.gamification.github.utils;
 
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.exoplatform.gamification.github.services.WebhookService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.json.JSONObject;
+import org.exoplatform.web.security.codec.CodecInitializer;
+import org.exoplatform.web.security.security.TokenServiceInitializationException;
 
 public class Utils {
 
@@ -39,39 +44,75 @@ public class Utils {
     // Private constructor for Utils class
   }
 
-  public static boolean verifySignature(WebhookService webhookService, String payload, String signature) {
-    JSONObject jsonPayload = new JSONObject(payload);
-
-    // Extract the "organization" field
-    JSONObject organization = jsonPayload.getJSONObject("organization");
-
-    // Extract the organization ID
-    long organizationId = organization.getLong("id");
-    String secret = webhookService.getHookSecret(organizationId);
-    boolean isValid = false;
-
-    if (signature == null || secret == null) {
+  public static boolean verifySignature(String webhookSecret, String payload, String signature) {
+    boolean isValid;
+    if (signature == null || webhookSecret == null) {
       return false;
     }
     try {
       Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
-      SecretKeySpec signingKey = new SecretKeySpec(secret.getBytes(), HMAC_SHA1_ALGORITHM);
+      SecretKeySpec signingKey = new SecretKeySpec(webhookSecret.getBytes(), HMAC_SHA1_ALGORITHM);
       mac.init(signingKey);
       byte[] rawHmac = mac.doFinal(payload.getBytes());
       String expected = signature.substring(5);
       final int amount = rawHmac.length;
       char[] raw = new char[2 * amount];
       int j = 0;
-      for (int i = 0; i < amount; i++) {
-        raw[j++] = HEX[(0xF0 & rawHmac[i]) >>> 4];
-        raw[j++] = HEX[(0x0F & rawHmac[i])];
+      for (byte b : rawHmac) {
+        raw[j++] = HEX[(0xF0 & b) >>> 4];
+        raw[j++] = HEX[(0x0F & b)];
       }
       String actual = new String(raw);
 
       isValid = expected.equals(actual);
-    } catch (NoSuchAlgorithmException | InvalidKeyException | IllegalStateException ex) {
-      LOG.error(ex);
+    } catch (NoSuchAlgorithmException | InvalidKeyException | IllegalStateException e) {
+      throw new IllegalStateException("Error verifying signature", e);
     }
     return isValid;
+  }
+
+  public static Map<String, Object> fromJsonStringToMap(String jsonString) {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      return objectMapper.readValue(jsonString, Map.class);
+    } catch (IOException e) {
+      throw new IllegalStateException("Error converting JSON string to map: " + jsonString, e);
+    }
+  }
+
+  public static String generateRandomSecret(int length) {
+    SecureRandom secureRandom = new SecureRandom();
+    StringBuilder word = new StringBuilder();
+
+    for (int i = 0; i < length; i++) {
+      char randomChar;
+      if (secureRandom.nextBoolean()) {
+        randomChar = (char) (secureRandom.nextInt(26) + 'A');
+      } else {
+        randomChar = (char) (secureRandom.nextInt(26) + 'a');
+      }
+      word.append(randomChar);
+    }
+    return word.toString();
+  }
+
+  public static String encode(String token) {
+    try {
+      CodecInitializer codecInitializer = CommonsUtils.getService(CodecInitializer.class);
+      return codecInitializer.getCodec().encode(token);
+    } catch (TokenServiceInitializationException e) {
+      LOG.warn("Error when encoding token", e);
+      return null;
+    }
+  }
+
+  public static String decode(String encryptedToken) {
+    try {
+      CodecInitializer codecInitializer = CommonsUtils.getService(CodecInitializer.class);
+      return codecInitializer.getCodec().decode(encryptedToken);
+    } catch (TokenServiceInitializationException e) {
+      LOG.warn("Error when decoding token", e);
+      return null;
+    }
   }
 }

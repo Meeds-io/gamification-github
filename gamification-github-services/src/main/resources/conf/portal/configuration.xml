@@ -28,6 +28,10 @@
     <type>org.exoplatform.gamification.github.rest.HooksManagementRest</type>
   </component>
 
+  <component>
+    <type>org.exoplatform.gamification.github.services.WebhookUpdateService</type>
+  </component>
+
   <external-component-plugins>
     <target-component>org.exoplatform.services.listener.ListenerService</target-component>
     <component-plugin>

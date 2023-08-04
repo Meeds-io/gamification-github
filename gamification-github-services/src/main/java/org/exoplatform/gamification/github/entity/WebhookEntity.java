@@ -17,31 +17,30 @@ package org.exoplatform.gamification.github.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.*;
 
 import org.exoplatform.commons.api.persistence.ExoEntity;
 
 import lombok.Data;
+import org.exoplatform.gamification.github.utils.StringListConverter;
 
 @Entity(name = "GitHubWebhooks")
 @ExoEntity
 @Table(name = "GITHUB_WEBHOOKS")
-@NamedQuery(
-       name  = "GitHubWebhooks.getWebhookByOrganizationId", 
-       query = "SELECT gitHubWebhook FROM GitHubWebhooks gitHubWebhook"
-               + " WHERE gitHubWebhook.organizationId = :organizationId")
-@NamedQuery(
-       name  = "GitHubWebhooks.getWebHookHookSecret",
-       query = "SELECT gitHubWebhook.secret FROM GitHubWebhooks gitHubWebhook"
-               + " WHERE gitHubWebhook.organizationId = :organizationId")
-@NamedQuery(
-       name  = "GitHubWebhooks.getWebHookAccessToken",
-       query = "SELECT gitHubWebhook.token FROM GitHubWebhooks gitHubWebhook"
-               + " WHERE gitHubWebhook.organizationId = :organizationId")
-@NamedQuery(
-       name  = "GitHubWebhooks.getWebhookIds",
-       query = "SELECT gitHubWebhook.id FROM GitHubWebhooks gitHubWebhook")
+@NamedQuery(name = "GitHubWebhooks.getWebhookByOrganizationId",
+            query = "SELECT gitHubWebhook FROM GitHubWebhooks gitHubWebhook"
+                    + " WHERE gitHubWebhook.organizationId = :organizationId")
+@NamedQuery(name = "GitHubWebhooks.getWebHookHookSecret",
+            query = "SELECT gitHubWebhook.secret FROM GitHubWebhooks gitHubWebhook"
+                    + " WHERE gitHubWebhook.organizationId = :organizationId")
+@NamedQuery(name = "GitHubWebhooks.getWebHookAccessToken",
+            query = "SELECT gitHubWebhook.token FROM GitHubWebhooks gitHubWebhook"
+                    + " WHERE gitHubWebhook.organizationId = :organizationId")
+@NamedQuery(name = "GitHubWebhooks.getWebhookIds",
+            query = "SELECT gitHubWebhook.id FROM GitHubWebhooks gitHubWebhook"
+                    + " ORDER BY gitHubWebhook.id ASC")
 @Data
 public class WebhookEntity implements Serializable {
 
@@ -59,6 +58,10 @@ public class WebhookEntity implements Serializable {
   @Column(name = "ORGANIZATION_ID", nullable = false)
   protected Long            organizationId;
 
+  @Convert(converter = StringListConverter.class)
+  @Column(name = "EVENTS", nullable = false)
+  protected List<String>    events;
+
   @Column(name = "ENABLED", nullable = false)
   protected Boolean         enabled;
 
@@ -70,6 +73,9 @@ public class WebhookEntity implements Serializable {
 
   @Column(name = "UPDATED_DATE", nullable = false)
   protected Date            updatedDate;
+
+  @Column(name = "REFRESH_DATE", nullable = false)
+  protected Date            refreshDate;
 
   @Column(name = "SECRET", nullable = false)
   private String            secret;

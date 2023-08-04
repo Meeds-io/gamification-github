@@ -28,14 +28,30 @@ export function getGithubWebHooks(offset, limit) {
   });
 }
 
-export function saveGithubWebHook(organizationName, accessToken , hookSecret) {
+export function saveGithubWebHook(organizationName, accessToken) {
   const formData = new FormData();
   formData.append('organizationName', organizationName);
   formData.append('accessToken', accessToken);
-  formData.append('hookSecret', hookSecret);
-
   return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks`, {
     method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams(formData).toString(),
+  }).then(resp => {
+    if (!resp?.ok) {
+      throw new Error('Error when saving github webhook');
+    }
+  });
+}
+
+export function updateWebHookAccessToken(webHookId, accessToken) {
+  const formData = new FormData();
+  formData.append('webHookId', webHookId);
+  formData.append('accessToken', accessToken);
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks`, {
+    method: 'PATCH',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',

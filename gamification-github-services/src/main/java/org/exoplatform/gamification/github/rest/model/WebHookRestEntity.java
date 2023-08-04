@@ -19,6 +19,8 @@ package org.exoplatform.gamification.github.rest.model;
 import lombok.*;
 import org.exoplatform.gamification.github.model.WebHook;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -34,17 +36,20 @@ public class WebHookRestEntity extends WebHook {
 
   private String avatarUrl;
 
-  public WebHookRestEntity(long webhookId,
+  public WebHookRestEntity(long id,
+                           long webhookId,
                            long organizationId,
+                           List<String> event,
                            boolean enabled,
                            String watchedDate,
                            String watchedBy,
                            String updatedDate,
+                           String refreshDate,
                            String name,
                            String title,
                            String description,
                            String avatarUrl) { // NOSONAR
-    super(webhookId, organizationId, enabled, watchedDate, watchedBy, updatedDate);
+    super(id, webhookId, organizationId, event, enabled, watchedDate, watchedBy, updatedDate, refreshDate);
     this.name = name;
     this.title = title;
     this.description = description;

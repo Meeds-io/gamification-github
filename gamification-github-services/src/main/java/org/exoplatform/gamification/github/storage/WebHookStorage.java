@@ -42,6 +42,7 @@ public class WebHookStorage {
       WebhookEntity webhookEntity = toEntity(webHook);
       webhookEntity.setWatchedDate(new Date());
       webhookEntity.setUpdatedDate(new Date());
+      webhookEntity.setRefreshDate(new Date());
       webhookEntity.setSecret(secret);
       webhookEntity.setToken(accessToken);
       webhookEntity.setEnabled(true);
@@ -50,6 +51,21 @@ public class WebHookStorage {
     } else {
       throw new ObjectAlreadyExistsException(existsWebHook);
     }
+  }
+
+  public WebHook updateWebHook(WebHook webHook, boolean forceUpdate) {
+    WebhookEntity webhookEntity = webHookDAO.find(webHook.getId());
+    if (forceUpdate) {
+      webhookEntity.setRefreshDate(new Date());
+      webhookEntity.setEvents(webHook.getEvent());
+    }
+    return fromEntity(webHookDAO.update(webhookEntity));
+  }
+
+  public WebHook updateWebHookAccessToken(long webhookId, String accessToken) {
+    WebhookEntity webhookEntity = webHookDAO.find(webhookId);
+    webhookEntity.setToken(accessToken);
+    return fromEntity(webHookDAO.update(webhookEntity));
   }
 
   public WebHook getWebHookById(Long id) {

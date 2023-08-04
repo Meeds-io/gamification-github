@@ -30,7 +30,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         v-model="isValidForm"
         class="form-horizontal pt-0 pb-4"
         flat
-        @submit="createHook">
+        @submit="saveHook">
         <v-stepper
           v-model="stepper"
           class="ma-0 py-0 d-flex flex-column"
@@ -84,36 +84,13 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                   <input
                     ref="organizationNameInput"
                     v-model="organizationName"
+                    :disabled="hookId"
                     :placeholder="$t('githubConnector.admin.label.organization.placeholder')"
                     type="text"
                     class="ignore-vuetify-classes flex-grow-1"
                     maxlength="2000"
                     required
                     @change="hookEdited = true">
-                </v-card-text>
-                <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left dark-grey-color text-subtitle-1 pb-2">
-                  {{ $t('githubConnector.admin.label.hookSecret') }}
-                </v-card-text>
-                <v-card-text class="d-flex py-0">
-                  <v-text-field
-                    ref="hookSecretInput"
-                    v-model="hookSecretInput"
-                    :readonly="!isHookSecretEditing"
-                    :placeholder="$t('githubConnector.admin.label.hookSecret.placeholder')"
-                    :class="hookSecret ? 'mx-2 pa-0' : 'mx-2 pa-0 me-8' "
-                    dense>
-                    <template #append-outer>
-                      <v-slide-x-reverse-transition mode="out-in">
-                        <v-icon
-                          :key="`icon-${isHookSecretEditing}`"
-                          :color="isHookSecretEditing ? 'success' : 'info'"
-                          :disabled="!hookSecretInput && isHookSecretEditing"
-                          class="text-header-title"
-                          @click="editHookSecret"
-                          v-text="isHookSecretEditing ? 'fas fa-check' : 'fas fa fa-edit'" />
-                      </v-slide-x-reverse-transition>
-                    </template>
-                  </v-text-field>
                 </v-card-text>
               </div>
             </v-slide-y-transition>
@@ -146,8 +123,9 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         <v-btn
           v-else
           :disabled="disabledSave"
+          :loading="loading"
           class="btn btn-primary"
-          @click="createHook">
+          @click="saveHook">
           {{ $t('githubWebhookManagement.save') }}
         </v-btn>
       </div>
@@ -156,7 +134,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 </template>
 
 <script>
-
 export default {
   data: () => ({
     hook: {},
@@ -164,31 +141,28 @@ export default {
     isValidForm: false,
     drawer: false,
     organizationName: null,
-    hookSecret: null,
     accessToken: null,
     isTokenEditing: false,
     accessTokenInput: null,
     accessTokenStored: false,
-    hookSecretInput: null,
-    isHookSecretEditing: false,
-    hookSecretStored: false,
-    hookEdited: false
+    hookEdited: false,
+    loading: false
   }),
   created() {
     this.$root.$on('github-hook-form-drawer', this.open);
   },
   computed: {
-    organizationRemoteId() {
-      return this.hook?.organizationId;
+    hookId() {
+      return this.hook?.id;
     },
     disabledSave() {
-      return !this.hookEdited || !this.organizationName || (this.organizationRemoteId && !this.hookSecretStored) || (this.organizationRemoteId && !this.hookSecret) || this.isHookSecretEditing;
+      return !this.hookEdited || !this.organizationName;
     },
     disableNextStepButton() {
-      return (this.organizationRemoteId && !this.accessTokenStored) || (this.organizationRemoteId && !this.accessToken && this.isTokenEditing) || this.isTokenEditing;
+      return (this.hookId && !this.accessTokenStored) || (this.hookId && !this.accessToken && this.isTokenEditing) || this.isTokenEditing;
     },
     drawerTitle() {
-      return this.organizationRemoteId ? this.$t('githubConnector.admin.label.editOrganization') : this.$t('githubConnector.admin.label.addOrganization');
+      return this.hookId ? this.$t('githubConnector.admin.label.editOrganization') : this.$t('githubConnector.admin.label.addOrganization');
     },
   },
   methods: {
@@ -198,13 +172,9 @@ export default {
         this.organizationName = hook?.name || null;
         this.accessTokenInput = '*'.repeat(8);
         this.accessTokenStored = true;
-        this.hookSecretInput = '*'.repeat(8);
-        this.hookSecretStored = true;
       } else {
         this.accessTokenInput = null;
         this.isTokenEditing = true;
-        this.hookSecretInput = null;
-        this.isHookSecretEditing = true;
       }
       if (this.$refs.githubHookFormDrawer) {
         this.$refs.githubHookFormDrawer.open();
@@ -215,11 +185,20 @@ export default {
         this.$refs.githubHookFormDrawer.close();
       }
     },
-    createHook() {
-      return this.$githubConnectorService.saveGithubWebHook(this.organizationName, this.accessToken, this.hookSecret).then(() => {
-        this.$root.$emit('github-hooks-updated');
-        this.close();
-      });
+    saveHook() {
+      this.loading = true;
+      if (!this.hookId) {
+        return this.$githubConnectorService.saveGithubWebHook(this.organizationName, this.accessToken).then(() => {
+          this.$root.$emit('github-hooks-updated');
+          this.close();
+        }).finally(() => this.loading = false);
+      } else {
+        return this.$githubConnectorService.updateWebHookAccessToken(this.hookId, this.accessToken).then(() => {
+          this.$root.$emit('github-hooks-updated');
+          this.close();
+        }).finally(() => this.loading = false);
+      }
+
     },
     editAccessToken() {
       if (this.isTokenEditing) {
@@ -227,7 +206,6 @@ export default {
         this.accessTokenInput = '*'.repeat(16);
         this.isTokenEditing = false;
         this.hookEdited = true;
-        this.stepper++;
       } else {
         this.accessTokenInput =null;
         this.isTokenEditing = true;
@@ -237,17 +215,6 @@ export default {
             $input.focus();
           }
         });
-      }
-    },
-    editHookSecret() {
-      if (this.isHookSecretEditing) {
-        this.hookSecret = this.hookSecretInput;
-        this.hookSecretInput = '*'.repeat(16);
-        this.isHookSecretEditing = false;
-        this.hookEdited = true;
-      } else {
-        this.hookSecretInput =null;
-        this.isHookSecretEditing = true;
       }
     },
     previousStep() {
@@ -265,7 +232,6 @@ export default {
       this.stepper = 0;
       this.accessToken = null;
       this.organizationName = null;
-      this.hookSecret = null;
       this.hook = {};
     },
   }

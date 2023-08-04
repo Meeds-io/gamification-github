@@ -17,6 +17,7 @@
 package org.exoplatform.gamification.github.storage.mapper;
 
 import io.meeds.gamification.utils.Utils;
+import org.apache.commons.collections.CollectionUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.gamification.github.entity.WebhookEntity;
 import org.exoplatform.gamification.github.model.WebHook;
@@ -33,6 +34,10 @@ public class WebHookMapper {
       return null;
     }
     WebhookEntity webhookEntity = new WebhookEntity();
+
+    if (webHook.getId() > 0) {
+      webhookEntity.setId(webHook.getId());
+    }
     if (webHook.getOrganizationId() > 0) {
       webhookEntity.setOrganizationId(webHook.getOrganizationId());
     }
@@ -44,6 +49,9 @@ public class WebHookMapper {
       String userIdentityId = identityManager.getOrCreateUserIdentity(webHook.getWatchedBy()).getId();
       webhookEntity.setWatchedBy(Long.parseLong(userIdentityId));
     }
+    if (CollectionUtils.isNotEmpty(webHook.getEvent())) {
+      webhookEntity.setEvents(webHook.getEvent());
+    }
     return webhookEntity;
   }
 
@@ -53,12 +61,15 @@ public class WebHookMapper {
     }
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     String watchedBy = identityManager.getIdentity(String.valueOf(webhookEntity.getWatchedBy())).getRemoteId();
-    return new WebHook(webhookEntity.getWebhookId(),
+    return new WebHook(webhookEntity.getId(),
+                       webhookEntity.getWebhookId(),
                        webhookEntity.getOrganizationId(),
+                       webhookEntity.getEvents(),
                        webhookEntity.getEnabled(),
                        webhookEntity.getWatchedDate() != null ? Utils.toSimpleDateFormat(webhookEntity.getWatchedDate()) : null,
                        watchedBy,
-                       webhookEntity.getUpdatedDate() != null ? Utils.toSimpleDateFormat(webhookEntity.getUpdatedDate()) : null);
+                       webhookEntity.getUpdatedDate() != null ? Utils.toSimpleDateFormat(webhookEntity.getUpdatedDate()) : null,
+                       webhookEntity.getRefreshDate() != null ? Utils.toSimpleDateFormat(webhookEntity.getRefreshDate()) : null);
   }
 
 }

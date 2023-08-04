@@ -31,7 +31,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
       </v-btn>
     </div>
     <v-progress-linear
-      v-show="!hooksLoaded"
+      v-show="loading"
       color="primary"
       height="2"
       indeterminate />
@@ -70,9 +70,6 @@ export default {
     };
   },
   computed: {
-    hooksLoaded() {
-      return this.hooks?.every(hook => hook.loaded);
-    },
     hasMore() {
       return this.hooksCount > this.limit;
     },

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Meeds project (https://meeds.io/).
- * Copyright (C) 2020 - 2022 Meeds Association contact@meeds.io
+ * Copyright (C) 2020 - 2023 Meeds Association contact@meeds.io
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -15,14 +15,15 @@
  */
 package org.exoplatform.gamification.github.exception;
 
-public class GithubHookException extends Exception {
+public class GithubConnectionException extends Exception {
 
-  private static final long serialVersionUID = -2836988837493225118L;
+  private static final long serialVersionUID = -2437500058122638710L;
 
-  public GithubHookException() {
+  public GithubConnectionException(String message) {
+    super(message);
   }
 
-  public GithubHookException(String message) {
-    super(message);
+  public GithubConnectionException(String message, Exception e) {
+    super(message, e);
   }
 }
