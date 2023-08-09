@@ -74,3 +74,40 @@ export function deleteGithubWebHook(organizationId) {
     }
   });
 }
+
+export function getWebHookRepos(organizationId, offset, limit) {
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/${organizationId}/repos?offset=${offset || 0}&limit=${limit|| 10}&returnSize=true`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then((resp) => {
+    if (resp?.ok) {
+      return resp.json();
+    } else {
+      throw new Error('Error when getting github webhooks');
+    }
+  });
+}
+
+export function saveRepositoryStatus(repositoryId, organizationId, enabled) {
+  const formData = new FormData();
+  formData.append('repositoryId', repositoryId);
+  formData.append('organizationId', organizationId);
+  formData.append('enabled', enabled);
+
+  console.warn(formData.get('enable'));
+
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/repo/status`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams(formData).toString(),
+  }).then(resp => {
+    if (resp && resp.ok) {
+      return resp.json();
+    } else {
+      throw new Error('Response code indicates a server error', resp);
+    }
+  });
+}

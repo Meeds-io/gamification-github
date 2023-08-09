@@ -18,6 +18,7 @@ package org.exoplatform.gamification.github.services;
 import org.exoplatform.commons.ObjectAlreadyExistsException;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
 import org.exoplatform.gamification.github.model.RemoteOrganization;
+import org.exoplatform.gamification.github.model.RemoteRepository;
 import org.exoplatform.gamification.github.model.WebHook;
 
 import java.util.List;
@@ -111,6 +112,82 @@ public interface WebhookService {
   boolean verifyWebhookSecret(String payload, String signature);
 
   /**
+   * Check if webhook repository is enabled
+   *
+   * @param payload payload The raw payload of the webhook request.
+   * @return true if the intended repository is enabled, else false.
+   */
+  boolean isWebHookRepositoryEnabled(String payload);
+
+  /**
+   * Check if webhook repository is enabled
+   *
+   * @param organizationRemoteId gitHub organization remote Id
+   * @param repositoryRemoteId gitHub repository remote Id
+   *
+   * @return true if the intended repository is enabled, else false.
+   */
+  boolean isWebHookRepositoryEnabled(long organizationRemoteId, long repositoryRemoteId);
+
+  /**
+   * enables/disables repository
+   *
+   * @param organizationRemoteId gitHub organization remote Id
+   * @param repositoryRemoteId gitHub repository remote Id
+   * @param enabled true to enabled, else false
+   * @param currentUser user name attempting to enables/disables repository.
+   */
+  void setWebHookRepositoryEnabled(long organizationRemoteId,
+                                   long repositoryRemoteId,
+                                   boolean enabled,
+                                   String currentUser) throws IllegalAccessException;
+
+  /**
+   * Check if webhook watch limit is enabled
+   *
+   * @param organizationRemoteId gitHub organization remote Id
+   * @return true if webHook watch limit is enabled, else false.
+   */
+  boolean isWebHookWatchLimitEnabled(long organizationRemoteId);
+
+  /**
+   * enables/disables webHook watch limit
+   *
+   * @param organizationRemoteId gitHub organization remote Id
+   * @param enabled true to enabled, else false
+   * @param currentUser user name attempting to enables/disables webHook watch
+   *          limit.
+   */
+  void setWebHookWatchLimitEnabled(long organizationRemoteId, boolean enabled, String currentUser) throws IllegalAccessException;
+
+  /**
+   * Retrieve available github organization repositories.
+   *
+   * @param organizationRemoteId gitHub organization remote Id
+   * @param currentUser user name attempting to access remote organization
+   *          repositories
+   * @throws IllegalAccessException when user is not authorized to access remote
+   *           organization repositories
+   * @return {@link List} of {@link RemoteRepository}
+   */
+  List<RemoteRepository> retrieveOrganizationRepos(long organizationRemoteId,
+                                                   String currentUser,
+                                                   int page,
+                                                   int perPage) throws IllegalAccessException, ObjectNotFoundException;
+
+  /**
+   * Count available github organization repositories.
+   *
+   * @param organizationRemoteId gitHub organization remote Id
+   * @param currentUser user name attempting to access remote organization
+   *          repositories
+   * @throws IllegalAccessException when user is not authorized to access remote
+   *           organization repositories
+   * @return Repositories count
+   */
+  int countOrganizationRepos(long organizationRemoteId, String currentUser) throws IllegalAccessException, ObjectNotFoundException;
+
+  /**
    * create gamification history
    *
    * @param ruleTitle Rule title
@@ -119,4 +196,5 @@ public interface WebhookService {
    * @param object Object link
    */
   void createGamificationHistory(String ruleTitle, String senderId, String receiverId, String object);
+
 }

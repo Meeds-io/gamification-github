@@ -46,6 +46,9 @@ public class GithubWebHookRest implements ResourceContainer {
     if (!webhookService.verifyWebhookSecret(obj, signature)) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
+    if (!webhookService.isWebHookRepositoryEnabled(obj)) {
+      return Response.noContent().build();
+    }
     try {
       githubTriggerService.handleTrigger(obj, event);
       return Response.ok().build();

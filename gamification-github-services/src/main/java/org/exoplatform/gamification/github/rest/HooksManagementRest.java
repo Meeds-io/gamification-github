@@ -28,8 +28,10 @@ import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.commons.ObjectAlreadyExistsException;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
+import org.exoplatform.gamification.github.model.RemoteRepository;
 import org.exoplatform.gamification.github.model.WebHook;
 import org.exoplatform.gamification.github.rest.builder.WebHookBuilder;
+import org.exoplatform.gamification.github.rest.model.RepositoryList;
 import org.exoplatform.gamification.github.rest.model.WebHookList;
 import org.exoplatform.gamification.github.rest.model.WebHookRestEntity;
 import org.exoplatform.gamification.github.services.WebhookService;
@@ -159,6 +161,58 @@ public class HooksManagementRest implements ResourceContainer {
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
     } catch (ObjectNotFoundException e) {
       return Response.status(Response.Status.NOT_FOUND).entity("The GitHub hook doesn't exit").build();
+    }
+  }
+
+  @GET
+  @Path("{organizationId}/repos")
+  @Produces(MediaType.APPLICATION_JSON)
+  @RolesAllowed("users")
+  @Operation(summary = "Retrieves the list GitHub organization repositories", method = "GET")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "Request fulfilled"),
+         @ApiResponse(responseCode = "401", description = "Unauthorized operation"), })
+  public Response getWebHookRepos(@Parameter(description = "GitHub organization id", required = true) @PathParam("organizationId") long organizationId,
+                                  @QueryParam("offset") int offset,
+                                  @Parameter(description = "Query results limit", required = true) @QueryParam("limit") int limit,
+                                  @Parameter(description = "Repositories total size") @Schema(defaultValue = "false") @QueryParam("returnSize") boolean returnSize) {
+
+    String currentUser = getCurrentUser();
+    List<RemoteRepository> remoteRepositories;
+    try {
+      RepositoryList repositoryList = new RepositoryList();
+      remoteRepositories = webhookService.retrieveOrganizationRepos(organizationId, currentUser, offset, limit);
+      if (returnSize) {
+        int size = webhookService.countOrganizationRepos(organizationId, currentUser);
+        repositoryList.setSize(size);
+      }
+      repositoryList.setRemoteRepositories(remoteRepositories);
+      repositoryList.setOffset(offset);
+      repositoryList.setLimit(limit);
+      return Response.ok(repositoryList).build();
+    } catch (IllegalAccessException e) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+  }
+
+  @Path("repo/status")
+  @POST
+  @RolesAllowed("users")
+  @Operation(summary = "Saves agenda time zone setting for authenticated user", description = "Saves agenda time zone setting for authenticated user", method = "POST")
+  @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Request fulfilled"),
+      @ApiResponse(responseCode = "400", description = "Bad request"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
+      @ApiResponse(responseCode = "500", description = "Internal server error"), })
+  public Response updateWebHookRepoStatus(@Parameter(description = "GitHub organization remote Id", required = true) @FormParam("organizationId") long organizationId,
+                                          @Parameter(description = "Organization repository remote Id", required = true) @FormParam("repositoryId") long repositoryId,
+                                          @Parameter(description = "Organization repository status enabled/disabled. possible values: true for enabled, else false", required = true) @FormParam("enabled") boolean enabled) {
+
+    String currentUser = getCurrentUser();
+    try {
+      webhookService.setWebHookRepositoryEnabled(organizationId, repositoryId, enabled, currentUser);
+      return Response.noContent().build();
+    } catch (IllegalAccessException e) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
     }
   }
 
