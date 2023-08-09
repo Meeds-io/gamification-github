@@ -1,14 +1,10 @@
 <template>
   <tr>
     <td>
-      <div>
-        {{ name }}
-      </div>
+      {{ name }}
     </td>
-    <td>
-      <div>
-        {{ description }}
-      </div>
+    <td class="py-3">
+      {{ description }}
     </td>
     <td>
       <div class="d-flex flex-column align-center">
@@ -48,7 +44,6 @@ export default {
   },
   methods: {
     enableDisableRepository() {
-      console.warn(this.repository.enabled);
       this.$githubConnectorService.saveRepositoryStatus(this.id, this.organizationId, this.repository.enabled);
     },
   }

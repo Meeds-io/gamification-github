@@ -24,18 +24,15 @@
     <div class="d-flex flex-row pt-4">
       <div class="d-flex flex-column">
         <v-card-text class="dark-grey-color text-subtitle-1 pa-0">{{ $t('githubConnector.admin.label.watchScope') }}</v-card-text>
-        <v-card-text class="text-sub-title pa-0">
-          {{
-            $t('githubConnector.admin.label.watchScope.placeholder')
-          }}
-        </v-card-text>
+        <v-card-text class="text-sub-title pa-0">{{ $t('githubConnector.admin.label.watchScope.placeholder') }}</v-card-text>
       </div>
       <v-spacer />
       <v-switch
-        v-model="scopeLimitedPerRepository"
+        v-model="hook.watchScopeLimited"
         color="primary"
         class="px-2"
-        hide-details />
+        hide-details
+        @change="enableDisableWatchScope" />
     </div>
     <v-data-table
       :headers="repositoriesHeaders"
@@ -77,11 +74,10 @@ export default {
   },
   data() {
     return {
-      scopeLimitedPerRepository: true,
       repositories: [],
       options: {
         page: 1,
-        itemsPerPage: 2,
+        itemsPerPage: 5,
       },
       totalSize: 0,
       loading: false
@@ -96,9 +92,9 @@ export default {
     },
     repositoriesHeaders() {
       return [
-        {text: 'Repository', value: 'title', align: 'start', width: '30%'},
-        {text: 'Description', value: 'description', align: 'start', width: '50%'},
-        {text: 'Status', value: 'enabled', align: 'center', width: '20%'},];
+        {text: this.$t('githubConnector.webhook.details.repository'), value: 'title', align: 'start', width: '30%'},
+        {text: this.$t('githubConnector.webhook.details.description'), value: 'description', align: 'start', width: '50%'},
+        {text: this.$t('githubConnector.webhook.details.status'), value: 'enabled', align: 'center', width: '20%'},];
     },
     displayFooter() {
       return this.totalSize > this.options.itemsPerPage;
@@ -121,7 +117,10 @@ export default {
           this.totalSize = data.size || 0;
           return this.$nextTick();
         }).finally(() => this.loading = false);
-    }
+    },
+    enableDisableWatchScope() {
+      this.$githubConnectorService.enableDisableWatchScope(this.organizationId, this.hook.watchScopeLimited);
+    },
   }
 };
 </script>

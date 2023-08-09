@@ -243,7 +243,7 @@ public class WebhookServiceImpl implements WebhookService {
     if (settingValue != null && settingValue.getValue() != null && StringUtils.isNotBlank(settingValue.getValue().toString())) {
       disabledRepositoryList = Arrays.stream(settingValue.getValue().toString().split(":"))
                                      .map(Long::parseLong)
-                                     .collect(Collectors.toList());
+                                     .toList();
     }
     return !disabledRepositoryList.contains(repositoryId);
   }
@@ -430,7 +430,7 @@ public class WebhookServiceImpl implements WebhookService {
     Map<String, Object> resultMap = fromJsonStringToMap(response);
     RemoteOrganization gitHubOrganization = new RemoteOrganization();
     gitHubOrganization.setId((Long.parseLong(resultMap.get(ID).toString())));
-    gitHubOrganization.setName(resultMap.get(ID).toString());
+    gitHubOrganization.setName(resultMap.get(LOGIN).toString());
     gitHubOrganization.setTitle(resultMap.get(NAME).toString());
     gitHubOrganization.setDescription(resultMap.get(DESCRIPTION).toString());
     gitHubOrganization.setAvatarUrl(resultMap.get(AVATAR_URL).toString());

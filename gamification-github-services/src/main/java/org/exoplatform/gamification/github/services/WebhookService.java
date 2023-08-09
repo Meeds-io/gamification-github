@@ -124,7 +124,6 @@ public interface WebhookService {
    *
    * @param organizationRemoteId gitHub organization remote Id
    * @param repositoryRemoteId gitHub repository remote Id
-   *
    * @return true if the intended repository is enabled, else false.
    */
   boolean isWebHookRepositoryEnabled(long organizationRemoteId, long repositoryRemoteId);
@@ -151,7 +150,7 @@ public interface WebhookService {
   boolean isWebHookWatchLimitEnabled(long organizationRemoteId);
 
   /**
-   * enables/disables webHook watch limit
+   * Limit webhook watch scope or not
    *
    * @param organizationRemoteId gitHub organization remote Id
    * @param enabled true to enabled, else false
@@ -185,7 +184,8 @@ public interface WebhookService {
    *           organization repositories
    * @return Repositories count
    */
-  int countOrganizationRepos(long organizationRemoteId, String currentUser) throws IllegalAccessException, ObjectNotFoundException;
+  int countOrganizationRepos(long organizationRemoteId, String currentUser) throws IllegalAccessException,
+                                                                            ObjectNotFoundException;
 
   /**
    * create gamification history

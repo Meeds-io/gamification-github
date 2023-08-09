@@ -47,6 +47,8 @@ import static io.meeds.gamification.utils.Utils.getCurrentUser;
 @Path("/gamification/connectors/github/hooks")
 public class HooksManagementRest implements ResourceContainer {
 
+  public static final String   GITHUB_HOOK_NOT_FOUND = "The GitHub hook doesn't exit";
+
   private final WebhookService webhookService;
 
   public HooksManagementRest(WebhookService webhookService) {
@@ -136,7 +138,7 @@ public class HooksManagementRest implements ResourceContainer {
     } catch (IllegalAccessException e) {
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
     } catch (ObjectNotFoundException e) {
-      return Response.status(Response.Status.NOT_FOUND).entity("The GitHub hook doesn't exit").build();
+      return Response.status(Response.Status.NOT_FOUND).entity(GITHUB_HOOK_NOT_FOUND).build();
     }
   }
 
@@ -160,7 +162,7 @@ public class HooksManagementRest implements ResourceContainer {
     } catch (IllegalAccessException e) {
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
     } catch (ObjectNotFoundException e) {
-      return Response.status(Response.Status.NOT_FOUND).entity("The GitHub hook doesn't exit").build();
+      return Response.status(Response.Status.NOT_FOUND).entity(GITHUB_HOOK_NOT_FOUND).build();
     }
   }
 
@@ -192,13 +194,15 @@ public class HooksManagementRest implements ResourceContainer {
       return Response.ok(repositoryList).build();
     } catch (IllegalAccessException e) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
+    } catch (ObjectNotFoundException e) {
+      return Response.status(Response.Status.NOT_FOUND).entity(GITHUB_HOOK_NOT_FOUND).build();
     }
   }
 
   @Path("repo/status")
   @POST
   @RolesAllowed("users")
-  @Operation(summary = "Saves agenda time zone setting for authenticated user", description = "Saves agenda time zone setting for authenticated user", method = "POST")
+  @Operation(summary = "enables/disables webhook repository.", description = "enables/disables webhook repository", method = "POST")
   @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Request fulfilled"),
       @ApiResponse(responseCode = "400", description = "Bad request"),
       @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
@@ -210,6 +214,26 @@ public class HooksManagementRest implements ResourceContainer {
     String currentUser = getCurrentUser();
     try {
       webhookService.setWebHookRepositoryEnabled(organizationId, repositoryId, enabled, currentUser);
+      return Response.noContent().build();
+    } catch (IllegalAccessException e) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
+    }
+  }
+
+  @Path("watchScope/status")
+  @POST
+  @RolesAllowed("users")
+  @Operation(summary = "Limit webhook watch scope or not", description = "Limit webhook watch scope or not", method = "POST")
+  @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Request fulfilled"),
+          @ApiResponse(responseCode = "400", description = "Bad request"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
+          @ApiResponse(responseCode = "500", description = "Internal server error"), })
+  public Response updateWebHookWatchScope(@Parameter(description = "GitHub organization remote Id", required = true) @FormParam("organizationId") long organizationId,
+                                          @Parameter(description = "webhook watch scope limited status enabled/disabled. possible values: true for enabled, else false", required = true) @FormParam("enabled") boolean enabled) {
+
+    String currentUser = getCurrentUser();
+    try {
+      webhookService.setWebHookWatchLimitEnabled(organizationId, enabled, currentUser);
       return Response.noContent().build();
     } catch (IllegalAccessException e) {
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
