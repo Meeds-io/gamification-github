@@ -42,9 +42,11 @@ import org.apache.http.protocol.HTTP;
 import org.exoplatform.commons.ObjectAlreadyExistsException;
 import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.gamification.github.exception.GithubConnectionException;
 import org.exoplatform.gamification.github.model.WebHook;
 import org.exoplatform.gamification.github.model.RemoteOrganization;
+import org.exoplatform.gamification.github.services.GithubTriggerService;
 import org.exoplatform.gamification.github.services.WebhookService;
 import org.exoplatform.gamification.github.storage.WebHookStorage;
 import org.json.JSONObject;
@@ -59,29 +61,31 @@ import static org.exoplatform.gamification.github.utils.Utils.*;
 
 public class WebhookServiceImpl implements WebhookService {
 
-  private static final Log      LOG                                = ExoLogger.getLogger(WebhookServiceImpl.class);
+  private static final Log           LOG                                = ExoLogger.getLogger(WebhookServiceImpl.class);
 
-  private static final String   GITHUB_API_URL                     = "https://api.github.com/orgs/";
+  private static final String        GITHUB_API_URL                     = "https://api.github.com/orgs/";
 
-  private static final String[] GITHUB_EVENTS                      = { "push", "pull_request", "pull_request_review",
-      "pull_request_review_comment", "pull_request_review_comment" };
+  public static final String         AUTHORIZED_TO_ACCESS_GIT_HUB_HOOKS = "The user is not authorized to access gitHub Hooks";
 
-  public static final String    AUTHORIZED_TO_ACCESS_GIT_HUB_HOOKS = "The user is not authorized to access gitHub Hooks";
+  public static final String         TOKEN                              = "token ";
 
-  public static final String    TOKEN                              = "token ";
+  public static final String         AUTHORIZATION                      = "Authorization";
 
-  public static final String    AUTHORIZATION                      = "Authorization";
+  public static final String         GITHUB_CONNECTION_ERROR            = "github.connectionError";
 
-  public static final String    GITHUB_CONNECTION_ERROR            = "github.connectionError";
+  private final ListenerService      listenerService;
 
-  private final ListenerService listenerService;
+  private final WebHookStorage       webHookStorage;
 
-  private final WebHookStorage  webHookStorage;
+  private final GithubTriggerService githubTriggerService;
 
-  private HttpClient            client;
+  private HttpClient                 client;
 
-  public WebhookServiceImpl(ListenerService listenerService, WebHookStorage webHookStorage) {
+  public WebhookServiceImpl(ListenerService listenerService,
+                            GithubTriggerService githubTriggerService,
+                            WebHookStorage webHookStorage) {
     this.listenerService = listenerService;
+    this.githubTriggerService = githubTriggerService;
     this.webHookStorage = webHookStorage;
   }
 
@@ -130,16 +134,14 @@ public class WebhookServiceImpl implements WebhookService {
     JSONObject config = new JSONObject();
     JSONObject hook = new JSONObject();
     String url = GITHUB_API_URL + organizationName + "/hooks";
-    config.put("url",
-               "https://f838-2a01-cb05-890f-e600-b457-b8d2-3605-6d2c.ngrok-free.app"
-                   + "/portal/rest/gamification/connectors/github/webhooks");
+    config.put("url", CommonsUtils.getCurrentDomain() + "/portal/rest/gamification/connectors/github/webhooks");
     config.put("content_type", "json");
     config.put("insecure_ssl", "0");
     config.put("secret", secret);
     hook.put("name", "web");
     hook.put("active", true);
     hook.put("config", config);
-    hook.put(EVENTS_KEY, GITHUB_EVENTS);
+    hook.put(EVENTS_KEY, githubTriggerService.getTriggers());
     URI uri = URI.create(url);
     try {
       String response = processPost(uri, hook.toString(), accessToken);

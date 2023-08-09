@@ -93,6 +93,13 @@ public class GithubTriggerServiceImpl implements GithubTriggerService {
     }
   }
 
+  public String[] getTriggers() {
+    return triggerPlugins.values()
+                         .stream()
+                         .map(GithubTriggerPlugin::getName)
+                         .toArray(String[]::new);
+  }
+
   private void broadcastGithubEvent(String ruleTitle, String senderId, String receiverId, String object) {
     try {
       Map<String, String> gam = new HashMap<>();

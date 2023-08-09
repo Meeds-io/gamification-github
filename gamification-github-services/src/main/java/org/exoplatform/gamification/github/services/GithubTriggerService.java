@@ -42,4 +42,11 @@ public interface GithubTriggerService {
    * @param event gitHub sent event.
    */
   void handleTrigger(String payload, String event);
+
+  /**
+   * Gets list of configured github triggers
+   *
+   * @return list of configured github triggers
+   */
+  String[] getTriggers();
 }
