@@ -36,9 +36,8 @@ public class WebHookBuilder {
       return null;
     }
 
-    RemoteOrganization remoteOrganization =
-                                          webhookService.retrieveRemoteOrganization(webHook.getOrganizationId(),
-                                                                                    webhookService.getHookAccessToken(webHook.getOrganizationId()));
+    RemoteOrganization remoteOrganization = webhookService.retrieveRemoteOrganization(webHook.getOrganizationId(),
+                                                                                      webHook.getToken());
 
     return new WebHookRestEntity(webHook.getId(),
                                  webHook.getWebhookId(),

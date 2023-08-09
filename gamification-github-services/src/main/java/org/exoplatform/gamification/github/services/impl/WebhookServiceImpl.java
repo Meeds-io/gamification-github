@@ -42,13 +42,11 @@ import org.apache.http.protocol.HTTP;
 import org.exoplatform.commons.ObjectAlreadyExistsException;
 import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.gamification.github.exception.GithubConnectionException;
 import org.exoplatform.gamification.github.model.WebHook;
 import org.exoplatform.gamification.github.model.RemoteOrganization;
 import org.exoplatform.gamification.github.services.WebhookService;
 import org.exoplatform.gamification.github.storage.WebHookStorage;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.json.JSONObject;
 
 import org.exoplatform.services.listener.ListenerService;
@@ -69,8 +67,6 @@ public class WebhookServiceImpl implements WebhookService {
       "pull_request_review_comment", "pull_request_review_comment" };
 
   public static final String    AUTHORIZED_TO_ACCESS_GIT_HUB_HOOKS = "The user is not authorized to access gitHub Hooks";
-
-  public static final String    EVENTS_KEY                         = "events";
 
   public static final String    TOKEN                              = "token ";
 
@@ -134,7 +130,9 @@ public class WebhookServiceImpl implements WebhookService {
     JSONObject config = new JSONObject();
     JSONObject hook = new JSONObject();
     String url = GITHUB_API_URL + organizationName + "/hooks";
-    config.put("url", CommonsUtils.getCurrentDomain() + "/portal/rest/gamification/connectors/github/webhooks");
+    config.put("url",
+               "https://f838-2a01-cb05-890f-e600-b457-b8d2-3605-6d2c.ngrok-free.app"
+                   + "/portal/rest/gamification/connectors/github/webhooks");
     config.put("content_type", "json");
     config.put("insecure_ssl", "0");
     config.put("secret", secret);
@@ -147,16 +145,16 @@ public class WebhookServiceImpl implements WebhookService {
       String response = processPost(uri, hook.toString(), accessToken);
       if (response != null) {
         Map<String, Object> resultMap = fromJsonStringToMap(response);
-        long hookId = Long.parseLong(resultMap.get("id").toString());
+        long hookId = Long.parseLong(resultMap.get(ID_KEY).toString());
         List<String> events = (List<String>) resultMap.get(EVENTS_KEY);
         WebHook webHook = new WebHook();
         webHook.setWebhookId(hookId);
         webHook.setOrganizationId(remoteOrganization.getId());
         webHook.setEvent(events);
         webHook.setWatchedBy(currentUser);
-        secret = encode(secret);
-        accessToken = encode(accessToken);
-        webHookStorage.saveWebHook(webHook, secret, accessToken);
+        webHook.setToken(accessToken);
+        webHook.setSecret(secret);
+        webHookStorage.saveWebHook(webHook);
       }
     } catch (GithubConnectionException e) {
       throw new IllegalStateException("Unable to open GitHub connection", e);
@@ -188,7 +186,7 @@ public class WebhookServiceImpl implements WebhookService {
     }
     URI uri = URI.create(GITHUB_API_URL + organizationId + "/hooks/" + webHook.getWebhookId());
     try {
-      String response = processDelete(uri, getHookAccessToken(organizationId));
+      String response = processDelete(uri, webHook.getToken());
       if (response != null) {
         deleteWebhook(organizationId);
       }
@@ -212,19 +210,12 @@ public class WebhookServiceImpl implements WebhookService {
   public boolean verifyWebhookSecret(String payload, String signature) {
     JSONObject jsonPayload = new JSONObject(payload);
     JSONObject organization = jsonPayload.getJSONObject("organization");
-    long organizationId = organization.getLong("id");
-    String webHookSecret = getHookSecret(organizationId);
-    return verifySignature(webHookSecret, payload, signature);
-  }
-
-  @Override
-  public String getHookSecret(long organizationRemoteId) {
-    return decode(webHookStorage.getWebHookHookSecret(organizationRemoteId));
-  }
-
-  @Override
-  public String getHookAccessToken(long organizationRemoteId) {
-    return decode(webHookStorage.getWebHookAccessToken(organizationRemoteId));
+    long organizationId = organization.getLong(ID_KEY);
+    WebHook webHook = webHookStorage.getWebhookByOrganizationId(organizationId);
+    if (webHook != null) {
+      return verifySignature(webHook.getSecret(), payload, signature);
+    }
+    return false;
   }
 
   public void createGamificationHistory(String ruleTitle, String senderId, String receiverId, String object) {
@@ -245,26 +236,12 @@ public class WebhookServiceImpl implements WebhookService {
     }
   }
 
-  public void broadcastGithubEvent(String ruleTitle, String senderId, String receiverId, String object) {
-    try {
-      Map<String, String> gam = new HashMap<>();
-      gam.put("ruleTitle", ruleTitle);
-      gam.put("senderId", senderId);
-      gam.put("receiverId", receiverId);
-      gam.put("object", object);
-      listenerService.broadcast("exo.github.event", gam, "");
-      LOG.info("Github action {} brodcasted for user {}", ruleTitle, senderId);
-    } catch (Exception e) {
-      LOG.error("Cannot broadcast github event", e);
-    }
-  }
-
   private void forceUpdateWebhook(WebHook webHook) {
     long organizationId = webHook.getOrganizationId();
     URI uri = URI.create(GITHUB_API_URL + organizationId + "/hooks/" + webHook.getWebhookId());
     String response;
     try {
-      response = processGet(uri, getHookAccessToken(organizationId));
+      response = processGet(uri, webHook.getToken());
     } catch (GithubConnectionException e) {
       throw new IllegalStateException("Unable to retrieve GitHub webhook info.", e);
     }
@@ -290,8 +267,8 @@ public class WebhookServiceImpl implements WebhookService {
     }
     Map<String, Object> resultMap = fromJsonStringToMap(response);
     RemoteOrganization gitHubOrganization = new RemoteOrganization();
-    gitHubOrganization.setId((Long.parseLong(resultMap.get("id").toString())));
-    gitHubOrganization.setName(resultMap.get("login").toString());
+    gitHubOrganization.setId((Long.parseLong(resultMap.get(ID_KEY).toString())));
+    gitHubOrganization.setName(resultMap.get(LOGIN_KEY).toString());
     gitHubOrganization.setTitle(resultMap.get("name").toString());
     gitHubOrganization.setDescription(resultMap.get("description").toString());
     gitHubOrganization.setAvatarUrl(resultMap.get("avatar_url").toString());
@@ -308,8 +285,8 @@ public class WebhookServiceImpl implements WebhookService {
     }
     Map<String, Object> resultMap = fromJsonStringToMap(response);
     RemoteOrganization gitHubOrganization = new RemoteOrganization();
-    gitHubOrganization.setId((Long.parseLong(resultMap.get("id").toString())));
-    gitHubOrganization.setName(resultMap.get("login").toString());
+    gitHubOrganization.setId((Long.parseLong(resultMap.get(ID_KEY).toString())));
+    gitHubOrganization.setName(resultMap.get(ID_KEY).toString());
     gitHubOrganization.setTitle(resultMap.get("name").toString());
     gitHubOrganization.setDescription(resultMap.get("description").toString());
     gitHubOrganization.setAvatarUrl(resultMap.get("avatar_url").toString());
@@ -386,7 +363,7 @@ public class WebhookServiceImpl implements WebhookService {
     } else if (response.getEntity() != null) {
       try (InputStream is = response.getEntity().getContent()) {
         String errorMessage = IOUtils.toString(is, StandardCharsets.UTF_8);
-        if (StringUtils.contains(errorMessage, "wom.")) {
+        if (StringUtils.contains(errorMessage, "")) {
           throw new GithubConnectionException(errorMessage);
         } else {
           throw new GithubConnectionException(GITHUB_CONNECTION_ERROR + errorMessage);

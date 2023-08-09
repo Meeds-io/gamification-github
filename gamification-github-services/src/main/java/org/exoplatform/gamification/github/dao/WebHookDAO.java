@@ -21,7 +21,6 @@ import org.exoplatform.gamification.github.entity.WebhookEntity;
 
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
-import java.util.Date;
 import java.util.List;
 
 public class WebHookDAO extends GenericDAOJPAImpl<WebhookEntity, Long> {
@@ -32,7 +31,6 @@ public class WebHookDAO extends GenericDAOJPAImpl<WebhookEntity, Long> {
     TypedQuery<WebhookEntity> query = getEntityManager().createNamedQuery("GitHubWebhooks.getWebhookByOrganizationId",
                                                                           WebhookEntity.class);
     query.setParameter(ORGANIZATION_ID, organizationId);
-    query.setMaxResults(1);
     try {
       return query.getSingleResult();
     } catch (NoResultException e) {
@@ -43,7 +41,6 @@ public class WebHookDAO extends GenericDAOJPAImpl<WebhookEntity, Long> {
   @Override
   @ExoTransactional
   public WebhookEntity update(WebhookEntity entity) {
-    entity.setUpdatedDate(new Date());
     return super.update(entity);
   }
 
@@ -57,27 +54,5 @@ public class WebHookDAO extends GenericDAOJPAImpl<WebhookEntity, Long> {
       query.setMaxResults(limit);
     }
     return query.getResultList();
-  }
-
-  public String getWebHookHookSecret(long organizationId) {
-    TypedQuery<String> query = getEntityManager().createNamedQuery("GitHubWebhooks.getWebHookHookSecret", String.class);
-    query.setParameter(ORGANIZATION_ID, organizationId);
-    query.setMaxResults(1);
-    try {
-      return query.getSingleResult();
-    } catch (NoResultException e) {
-      return null;
-    }
-  }
-
-  public String getWebHookAccessToken(long organizationId) {
-    TypedQuery<String> query = getEntityManager().createNamedQuery("GitHubWebhooks.getWebHookAccessToken", String.class);
-    query.setParameter(ORGANIZATION_ID, organizationId);
-    query.setMaxResults(1);
-    try {
-      return query.getSingleResult();
-    } catch (NoResultException e) {
-      return null;
-    }
   }
 }

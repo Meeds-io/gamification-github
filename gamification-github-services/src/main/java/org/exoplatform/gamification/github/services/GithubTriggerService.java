@@ -1,6 +1,8 @@
 /*
  * This file is part of the Meeds project (https://meeds.io/).
+ *
  * Copyright (C) 2020 - 2023 Meeds Association contact@meeds.io
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -15,33 +17,29 @@
  */
 package org.exoplatform.gamification.github.services;
 
-import org.picocontainer.Startable;
+import org.exoplatform.gamification.github.plugin.GithubTriggerPlugin;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+public interface GithubTriggerService {
 
-/**
- * A service that will manage the periodic updating of github webhooks, ensuring
- * that webhooks data remains current with external sources.
- */
-public class WebhookUpdateService implements Startable {
+  /**
+   * Add a new {@link GithubTriggerPlugin} for a given github trigger name
+   *
+   * @param githubTriggerPlugin {@link GithubTriggerPlugin}
+   */
+  void addPlugin(GithubTriggerPlugin githubTriggerPlugin);
 
-  ScheduledExecutorService     scheduler = Executors.newScheduledThreadPool(1);
+  /**
+   * Removes a {@link GithubTriggerPlugin} identified by its trigger name
+   *
+   * @param triggerName trigger name
+   */
+  void removePlugin(String triggerName);
 
-  private final WebhookService webhookService;
-
-  public WebhookUpdateService(WebhookService webhookService) {
-    this.webhookService = webhookService;
-  }
-
-  @Override
-  public void start() {
-    scheduler.scheduleAtFixedRate(webhookService::forceUpdateWebhooks, 0, 1, TimeUnit.HOURS);
-  }
-
-  @Override
-  public void stop() {
-    scheduler.shutdown();
-  }
+  /**
+   * To handle the event sent by github.
+   *
+   * @param payload payload The raw payload of the webhook request.
+   * @param event gitHub sent event.
+   */
+  void handleTrigger(String payload, String event);
 }

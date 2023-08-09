@@ -38,6 +38,11 @@
     <type>org.exoplatform.gamification.github.services.impl.WebhookServiceImpl</type>
   </component>
 
+  <component>
+    <key>org.exoplatform.gamification.github.services.GithubTriggerService</key>
+    <type>org.exoplatform.gamification.github.services.impl.GithubTriggerServiceImpl</type>
+  </component>
+
   <external-component-plugins>
     <target-component>org.exoplatform.commons.api.persistence.DataInitializer</target-component>
     <component-plugin>

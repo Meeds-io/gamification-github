@@ -32,12 +32,6 @@ import org.exoplatform.gamification.github.utils.StringListConverter;
 @NamedQuery(name = "GitHubWebhooks.getWebhookByOrganizationId",
             query = "SELECT gitHubWebhook FROM GitHubWebhooks gitHubWebhook"
                     + " WHERE gitHubWebhook.organizationId = :organizationId")
-@NamedQuery(name = "GitHubWebhooks.getWebHookHookSecret",
-            query = "SELECT gitHubWebhook.secret FROM GitHubWebhooks gitHubWebhook"
-                    + " WHERE gitHubWebhook.organizationId = :organizationId")
-@NamedQuery(name = "GitHubWebhooks.getWebHookAccessToken",
-            query = "SELECT gitHubWebhook.token FROM GitHubWebhooks gitHubWebhook"
-                    + " WHERE gitHubWebhook.organizationId = :organizationId")
 @NamedQuery(name = "GitHubWebhooks.getWebhookIds",
             query = "SELECT gitHubWebhook.id FROM GitHubWebhooks gitHubWebhook"
                     + " ORDER BY gitHubWebhook.id ASC")

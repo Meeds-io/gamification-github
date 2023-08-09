@@ -36,15 +36,13 @@ public class WebHookStorage {
     this.webHookDAO = gitHubHookDAO;
   }
 
-  public WebHook saveWebHook(WebHook webHook, String secret, String accessToken) throws ObjectAlreadyExistsException {
+  public WebHook saveWebHook(WebHook webHook) throws ObjectAlreadyExistsException {
     WebHook existsWebHook = getWebhookByOrganizationId(webHook.getOrganizationId());
     if (existsWebHook == null) {
       WebhookEntity webhookEntity = toEntity(webHook);
       webhookEntity.setWatchedDate(new Date());
       webhookEntity.setUpdatedDate(new Date());
       webhookEntity.setRefreshDate(new Date());
-      webhookEntity.setSecret(secret);
-      webhookEntity.setToken(accessToken);
       webhookEntity.setEnabled(true);
       webhookEntity = webHookDAO.create(webhookEntity);
       return fromEntity(webhookEntity);
@@ -59,6 +57,7 @@ public class WebHookStorage {
       webhookEntity.setRefreshDate(new Date());
       webhookEntity.setEvents(webHook.getEvent());
     }
+    webhookEntity.setUpdatedDate(new Date());
     return fromEntity(webHookDAO.update(webhookEntity));
   }
 
@@ -91,13 +90,5 @@ public class WebHookStorage {
       webHookDAO.delete(webhookEntity);
     }
     return fromEntity(webhookEntity);
-  }
-
-  public String getWebHookHookSecret(long organizationId) {
-    return webHookDAO.getWebHookHookSecret(organizationId);
-  }
-
-  public String getWebHookAccessToken(long organizationId) {
-    return webHookDAO.getWebHookAccessToken(organizationId);
   }
 }

@@ -89,18 +89,6 @@ public interface WebhookService {
   void deleteWebhookHook(long organizationId, String currentUser) throws IllegalAccessException, ObjectNotFoundException;
 
   /**
-   * @param organizationRemoteId gitHub organization remote Id
-   * @return {@link String} connector hook secret
-   */
-  String getHookSecret(long organizationRemoteId);
-
-  /**
-   * @param organizationRemoteId gitHub organization remote Id
-   * @return {@link String} connector hook access token
-   */
-  String getHookAccessToken(long organizationRemoteId);
-
-  /**
    * Retrieve available github organization info.
    *
    * @param organizationRemoteId gitHub organization remote Id
@@ -121,4 +109,14 @@ public interface WebhookService {
    * @return true if the computed signature matches the provided signature.
    */
   boolean verifyWebhookSecret(String payload, String signature);
+
+  /**
+   * create gamification history
+   *
+   * @param ruleTitle Rule title
+   * @param senderId sender username
+   * @param receiverId receiver username
+   * @param object Object link
+   */
+  void createGamificationHistory(String ruleTitle, String senderId, String receiverId, String object);
 }

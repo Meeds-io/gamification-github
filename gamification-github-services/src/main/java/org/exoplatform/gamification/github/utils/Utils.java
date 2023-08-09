@@ -35,6 +35,12 @@ public class Utils {
 
   public static final String  HMAC_SHA1_ALGORITHM = "HmacSHA1";
 
+  public static final String  ID_KEY              = "id";
+
+  public static final String  LOGIN_KEY           = "login";
+
+  public static final String  EVENTS_KEY          = "events";
+
   private static final char[] HEX                 =
                                   { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
@@ -78,6 +84,18 @@ public class Utils {
     } catch (IOException e) {
       throw new IllegalStateException("Error converting JSON string to map: " + jsonString, e);
     }
+  }
+
+  public static String extractSubItem(Map<String, Object> map, String... keys) {
+    Object currentObject = map;
+    for (String key : keys) {
+      if (currentObject instanceof Map) {
+        currentObject = ((Map<String, Object>) currentObject).get(key);
+      } else {
+        return null;
+      }
+    }
+    return currentObject.toString();
   }
 
   public static String generateRandomSecret(int length) {

@@ -45,8 +45,22 @@ public class WebHook implements Cloneable {
 
   private String       refreshDate;
 
+  private String       token;
+
+  private String       secret;
+
   public WebHook clone() { // NOSONAR
-    return new WebHook(id, webhookId, organizationId, event, enabled, watchedDate, watchedBy, updatedDate, refreshDate);
+    return new WebHook(id,
+                       webhookId,
+                       organizationId,
+                       event,
+                       enabled,
+                       watchedDate,
+                       watchedBy,
+                       updatedDate,
+                       refreshDate,
+                       token,
+                       secret);
   }
 
 }

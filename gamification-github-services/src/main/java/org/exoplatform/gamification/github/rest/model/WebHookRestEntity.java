@@ -24,17 +24,33 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
-public class WebHookRestEntity extends WebHook {
+public class WebHookRestEntity {
 
-  private String name;
+  private long         id;
 
-  private String title;
+  private long         webhookId;
 
-  private String description;
+  private long         organizationId;
 
-  private String avatarUrl;
+  private List<String> event;
+
+  private Boolean      enabled;
+
+  private String       watchedDate;
+
+  private String       watchedBy;
+
+  private String       updatedDate;
+
+  private String       refreshDate;
+
+  private String       name;
+
+  private String       title;
+
+  private String       description;
+
+  private String       avatarUrl;
 
   public WebHookRestEntity(long id, // NOSONAR
                            long webhookId,
@@ -49,8 +65,17 @@ public class WebHookRestEntity extends WebHook {
                            String title,
                            String description,
                            String avatarUrl) {
-    super(id, webhookId, organizationId, event, enabled, watchedDate, watchedBy, updatedDate, refreshDate);
+
+    this.id = id;
+    this.webhookId = webhookId;
+    this.organizationId = organizationId;
+    this.event = event;
+    this.enabled = enabled;
     this.name = name;
+    this.watchedDate = watchedDate;
+    this.watchedBy = watchedBy;
+    this.refreshDate = refreshDate;
+    this.updatedDate = updatedDate;
     this.title = title;
     this.description = description;
     this.avatarUrl = avatarUrl;

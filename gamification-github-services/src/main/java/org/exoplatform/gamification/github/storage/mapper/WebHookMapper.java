@@ -18,10 +18,13 @@ package org.exoplatform.gamification.github.storage.mapper;
 
 import io.meeds.gamification.utils.Utils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.gamification.github.entity.WebhookEntity;
 import org.exoplatform.gamification.github.model.WebHook;
 import org.exoplatform.social.core.manager.IdentityManager;
+
+import static org.exoplatform.gamification.github.utils.Utils.*;
 
 public class WebHookMapper {
 
@@ -52,6 +55,12 @@ public class WebHookMapper {
     if (CollectionUtils.isNotEmpty(webHook.getEvent())) {
       webhookEntity.setEvents(webHook.getEvent());
     }
+    if (StringUtils.isNotEmpty(webHook.getToken())) {
+      webhookEntity.setToken(encode(webHook.getToken()));
+    }
+    if (StringUtils.isNotEmpty(webHook.getSecret())) {
+      webhookEntity.setSecret(encode(webHook.getSecret()));
+    }
     return webhookEntity;
   }
 
@@ -69,7 +78,9 @@ public class WebHookMapper {
                        webhookEntity.getWatchedDate() != null ? Utils.toSimpleDateFormat(webhookEntity.getWatchedDate()) : null,
                        watchedBy,
                        webhookEntity.getUpdatedDate() != null ? Utils.toSimpleDateFormat(webhookEntity.getUpdatedDate()) : null,
-                       webhookEntity.getRefreshDate() != null ? Utils.toSimpleDateFormat(webhookEntity.getRefreshDate()) : null);
+                       webhookEntity.getRefreshDate() != null ? Utils.toSimpleDateFormat(webhookEntity.getRefreshDate()) : null,
+                       decode(webhookEntity.getToken()),
+                       decode(webhookEntity.getSecret()));
   }
 
 }
