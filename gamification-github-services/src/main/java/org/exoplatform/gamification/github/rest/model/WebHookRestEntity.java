@@ -17,8 +17,6 @@
 package org.exoplatform.gamification.github.rest.model;
 
 import lombok.*;
-import org.exoplatform.gamification.github.model.WebHook;
-
 import java.util.List;
 
 @AllArgsConstructor
