@@ -141,6 +141,7 @@ public class Utils {
     return isValid;
   }
 
+  @SuppressWarnings("unchecked")
   public static Map<String, Object> fromJsonStringToMap(String jsonString) {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
@@ -150,6 +151,7 @@ public class Utils {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public static String extractSubItem(Map<String, Object> map, String... keys) {
     Object currentObject = map;
     for (String key : keys) {
