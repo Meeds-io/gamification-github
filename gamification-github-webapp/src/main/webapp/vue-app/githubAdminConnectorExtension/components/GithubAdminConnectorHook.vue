@@ -16,7 +16,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <template>
   <v-card
-    flat>
+    flat
+    @click="openHookDetail">
     <div class="d-flex flex-row">
       <div class="d-flex">
         <div class="d-flex align-center">
@@ -115,7 +116,11 @@ export default {
     },
   },
   methods: {
-    deleteConfirmDialog() {
+    deleteConfirmDialog(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
       this.$refs.deleteHookConfirmDialog.open();
     },
     deleteHook() {
@@ -123,9 +128,16 @@ export default {
         this.$root.$emit('github-hooks-updated');
       });
     },
-    editGithubWebHook() {
+    editGithubWebHook(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
       this.$root.$emit('github-hook-form-drawer', this.hook);
     },
+    openHookDetail() {
+      this.$root.$emit('github-hook-detail', this.hook);
+    }
   }
 };
 </script>
