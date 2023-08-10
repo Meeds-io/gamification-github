@@ -51,7 +51,8 @@ public class WebHookBuilder {
                                  remoteOrganization.getName(),
                                  remoteOrganization.getTitle(),
                                  remoteOrganization.getDescription(),
-                                 remoteOrganization.getAvatarUrl());
+                                 remoteOrganization.getAvatarUrl(),
+                                 webhookService.isWebHookWatchLimitEnabled(webHook.getOrganizationId()));
   }
 
   public static List<WebHookRestEntity> toRestEntities(WebhookService webhookService, Collection<WebHook> webHooks) {

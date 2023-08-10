@@ -19,6 +19,7 @@ import java.io.*;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import io.meeds.gamification.utils.Utils;
 import org.apache.commons.collections.CollectionUtils;
@@ -40,9 +41,14 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HTTP;
 import org.exoplatform.commons.ObjectAlreadyExistsException;
+import org.exoplatform.commons.api.settings.data.Context;
+import org.exoplatform.commons.api.settings.data.Scope;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.gamification.github.exception.GithubConnectionException;
+import org.exoplatform.commons.api.settings.SettingService;
+import org.exoplatform.commons.api.settings.SettingValue;
+import org.exoplatform.gamification.github.model.RemoteRepository;
 import org.exoplatform.gamification.github.model.WebHook;
 import org.exoplatform.gamification.github.model.RemoteOrganization;
 import org.exoplatform.gamification.github.services.GithubTriggerService;
@@ -60,9 +66,17 @@ import static org.exoplatform.gamification.github.utils.Utils.*;
 
 public class WebhookServiceImpl implements WebhookService {
 
-  private static final Log           LOG                                = ExoLogger.getLogger(WebhookServiceImpl.class);
+  private static final Log           LOG                    = ExoLogger.getLogger(WebhookServiceImpl.class);
+
+  private static final Context       GITHUB_WEBHOOK_CONTEXT = Context.GLOBAL.id("githubWebhook");
+
+  private static final Scope         WATCH_LIMITED_SCOPE    = Scope.APPLICATION.id("watchLimited");
+
+  private static final Scope         DISABLED_REPOS_SCOPE   = Scope.APPLICATION.id("disabledRepos");
 
   private final ListenerService      listenerService;
+
+  private final SettingService       settingService;
 
   private final WebHookStorage       webHookStorage;
 
@@ -71,9 +85,11 @@ public class WebhookServiceImpl implements WebhookService {
   private HttpClient                 client;
 
   public WebhookServiceImpl(ListenerService listenerService,
+                            SettingService settingService,
                             GithubTriggerService githubTriggerService,
                             WebHookStorage webHookStorage) {
     this.listenerService = listenerService;
+    this.settingService = settingService;
     this.githubTriggerService = githubTriggerService;
     this.webHookStorage = webHookStorage;
   }
@@ -208,6 +224,143 @@ public class WebhookServiceImpl implements WebhookService {
     return false;
   }
 
+  @Override
+  public boolean isWebHookRepositoryEnabled(String payload) {
+    Map<String, Object> payloadMap = fromJsonStringToMap(payload);
+    String organizationId = extractSubItem(payloadMap, "organization", "id");
+    String repositoryId = extractSubItem(payloadMap, "repository", "id");
+    if (organizationId != null && repositoryId != null) {
+      return isWebHookRepositoryEnabled(Long.parseLong(organizationId), Long.parseLong(repositoryId));
+    }
+    return false;
+  }
+
+  @Override
+  public boolean isWebHookRepositoryEnabled(long organizationId, long repositoryId) {
+    List<Long> disabledRepositoryList = new ArrayList<>();
+    SettingValue<?> settingValue =
+                                 settingService.get(GITHUB_WEBHOOK_CONTEXT, DISABLED_REPOS_SCOPE, String.valueOf(organizationId));
+    if (settingValue != null && settingValue.getValue() != null && StringUtils.isNotBlank(settingValue.getValue().toString())) {
+      disabledRepositoryList = Arrays.stream(settingValue.getValue().toString().split(":"))
+                                     .map(Long::parseLong)
+                                     .toList();
+    }
+    return !disabledRepositoryList.contains(repositoryId);
+  }
+
+  @Override
+  public void setWebHookRepositoryEnabled(long organizationId,
+                                          long repositoryId,
+                                          boolean enabled,
+                                          String currentUser) throws IllegalAccessException {
+    if (!Utils.isRewardingManager(currentUser)) {
+      throw new IllegalAccessException("The user is not authorized to update repository status");
+    }
+    List<Long> disabledRepositoryList = new ArrayList<>();
+    SettingValue<?> settingValue =
+                                 settingService.get(GITHUB_WEBHOOK_CONTEXT, DISABLED_REPOS_SCOPE, String.valueOf(organizationId));
+    if (settingValue != null && settingValue.getValue() != null && StringUtils.isNotBlank(settingValue.getValue().toString())) {
+      disabledRepositoryList = Arrays.stream(settingValue.getValue().toString().split(":"))
+                                     .map(Long::parseLong)
+                                     .collect(Collectors.toList());
+    }
+    if (!enabled) {
+      if (!disabledRepositoryList.contains(repositoryId)) {
+        disabledRepositoryList.add(repositoryId);
+      }
+    } else {
+      disabledRepositoryList.remove(repositoryId);
+    }
+    String disabledRepositories = disabledRepositoryList.stream().map(String::valueOf).collect(Collectors.joining(":"));
+    settingService.set(GITHUB_WEBHOOK_CONTEXT,
+                       DISABLED_REPOS_SCOPE,
+                       String.valueOf(organizationId),
+                       SettingValue.create(disabledRepositories));
+  }
+
+  @Override
+  public boolean isWebHookWatchLimitEnabled(long organizationId) {
+    SettingValue<?> settingValue =
+                                 settingService.get(GITHUB_WEBHOOK_CONTEXT, WATCH_LIMITED_SCOPE, String.valueOf(organizationId));
+    if (settingValue != null && settingValue.getValue() != null && StringUtils.isNotBlank(settingValue.getValue().toString())) {
+      return Boolean.parseBoolean(settingValue.getValue().toString());
+    }
+    return true;
+  }
+
+  @Override
+  public void setWebHookWatchLimitEnabled(long organizationId,
+                                          boolean enabled,
+                                          String currentUser) throws IllegalAccessException {
+    if (!Utils.isRewardingManager(currentUser)) {
+      throw new IllegalAccessException("The user is not authorized to update webHook watch limit status");
+    }
+    settingService.set(GITHUB_WEBHOOK_CONTEXT, WATCH_LIMITED_SCOPE, String.valueOf(organizationId), SettingValue.create(enabled));
+  }
+
+  @Override
+  public List<RemoteRepository> retrieveOrganizationRepos(long organizationRemoteId,
+                                                          String currentUser,
+                                                          int page,
+                                                          int perPage) throws IllegalAccessException, ObjectNotFoundException {
+    if (!Utils.isRewardingManager(currentUser)) {
+      throw new IllegalAccessException("The user is not authorized to access organization repositories");
+    }
+    WebHook webHook = webHookStorage.getWebhookByOrganizationId(organizationRemoteId);
+    if (webHook == null) {
+      throw new ObjectNotFoundException("webhook with organization id '" + organizationRemoteId + "' doesn't exist");
+    }
+    List<RemoteRepository> remoteRepositories = new ArrayList<>();
+    String url = GITHUB_API_URL + organizationRemoteId + "/repos?per_page=" + perPage + "&page=" + page;
+
+    URI uri = URI.create(url);
+    try {
+      String response = processGet(uri, webHook.getToken());
+      if (response != null) {
+        Map<String, Object>[] repositoryMaps = fromJsonStringToMapCollection(response);
+        for (Map<String, Object> repoMap : repositoryMaps) {
+          RemoteRepository remoteRepository = new RemoteRepository();
+          long repoId = Long.parseLong(repoMap.get("id").toString());
+          String name = (String) repoMap.get("name");
+          String description = (String) repoMap.get("description");
+          remoteRepository.setId(repoId);
+          remoteRepository.setName(name);
+          remoteRepository.setDescription(description);
+          remoteRepository.setEnabled(isWebHookRepositoryEnabled(organizationRemoteId, repoId));
+          remoteRepositories.add(remoteRepository);
+        }
+        return remoteRepositories;
+      }
+    } catch (GithubConnectionException e) {
+      throw new IllegalStateException("Unable to retrieve GitHub organization repos.");
+    }
+    return remoteRepositories;
+  }
+
+  @Override
+  public int countOrganizationRepos(long organizationRemoteId, String currentUser) throws IllegalAccessException,
+                                                                                   ObjectNotFoundException {
+    if (!Utils.isRewardingManager(currentUser)) {
+      throw new IllegalAccessException("The user is not authorized to access organization repositories");
+    }
+    WebHook webHook = webHookStorage.getWebhookByOrganizationId(organizationRemoteId);
+    if (webHook == null) {
+      throw new ObjectNotFoundException("webhook with organization id '" + organizationRemoteId + "' doesn't exist");
+    }
+    String url = GITHUB_API_URL + organizationRemoteId + "/repos";
+    URI uri = URI.create(url);
+    try {
+      String response = processGet(uri, webHook.getToken());
+      if (response != null) {
+        Map<String, Object>[] repositoryMaps = fromJsonStringToMapCollection(response);
+        return (int) Arrays.stream(repositoryMaps).count();
+      }
+    } catch (GithubConnectionException e) {
+      throw new IllegalStateException("Unable to retrieve GitHub organization repos.");
+    }
+    return 0;
+  }
+
   public void createGamificationHistory(String ruleTitle, String senderId, String receiverId, String object) {
     try {
       Map<String, String> gam = new HashMap<>();
@@ -277,7 +430,7 @@ public class WebhookServiceImpl implements WebhookService {
     Map<String, Object> resultMap = fromJsonStringToMap(response);
     RemoteOrganization gitHubOrganization = new RemoteOrganization();
     gitHubOrganization.setId((Long.parseLong(resultMap.get(ID).toString())));
-    gitHubOrganization.setName(resultMap.get(ID).toString());
+    gitHubOrganization.setName(resultMap.get(LOGIN).toString());
     gitHubOrganization.setTitle(resultMap.get(NAME).toString());
     gitHubOrganization.setDescription(resultMap.get(DESCRIPTION).toString());
     gitHubOrganization.setAvatarUrl(resultMap.get(AVATAR_URL).toString());
