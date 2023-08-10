@@ -151,6 +151,15 @@ public class Utils {
     }
   }
 
+  public static Map<String, Object>[] fromJsonStringToMapCollection(String jsonString) {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      return objectMapper.readValue(jsonString, Map[].class);
+    } catch (IOException e) {
+      throw new IllegalStateException("Error converting JSON string to map: " + jsonString, e);
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public static String extractSubItem(Map<String, Object> map, String... keys) {
     Object currentObject = map;
