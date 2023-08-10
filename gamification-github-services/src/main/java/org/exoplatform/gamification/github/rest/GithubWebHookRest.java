@@ -41,13 +41,16 @@ public class GithubWebHookRest implements ResourceContainer {
   public Response githubEvent(// NOSONAR
                               @HeaderParam("x-github-event") String event,
                               @HeaderParam("x-hub-signature") String signature,
-                              String obj) {
+                              String payload) {
 
-    if (!webhookService.verifyWebhookSecret(obj, signature)) {
+    if (!webhookService.verifyWebhookSecret(payload, signature)) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
+    if (!webhookService.isWebHookRepositoryEnabled(payload)) {
+      return Response.noContent().build();
+    }
     try {
-      githubTriggerService.handleTrigger(obj, event);
+      githubTriggerService.handleTrigger(payload, event);
       return Response.ok().build();
     } catch (Exception e) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

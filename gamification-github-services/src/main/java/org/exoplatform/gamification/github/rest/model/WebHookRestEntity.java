@@ -50,6 +50,8 @@ public class WebHookRestEntity {
 
   private String       avatarUrl;
 
+  private boolean watchScopeLimited;
+
   public WebHookRestEntity(long id, // NOSONAR
                            long webhookId,
                            long organizationId,
@@ -62,7 +64,8 @@ public class WebHookRestEntity {
                            String name,
                            String title,
                            String description,
-                           String avatarUrl) {
+                           String avatarUrl,
+                           boolean watchScopeLimited) {
 
     this.id = id;
     this.webhookId = webhookId;
@@ -77,5 +80,6 @@ public class WebHookRestEntity {
     this.title = title;
     this.description = description;
     this.avatarUrl = avatarUrl;
+    this.watchScopeLimited = watchScopeLimited;
   }
 }

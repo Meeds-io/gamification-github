@@ -18,12 +18,16 @@ import GithubAdminConnectorItem from './components/GithubAdminConnectorItem.vue'
 import GithubAdminHookFormDrawer from './components/GithubAdminHookFormDrawer.vue';
 import GithubAdminConnectorHookList from './components/GithubAdminConnectorHookList.vue';
 import GithubAdminConnectorHook from './components/GithubAdminConnectorHook.vue';
+import GithubAdminConnectorHookDetail from './components/GithubAdminConnectorHookDetail.vue';
+import GithubAdminConnectorRepositoryItem from './components/GithubAdminConnectorRepositoryItem.vue';
 
 const components = {
   'github-admin-connector-item': GithubAdminConnectorItem,
   'github-admin-hook-form-drawer': GithubAdminHookFormDrawer,
   'github-admin-connector-hook-list': GithubAdminConnectorHookList,
   'github-admin-connector-hook': GithubAdminConnectorHook,
+  'github-admin-connector-hook-detail': GithubAdminConnectorHookDetail,
+  'github-admin-connector-repository-item': GithubAdminConnectorRepositoryItem,
 };
 
 for (const key in components) {
