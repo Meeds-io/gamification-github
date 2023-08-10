@@ -40,7 +40,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HTTP;
 import org.exoplatform.commons.ObjectAlreadyExistsException;
-import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.gamification.github.exception.GithubConnectionException;
@@ -62,16 +61,6 @@ import static org.exoplatform.gamification.github.utils.Utils.*;
 public class WebhookServiceImpl implements WebhookService {
 
   private static final Log           LOG                                = ExoLogger.getLogger(WebhookServiceImpl.class);
-
-  private static final String        GITHUB_API_URL                     = "https://api.github.com/orgs/";
-
-  public static final String         AUTHORIZED_TO_ACCESS_GIT_HUB_HOOKS = "The user is not authorized to access gitHub Hooks";
-
-  public static final String         TOKEN                              = "token ";
-
-  public static final String         AUTHORIZATION                      = "Authorization";
-
-  public static final String         GITHUB_CONNECTION_ERROR            = "github.connectionError";
 
   private final ListenerService      listenerService;
 
@@ -103,7 +92,6 @@ public class WebhookServiceImpl implements WebhookService {
     return getWebhooks(offset, limit);
   }
 
-  @ExoTransactional
   public List<WebHook> getWebhooks(int offset, int limit) {
     List<Long> hooksIds = webHookStorage.getWebhookIds(offset, limit);
     return hooksIds.stream().map(webHookStorage::getWebHookById).toList();
@@ -119,6 +107,7 @@ public class WebhookServiceImpl implements WebhookService {
     return webHookStorage.countWebhooks();
   }
 
+  @SuppressWarnings("unchecked")
   public void createWebhook(String organizationName, String accessToken, String currentUser) throws ObjectAlreadyExistsException,
                                                                                              IllegalAccessException {
     if (!Utils.isRewardingManager(currentUser)) {
@@ -141,14 +130,14 @@ public class WebhookServiceImpl implements WebhookService {
     hook.put("name", "web");
     hook.put("active", true);
     hook.put("config", config);
-    hook.put(EVENTS_KEY, githubTriggerService.getTriggers());
+    hook.put(EVENTS, githubTriggerService.getTriggers());
     URI uri = URI.create(url);
     try {
       String response = processPost(uri, hook.toString(), accessToken);
       if (response != null) {
         Map<String, Object> resultMap = fromJsonStringToMap(response);
-        long hookId = Long.parseLong(resultMap.get(ID_KEY).toString());
-        List<String> events = (List<String>) resultMap.get(EVENTS_KEY);
+        long hookId = Long.parseLong(resultMap.get(ID).toString());
+        List<String> events = (List<String>) resultMap.get(EVENTS);
         WebHook webHook = new WebHook();
         webHook.setWebhookId(hookId);
         webHook.setOrganizationId(remoteOrganization.getId());
@@ -202,7 +191,6 @@ public class WebhookServiceImpl implements WebhookService {
   }
 
   @Override
-  @ExoTransactional
   public void forceUpdateWebhooks() {
     List<WebHook> webHook = getWebhooks(0, -1);
     webHook.forEach(this::forceUpdateWebhook);
@@ -212,7 +200,7 @@ public class WebhookServiceImpl implements WebhookService {
   public boolean verifyWebhookSecret(String payload, String signature) {
     JSONObject jsonPayload = new JSONObject(payload);
     JSONObject organization = jsonPayload.getJSONObject("organization");
-    long organizationId = organization.getLong(ID_KEY);
+    long organizationId = organization.getLong(ID);
     WebHook webHook = webHookStorage.getWebhookByOrganizationId(organizationId);
     if (webHook != null) {
       return verifySignature(webHook.getSecret(), payload, signature);
@@ -238,6 +226,7 @@ public class WebhookServiceImpl implements WebhookService {
     }
   }
 
+  @SuppressWarnings("unchecked")
   private void forceUpdateWebhook(WebHook webHook) {
     long organizationId = webHook.getOrganizationId();
     URI uri = URI.create(GITHUB_API_URL + organizationId + "/hooks/" + webHook.getWebhookId());
@@ -251,7 +240,7 @@ public class WebhookServiceImpl implements WebhookService {
       webHookStorage.deleteWebHook(organizationId);
     } else {
       Map<String, Object> resultMap = fromJsonStringToMap(response);
-      List<String> events = (List<String>) resultMap.get(EVENTS_KEY);
+      List<String> events = (List<String>) resultMap.get(EVENTS);
       if (!CollectionUtils.isEqualCollection(events, webHook.getEvent())) {
         webHook.setEvent(events);
         webHookStorage.updateWebHook(webHook, true);
@@ -269,11 +258,11 @@ public class WebhookServiceImpl implements WebhookService {
     }
     Map<String, Object> resultMap = fromJsonStringToMap(response);
     RemoteOrganization gitHubOrganization = new RemoteOrganization();
-    gitHubOrganization.setId((Long.parseLong(resultMap.get(ID_KEY).toString())));
-    gitHubOrganization.setName(resultMap.get(LOGIN_KEY).toString());
-    gitHubOrganization.setTitle(resultMap.get("name").toString());
-    gitHubOrganization.setDescription(resultMap.get("description").toString());
-    gitHubOrganization.setAvatarUrl(resultMap.get("avatar_url").toString());
+    gitHubOrganization.setId((Long.parseLong(resultMap.get(ID).toString())));
+    gitHubOrganization.setName(resultMap.get(LOGIN).toString());
+    gitHubOrganization.setTitle(resultMap.get(NAME).toString());
+    gitHubOrganization.setDescription(resultMap.get(DESCRIPTION).toString());
+    gitHubOrganization.setAvatarUrl(resultMap.get(AVATAR_URL).toString());
     return gitHubOrganization;
   }
 
@@ -287,11 +276,11 @@ public class WebhookServiceImpl implements WebhookService {
     }
     Map<String, Object> resultMap = fromJsonStringToMap(response);
     RemoteOrganization gitHubOrganization = new RemoteOrganization();
-    gitHubOrganization.setId((Long.parseLong(resultMap.get(ID_KEY).toString())));
-    gitHubOrganization.setName(resultMap.get(ID_KEY).toString());
-    gitHubOrganization.setTitle(resultMap.get("name").toString());
-    gitHubOrganization.setDescription(resultMap.get("description").toString());
-    gitHubOrganization.setAvatarUrl(resultMap.get("avatar_url").toString());
+    gitHubOrganization.setId((Long.parseLong(resultMap.get(ID).toString())));
+    gitHubOrganization.setName(resultMap.get(ID).toString());
+    gitHubOrganization.setTitle(resultMap.get(NAME).toString());
+    gitHubOrganization.setDescription(resultMap.get(DESCRIPTION).toString());
+    gitHubOrganization.setAvatarUrl(resultMap.get(AVATAR_URL).toString());
     return gitHubOrganization;
   }
 

@@ -19,6 +19,7 @@ package org.exoplatform.gamification.github.plugin;
 
 import java.util.Map;
 
+import static org.exoplatform.gamification.github.utils.Utils.*;
 import static org.exoplatform.gamification.github.utils.Utils.extractSubItem;
 
 public class PushCodeTriggerPlugin extends GithubTriggerPlugin {
@@ -30,16 +31,16 @@ public class PushCodeTriggerPlugin extends GithubTriggerPlugin {
 
   @Override
   public String parseReceiverGithubUserId(Map<String, Object> payload) {
-    return extractSubItem(payload, "pusher", "name");
+    return extractSubItem(payload, PUSHER, NAME);
   }
 
   @Override
   public String parseGithubObject(Map<String, Object> payload) {
-    return extractSubItem(payload, "head_commit", "url");
+    return extractSubItem(payload, HEAD_COMMIT, URL);
   }
 
   @Override
-  public String getRuleTitle(Map<String, Object> payload) {
-    return "pushCode";
+  public String getEventName(Map<String, Object> payload) {
+    return PUSH_CODE_EVENT_NAME;
   }
 }

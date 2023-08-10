@@ -53,7 +53,7 @@ public class WebHookMapper {
       webhookEntity.setWatchedBy(Long.parseLong(userIdentityId));
     }
     if (CollectionUtils.isNotEmpty(webHook.getEvent())) {
-      webhookEntity.setEvents(webHook.getEvent());
+      webhookEntity.setTriggers(webHook.getEvent());
     }
     if (StringUtils.isNotEmpty(webHook.getToken())) {
       webhookEntity.setToken(encode(webHook.getToken()));
@@ -73,7 +73,7 @@ public class WebHookMapper {
     return new WebHook(webhookEntity.getId(),
                        webhookEntity.getWebhookId(),
                        webhookEntity.getOrganizationId(),
-                       webhookEntity.getEvents(),
+                       webhookEntity.getTriggers(),
                        webhookEntity.getEnabled(),
                        webhookEntity.getWatchedDate() != null ? Utils.toSimpleDateFormat(webhookEntity.getWatchedDate()) : null,
                        watchedBy,

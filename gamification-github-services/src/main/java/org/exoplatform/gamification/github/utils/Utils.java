@@ -33,18 +33,82 @@ import org.exoplatform.web.security.security.TokenServiceInitializationException
 
 public class Utils {
 
-  public static final String  HMAC_SHA1_ALGORITHM = "HmacSHA1";
+  public static final String  CONNECTOR_NAME                     = "github";
 
-  public static final String  ID_KEY              = "id";
+  public static final String  HMAC_SHA1_ALGORITHM                = "HmacSHA1";
 
-  public static final String  LOGIN_KEY           = "login";
+  public static final String  ID                                 = "id";
 
-  public static final String  EVENTS_KEY          = "events";
+  public static final String  LOGIN                              = "login";
 
-  private static final char[] HEX                 =
+  public static final String  NAME                               = "name";
+
+  public static final String  EVENTS                             = "events";
+
+  public static final String  STATE                              = "state";
+
+  public static final String  PULL_REQUEST                       = "pull_request";
+
+  public static final String  URL                                = "url";
+
+  public static final String  HTML                               = "html";
+
+  public static final String  HTML_URL                           = "html_url";
+
+  public static final String  LINKS                              = "_links";
+
+  public static final String  HREF                               = "href";
+
+  public static final String  HEAD_COMMIT                        = "head_commit";
+
+  public static final String  COMMENT                            = "comment";
+
+  public static final String  USER                               = "user";
+
+  public static final String  SENDER                             = "sender";
+
+  public static final String  PUSHER                             = "pusher";
+
+  public static final String  ACTION                             = "action";
+
+  public static final String  PULL_REQUEST_REVIEW                = "review";
+
+  public static final String  PULL_REQUEST_REVIEW_STATE          = "state";
+
+  public static final String  PULL_REQUEST_COMMENTED             = "commented";
+
+  public static final String  PULL_REQUEST_VALIDATED             = "approved";
+
+  public static final String  PULL_REQUEST_OPENED                = "opened";
+
+  public static final String  REVIEW_PULL_REQUEST_EVENT_NAME     = "reviewPullRequest";
+
+  public static final String  PULL_REQUEST_VALIDATED_EVENT_NAME  = "pullRequestValidated";
+
+  public static final String  CREATE_PULL_REQUEST_EVENT_NAME     = "creatPullRequest";
+
+  public static final String  COMMENT_PULL_REQUEST_EVENT_NAME    = "commentPullRequest";
+
+  public static final String  PUSH_CODE_EVENT_NAME               = "pushCode";
+
+  public static final String  GITHUB_API_URL                     = "https://api.github.com/orgs/";
+
+  public static final String  AUTHORIZED_TO_ACCESS_GIT_HUB_HOOKS = "The user is not authorized to access gitHub Hooks";
+
+  public static final String  TOKEN                              = "token ";
+
+  public static final String  AUTHORIZATION                      = "Authorization";
+
+  public static final String  GITHUB_CONNECTION_ERROR            = "github.connectionError";
+
+  public static final String  DESCRIPTION                        = "description";
+
+  public static final String  AVATAR_URL                         = "avatar_url";
+
+  private static final char[] HEX                                =
                                   { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
-  private static final Log    LOG                 = ExoLogger.getLogger(Utils.class);
+  private static final Log    LOG                                = ExoLogger.getLogger(Utils.class);
 
   private Utils() {
     // Private constructor for Utils class

@@ -19,41 +19,39 @@ package org.exoplatform.gamification.github.plugin;
 
 import java.util.Map;
 
-import static org.exoplatform.gamification.github.utils.Utils.LOGIN_KEY;
+import static org.exoplatform.gamification.github.utils.Utils.*;
 import static org.exoplatform.gamification.github.utils.Utils.extractSubItem;
 
 public class PullRequestReviewTriggerPlugin extends GithubTriggerPlugin {
 
-  public static final String PULL_REQUEST_REVIEW_NODE_NAME = "review";
-
   @Override
   public String parseSenderGithubUserId(Map<String, Object> payload) {
-    return extractSubItem(payload, PULL_REQUEST_REVIEW_NODE_NAME, "user", LOGIN_KEY);
+    return extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN);
   }
 
   @Override
   public String parseReceiverGithubUserId(Map<String, Object> payload) {
-    String pullState = extractSubItem(payload, PULL_REQUEST_REVIEW_NODE_NAME, "state");
-    if (pullState != null && pullState.equals("commented")) {
+    String pullState = extractSubItem(payload, PULL_REQUEST_REVIEW, STATE);
+    if (pullState != null && pullState.equals(PULL_REQUEST_COMMENTED)) {
       return parseSenderGithubUserId(payload);
-    } else if (pullState != null && pullState.equals("approved")) {
-      return extractSubItem(payload, "pull_request", "user", LOGIN_KEY);
+    } else if (pullState != null && pullState.equals(PULL_REQUEST_VALIDATED)) {
+      return extractSubItem(payload, PULL_REQUEST, USER, LOGIN);
     }
     return null;
   }
 
   @Override
   public String parseGithubObject(Map<String, Object> payload) {
-    return extractSubItem(payload, PULL_REQUEST_REVIEW_NODE_NAME, "html_url");
+    return extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL);
   }
 
   @Override
-  public String getRuleTitle(Map<String, Object> payload) {
-    String pullState = extractSubItem(payload, PULL_REQUEST_REVIEW_NODE_NAME, "state");
-    if (pullState != null && pullState.equals("commented")) {
-      return "reviewPullRequest";
-    } else if (pullState != null && pullState.equals("approved")) {
-      return "pullRequestValidated";
+  public String getEventName(Map<String, Object> payload) {
+    String pullState = extractSubItem(payload, PULL_REQUEST_REVIEW, PULL_REQUEST_REVIEW_STATE);
+    if (pullState != null && pullState.equals(PULL_REQUEST_COMMENTED)) {
+      return REVIEW_PULL_REQUEST_EVENT_NAME;
+    } else if (pullState != null && pullState.equals(PULL_REQUEST_VALIDATED)) {
+      return PULL_REQUEST_VALIDATED_EVENT_NAME;
     }
     return null;
   }

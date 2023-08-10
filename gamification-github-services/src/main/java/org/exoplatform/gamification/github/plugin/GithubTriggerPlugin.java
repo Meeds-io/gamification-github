@@ -47,9 +47,9 @@ public abstract class GithubTriggerPlugin extends BaseComponentPlugin {
   public abstract String parseGithubObject(Map<String, Object> payload);
 
   /**
-   * Gets rule title
+   * Gets event name
    **
-   * @return the trigger name
+   * @return the event name
    */
-  public abstract String getRuleTitle(Map<String, Object> payload);
+  public abstract String getEventName(Map<String, Object> payload);
 }

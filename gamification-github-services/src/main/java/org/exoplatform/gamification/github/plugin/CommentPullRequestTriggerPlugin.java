@@ -19,8 +19,7 @@ package org.exoplatform.gamification.github.plugin;
 
 import java.util.Map;
 
-import static org.exoplatform.gamification.github.utils.Utils.LOGIN_KEY;
-import static org.exoplatform.gamification.github.utils.Utils.extractSubItem;
+import static org.exoplatform.gamification.github.utils.Utils.*;
 
 public class CommentPullRequestTriggerPlugin extends GithubTriggerPlugin {
 
@@ -31,16 +30,16 @@ public class CommentPullRequestTriggerPlugin extends GithubTriggerPlugin {
 
   @Override
   public String parseReceiverGithubUserId(Map<String, Object> payload) {
-    return extractSubItem(payload, "comment", "user", LOGIN_KEY);
+    return extractSubItem(payload, COMMENT, USER, LOGIN);
   }
 
   @Override
   public String parseGithubObject(Map<String, Object> payload) {
-    return extractSubItem(payload, "comment", "_links", "html", "href");
+    return extractSubItem(payload, COMMENT, LINKS, HTML, HREF);
   }
 
   @Override
-  public String getRuleTitle(Map<String, Object> payload) {
-    return "commentPullRequest";
+  public String getEventName(Map<String, Object> payload) {
+    return COMMENT_PULL_REQUEST_EVENT_NAME;
   }
 }

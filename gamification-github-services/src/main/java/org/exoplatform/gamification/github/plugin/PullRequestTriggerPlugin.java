@@ -20,31 +20,31 @@ package org.exoplatform.gamification.github.plugin;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.exoplatform.gamification.github.utils.Utils.LOGIN_KEY;
+import static org.exoplatform.gamification.github.utils.Utils.*;
 import static org.exoplatform.gamification.github.utils.Utils.extractSubItem;
 
-public class PullRequestTriggerPlugin extends GithubTriggerPlugin{
+public class PullRequestTriggerPlugin extends GithubTriggerPlugin {
 
-    @Override
-    public String parseSenderGithubUserId(Map<String, Object> payload) {
-        return null;
-    }
+  @Override
+  public String parseSenderGithubUserId(Map<String, Object> payload) {
+    return null;
+  }
 
-    @Override
-    public String parseReceiverGithubUserId(Map<String, Object> payload) {
-        return extractSubItem(payload, "sender", LOGIN_KEY);
-    }
+  @Override
+  public String parseReceiverGithubUserId(Map<String, Object> payload) {
+    return extractSubItem(payload, SENDER, LOGIN);
+  }
 
-    @Override
-    public String parseGithubObject(Map<String, Object> payload) {
-        return extractSubItem(payload, "pull_request", "html_url");
-    }
+  @Override
+  public String parseGithubObject(Map<String, Object> payload) {
+    return extractSubItem(payload, PULL_REQUEST, HTML_URL);
+  }
 
-    @Override
-    public String getRuleTitle(Map<String, Object> payload) {
-        if (Objects.equals(extractSubItem(payload, "action"), "opened")) {
-            return "creatPullRequest";
-        }
-        return null;
+  @Override
+  public String getEventName(Map<String, Object> payload) {
+    if (Objects.equals(extractSubItem(payload, ACTION), PULL_REQUEST_OPENED)) {
+      return CREATE_PULL_REQUEST_EVENT_NAME;
     }
+    return null;
+  }
 }

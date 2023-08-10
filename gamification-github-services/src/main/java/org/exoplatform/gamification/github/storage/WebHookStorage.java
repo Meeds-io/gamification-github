@@ -55,7 +55,7 @@ public class WebHookStorage {
     WebhookEntity webhookEntity = webHookDAO.find(webHook.getId());
     if (forceUpdate) {
       webhookEntity.setRefreshDate(new Date());
-      webhookEntity.setEvents(webHook.getEvent());
+      webhookEntity.setTriggers(webHook.getEvent());
     }
     webhookEntity.setUpdatedDate(new Date());
     return fromEntity(webHookDAO.update(webhookEntity));

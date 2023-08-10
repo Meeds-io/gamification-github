@@ -36,8 +36,6 @@ public class GithubTriggerServiceImpl implements GithubTriggerService {
 
   private static final Log                       LOG            = ExoLogger.getLogger(GithubTriggerServiceImpl.class);
 
-  public static final String                     CONNECTOR_NAME = "github";
-
   private final Map<String, GithubTriggerPlugin> triggerPlugins = new HashMap<>();
 
   private final ConnectorService                 connectorService;
@@ -76,7 +74,7 @@ public class GithubTriggerServiceImpl implements GithubTriggerService {
       object = triggerPlugin.parseGithubObject(payloadMap);
       receiverGithubUserId = triggerPlugin.parseReceiverGithubUserId(payloadMap);
       senderGithubUserId = triggerPlugin.parseSenderGithubUserId(payloadMap);
-      ruleTitle = triggerPlugin.getRuleTitle(payloadMap);
+      ruleTitle = triggerPlugin.getEventName(payloadMap);
     }
     String receiverId = connectorService.getAssociatedUsername(CONNECTOR_NAME, receiverGithubUserId);
     String senderId;

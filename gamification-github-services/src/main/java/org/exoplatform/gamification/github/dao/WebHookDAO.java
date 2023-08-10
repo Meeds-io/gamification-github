@@ -15,7 +15,6 @@
  */
 package org.exoplatform.gamification.github.dao;
 
-import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.gamification.github.entity.WebhookEntity;
 
@@ -38,13 +37,6 @@ public class WebHookDAO extends GenericDAOJPAImpl<WebhookEntity, Long> {
     }
   }
 
-  @Override
-  @ExoTransactional
-  public WebhookEntity update(WebhookEntity entity) {
-    return super.update(entity);
-  }
-
-  @ExoTransactional
   public List<Long> getWebhookIds(int offset, int limit) {
     TypedQuery<Long> query = getEntityManager().createNamedQuery("GitHubWebhooks.getWebhookIds", Long.class);
     if (offset > 0) {
