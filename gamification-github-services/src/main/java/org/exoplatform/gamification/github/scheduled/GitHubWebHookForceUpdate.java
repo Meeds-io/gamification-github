@@ -1,6 +1,8 @@
 /*
  * This file is part of the Meeds project (https://meeds.io/).
- * Copyright (C) 2020 - 2022 Meeds Association contact@meeds.io
+ *
+ * Copyright (C) 2020 - 2023 Meeds Association contact@meeds.io
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -13,28 +15,32 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package org.exoplatform.gamification.github.listener;
-
-import java.util.Map;
+package org.exoplatform.gamification.github.scheduled;
 
 import org.exoplatform.gamification.github.services.WebhookService;
-import org.exoplatform.services.listener.Event;
-import org.exoplatform.services.listener.Listener;
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
 
-public class GithubEventsListener extends Listener<Map<String, String>, String> {
+import org.exoplatform.commons.api.persistence.ExoTransactional;
+import org.exoplatform.container.ExoContainerContext;
+
+/**
+ * A service that will manage the periodic updating of github webhooks, ensuring
+ * that webhooks data remains current with external sources.
+ */
+@DisallowConcurrentExecution
+public class GitHubWebHookForceUpdate implements Job {
 
   private final WebhookService webhookService;
 
-  public GithubEventsListener(WebhookService webhookService) {
-    this.webhookService = webhookService;
+  public GitHubWebHookForceUpdate() {
+    this.webhookService = ExoContainerContext.getService(WebhookService.class);
   }
 
   @Override
-  public void onEvent(Event<Map<String, String>, String> event) {
-    String ruleTitle = event.getSource().get("ruleTitle");
-    String senderId = event.getSource().get("senderId");
-    String receiverId = event.getSource().get("receiverId");
-    String object = event.getSource().get("object");
-    webhookService.createGamificationHistory(ruleTitle, senderId, receiverId, object);
+  @ExoTransactional
+  public void execute(JobExecutionContext context) {
+    webhookService.forceUpdateWebhooks();
   }
 }

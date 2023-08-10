@@ -15,6 +15,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import './initComponents';
+import './services.js';
 
 export function init() {
   extensionRegistry.registerComponent('gamification-admin-connector', 'admin-connector-item', {
