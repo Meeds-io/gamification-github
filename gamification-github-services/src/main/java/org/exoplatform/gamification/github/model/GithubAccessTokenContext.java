@@ -24,6 +24,8 @@ import org.apache.commons.lang.StringUtils;
 
 public class GithubAccessTokenContext extends AccessTokenContext implements Serializable {
 
+  private static final long      serialVersionUID = 659507333834536163L;
+
   public final OAuth2AccessToken accessToken;
 
   public GithubAccessTokenContext(OAuth2AccessToken accessToken) {
@@ -35,6 +37,7 @@ public class GithubAccessTokenContext extends AccessTokenContext implements Seri
     return accessToken.getAccessToken();
   }
 
+  @Override
   public boolean equals(Object obj) {
     if (!super.equals(obj)) {
       return false;
