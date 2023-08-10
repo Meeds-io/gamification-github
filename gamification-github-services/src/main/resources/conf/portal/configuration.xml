@@ -28,10 +28,6 @@
     <type>org.exoplatform.gamification.github.rest.HooksManagementRest</type>
   </component>
 
-  <component>
-    <type>org.exoplatform.gamification.github.services.GithubHooksManagement</type>
-  </component>
-
   <external-component-plugins>
     <target-component>org.exoplatform.services.listener.ListenerService</target-component>
     <component-plugin>
@@ -47,6 +43,50 @@
       <name>github</name>
       <set-method>addPlugin</set-method>
       <type>org.exoplatform.gamification.github.plugin.GithubConnectorPlugin</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
+    <component-plugin>
+      <name>GitHubWebHookForceUpdate</name>
+      <set-method>addCronJob</set-method>
+      <type>org.exoplatform.services.scheduler.CronJob</type>
+      <description>Configuration to manage the periodic updating of github webhooks, ensuring that webhooks data remains current with external sources</description>
+      <init-params>
+        <properties-param>
+          <name>cronjob.info</name>
+          <description>Configuration to manage the periodic updating of github webhooks, ensuring that webhooks data remains current with external sources</description>
+          <property name="jobName" value="GitHubWebHookForceUpdate"/>
+          <property name="groupName" value="Gamification"/>
+          <property name="job" value="org.exoplatform.gamification.github.scheduled.GitHubWebHookForceUpdate"/>
+          <property name="expression" value="${io.meeds.gamification.GitHubWebHookForceUpdate.expression:0 * * * *}"/><!-- Every hour -->
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.gamification.github.services.GithubTriggerService</target-component>
+    <component-plugin>
+      <name>push</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.gamification.github.plugin.PushCodeTriggerPlugin</type>
+    </component-plugin>
+    <component-plugin>
+      <name>pull_request</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.gamification.github.plugin.PullRequestTriggerPlugin</type>
+    </component-plugin>
+    <component-plugin>
+      <name>pull_request_review_comment</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.gamification.github.plugin.CommentPullRequestTriggerPlugin</type>
+    </component-plugin>
+    <component-plugin>
+      <name>pull_request_review</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.gamification.github.plugin.PullRequestReviewTriggerPlugin</type>
     </component-plugin>
   </external-component-plugins>
 

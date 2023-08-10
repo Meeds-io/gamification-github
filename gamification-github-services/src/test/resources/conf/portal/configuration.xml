@@ -21,7 +21,8 @@
                xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
     <component>
-        <type>org.exoplatform.gamification.github.services.GithubHooksManagement</type>
+      <key>org.exoplatform.gamification.github.services.WebhookService</key>
+      <type>org.exoplatform.gamification.github.services.impl.WebhookServiceImpl</type>
     </component>
 
     <component>

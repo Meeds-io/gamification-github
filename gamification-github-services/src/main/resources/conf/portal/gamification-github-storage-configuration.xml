@@ -21,7 +21,26 @@
                xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
-    <type>org.exoplatform.gamification.github.dao.GitHubHookDAO</type>
+    <type>org.exoplatform.gamification.github.dao.WebHookDAO</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.gamification.github.storage.WebHookStorage</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.gamification.github.services.WebhookService</key>
+    <type>org.exoplatform.gamification.github.services.impl.WebhookServiceImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.gamification.github.services.WebhookService</key>
+    <type>org.exoplatform.gamification.github.services.impl.WebhookServiceImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.gamification.github.services.GithubTriggerService</key>
+    <type>org.exoplatform.gamification.github.services.impl.GithubTriggerServiceImpl</type>
   </component>
 
   <external-component-plugins>

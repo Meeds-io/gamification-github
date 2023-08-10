@@ -138,6 +138,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         </v-template>
       </v-card-actions>
     </div>
+    <github-admin-connector-hook-list />
+    <github-admin-hook-form-drawer />
     <exo-confirm-dialog
       ref="deleteConfirmDialog"
       :message="$t('gamification.connectors.message.confirmDeleteConnectorSetting')"
