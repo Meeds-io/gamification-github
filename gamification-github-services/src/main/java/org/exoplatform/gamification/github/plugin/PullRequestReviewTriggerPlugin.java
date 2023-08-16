@@ -17,6 +17,8 @@
  */
 package org.exoplatform.gamification.github.plugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.exoplatform.gamification.github.utils.Utils.*;
@@ -54,5 +56,10 @@ public class PullRequestReviewTriggerPlugin extends GithubTriggerPlugin {
       return PULL_REQUEST_VALIDATED_EVENT_NAME;
     }
     return null;
+  }
+
+  @Override
+  public List<String> getEvents() {
+    return new ArrayList<>(List.of(REVIEW_PULL_REQUEST_EVENT_NAME, PULL_REQUEST_VALIDATED_EVENT_NAME));
   }
 }

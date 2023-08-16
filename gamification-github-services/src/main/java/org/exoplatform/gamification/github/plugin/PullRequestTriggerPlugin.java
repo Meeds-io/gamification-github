@@ -17,8 +17,7 @@
  */
 package org.exoplatform.gamification.github.plugin;
 
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static org.exoplatform.gamification.github.utils.Utils.*;
 import static org.exoplatform.gamification.github.utils.Utils.extractSubItem;
@@ -46,5 +45,10 @@ public class PullRequestTriggerPlugin extends GithubTriggerPlugin {
       return CREATE_PULL_REQUEST_EVENT_NAME;
     }
     return null;
+  }
+
+  @Override
+  public List<String> getEvents() {
+    return new ArrayList<>(List.of(CREATE_PULL_REQUEST_EVENT_NAME));
   }
 }

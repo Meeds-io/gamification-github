@@ -17,6 +17,8 @@
  */
 package org.exoplatform.gamification.github.plugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.exoplatform.gamification.github.utils.Utils.*;
@@ -41,5 +43,10 @@ public class CommentPullRequestTriggerPlugin extends GithubTriggerPlugin {
   @Override
   public String getEventName(Map<String, Object> payload) {
     return COMMENT_PULL_REQUEST_EVENT_NAME;
+  }
+
+  @Override
+  public List<String> getEvents() {
+    return new ArrayList<>(List.of(COMMENT_PULL_REQUEST_EVENT_NAME));
   }
 }

@@ -157,7 +157,7 @@ public class WebhookServiceImpl implements WebhookService {
         WebHook webHook = new WebHook();
         webHook.setWebhookId(hookId);
         webHook.setOrganizationId(remoteOrganization.getId());
-        webHook.setEvent(events);
+        webHook.setTriggers(events);
         webHook.setWatchedBy(currentUser);
         webHook.setToken(accessToken);
         webHook.setSecret(secret);
@@ -394,8 +394,8 @@ public class WebhookServiceImpl implements WebhookService {
     } else {
       Map<String, Object> resultMap = fromJsonStringToMap(response);
       List<String> events = (List<String>) resultMap.get(EVENTS);
-      if (!CollectionUtils.isEqualCollection(events, webHook.getEvent())) {
-        webHook.setEvent(events);
+      if (!CollectionUtils.isEqualCollection(events, webHook.getTriggers())) {
+        webHook.setTriggers(events);
         webHookStorage.updateWebHook(webHook, true);
       }
     }
@@ -413,7 +413,7 @@ public class WebhookServiceImpl implements WebhookService {
     RemoteOrganization gitHubOrganization = new RemoteOrganization();
     gitHubOrganization.setId((Long.parseLong(resultMap.get(ID).toString())));
     gitHubOrganization.setName(resultMap.get(LOGIN).toString());
-    gitHubOrganization.setTitle(resultMap.get(NAME).toString());
+    gitHubOrganization.setTitle(resultMap.get(NAME) != null ? resultMap.get(NAME).toString() : resultMap.get(LOGIN).toString());
     gitHubOrganization.setDescription(resultMap.get(DESCRIPTION).toString());
     gitHubOrganization.setAvatarUrl(resultMap.get(AVATAR_URL).toString());
     return gitHubOrganization;
