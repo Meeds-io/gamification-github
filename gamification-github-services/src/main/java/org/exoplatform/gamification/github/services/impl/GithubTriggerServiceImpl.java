@@ -19,7 +19,6 @@ package org.exoplatform.gamification.github.services.impl;
 
 import io.meeds.gamification.service.ConnectorService;
 import io.meeds.gamification.utils.Utils;
-import liquibase.hub.model.Organization;
 import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;

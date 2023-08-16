@@ -17,17 +17,10 @@
  */
 package org.exoplatform.gamification.github.services;
 
-import io.meeds.gamification.utils.Utils;
-import org.apache.commons.lang3.StringUtils;
-import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.gamification.github.model.WebHook;
 import org.exoplatform.gamification.github.plugin.GithubTriggerPlugin;
 import org.exoplatform.gamification.github.model.Event;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public interface GithubTriggerService {
 
@@ -62,6 +55,7 @@ public interface GithubTriggerService {
 
   /**
    * Gets events that can be reached form all triggers
+   * 
    * @param webHook webHook
    * @return {@link List} of {@link Event} of events
    */
@@ -72,7 +66,6 @@ public interface GithubTriggerService {
    *
    * @param organizationId github remote organization id
    * @param event event name
-   *
    * @return true if the webhook event is enabled, else false.
    */
   boolean isEventEnabled(long organizationId, String event);
@@ -84,7 +77,8 @@ public interface GithubTriggerService {
    * @param event event name
    * @param enabled true to enabled, else false
    * @param currentUser user name attempting to enables/disables event.
-   * @throws IllegalAccessException when user is not authorized enables/disables webhook event
+   * @throws IllegalAccessException when user is not authorized enables/disables
+   *           webhook event
    */
   void setEventEnabled(long organizationId, String event, boolean enabled, String currentUser) throws IllegalAccessException;
 }
