@@ -20,9 +20,11 @@ package org.exoplatform.gamification.github.rest.builder;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.exoplatform.gamification.github.model.RemoteOrganization;
 import org.exoplatform.gamification.github.model.WebHook;
 import org.exoplatform.gamification.github.rest.model.WebHookRestEntity;
+import org.exoplatform.gamification.github.services.GithubTriggerService;
 import org.exoplatform.gamification.github.services.WebhookService;
 
 public class WebHookBuilder {
@@ -31,7 +33,7 @@ public class WebHookBuilder {
     // Class with static methods
   }
 
-  public static WebHookRestEntity toRestEntity(WebhookService webhookService, WebHook webHook) {
+  public static WebHookRestEntity toRestEntity(WebhookService webhookService, GithubTriggerService githubTriggerService, WebHook webHook) {
     if (webHook == null) {
       return null;
     }
@@ -39,10 +41,11 @@ public class WebHookBuilder {
     RemoteOrganization remoteOrganization = webhookService.retrieveRemoteOrganization(webHook.getOrganizationId(),
                                                                                       webHook.getToken());
 
+
     return new WebHookRestEntity(webHook.getId(),
                                  webHook.getWebhookId(),
                                  webHook.getOrganizationId(),
-                                 webHook.getEvent(),
+                                 githubTriggerService.getEvents(webHook),
                                  webHook.getEnabled(),
                                  webHook.getWatchedDate(),
                                  webHook.getWatchedBy(),
@@ -55,7 +58,7 @@ public class WebHookBuilder {
                                  webhookService.isWebHookWatchLimitEnabled(webHook.getOrganizationId()));
   }
 
-  public static List<WebHookRestEntity> toRestEntities(WebhookService webhookService, Collection<WebHook> webHooks) {
-    return webHooks.stream().map(webHook -> toRestEntity(webhookService, webHook)).toList();
+  public static List<WebHookRestEntity> toRestEntities(WebhookService webhookService, GithubTriggerService githubTriggerService, Collection<WebHook> webHooks) {
+    return webHooks.stream().map(webHook -> toRestEntity(webhookService, githubTriggerService, webHook)).toList();
   }
 }

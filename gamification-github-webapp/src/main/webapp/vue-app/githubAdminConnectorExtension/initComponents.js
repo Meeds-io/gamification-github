@@ -20,6 +20,9 @@ import GithubAdminConnectorHookList from './components/GithubAdminConnectorHookL
 import GithubAdminConnectorHook from './components/GithubAdminConnectorHook.vue';
 import GithubAdminConnectorHookDetail from './components/GithubAdminConnectorHookDetail.vue';
 import GithubAdminConnectorRepositoryItem from './components/GithubAdminConnectorRepositoryItem.vue';
+import GithubAdminConnectorRepositoryList from './components/GithubAdminConnectorRepositoryList.vue';
+import GithubAdminConnectorEventItem from './components/GithubAdminConnectorEventItem.vue';
+import GithubAdminConnectorEventList from './components/GithubAdminConnectorEventList.vue';
 
 const components = {
   'github-admin-connector-item': GithubAdminConnectorItem,
@@ -28,6 +31,9 @@ const components = {
   'github-admin-connector-hook': GithubAdminConnectorHook,
   'github-admin-connector-hook-detail': GithubAdminConnectorHookDetail,
   'github-admin-connector-repository-item': GithubAdminConnectorRepositoryItem,
+  'github-admin-connector-repository-list': GithubAdminConnectorRepositoryList,
+  'github-admin-connector-event-item': GithubAdminConnectorEventItem,
+  'github-admin-connector-event-list': GithubAdminConnectorEventList,
 };
 
 for (const key in components) {
