@@ -125,3 +125,23 @@ export function enableDisableWatchScope(organizationId, enabled) {
     }
   });
 }
+
+export function saveEventStatus(organizationId, event, enabled) {
+  const formData = new FormData();
+  formData.append('organizationId', organizationId);
+  formData.append('event', event);
+  formData.append('enabled', enabled);
+
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/event/status`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams(formData).toString(),
+  }).then(resp => {
+    if (!resp?.ok) {
+      throw new Error('Response code indicates a server error', resp);
+    }
+  });
+}

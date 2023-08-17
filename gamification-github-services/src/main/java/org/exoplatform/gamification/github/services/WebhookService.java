@@ -135,6 +135,8 @@ public interface WebhookService {
    * @param repositoryRemoteId gitHub repository remote Id
    * @param enabled true to enabled, else false
    * @param currentUser user name attempting to enables/disables repository.
+   * @throws IllegalAccessException when user is not authorized enables/disables
+   *           repository
    */
   void setWebHookRepositoryEnabled(long organizationRemoteId,
                                    long repositoryRemoteId,
@@ -156,6 +158,8 @@ public interface WebhookService {
    * @param enabled true to enabled, else false
    * @param currentUser user name attempting to enables/disables webHook watch
    *          limit.
+   * @throws IllegalAccessException when user is not authorized Limit webhook
+   *           watch scope
    */
   void setWebHookWatchLimitEnabled(long organizationRemoteId, boolean enabled, String currentUser) throws IllegalAccessException;
 
