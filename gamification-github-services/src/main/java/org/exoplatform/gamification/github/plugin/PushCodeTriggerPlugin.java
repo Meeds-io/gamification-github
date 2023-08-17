@@ -46,6 +46,6 @@ public class PushCodeTriggerPlugin extends GithubTriggerPlugin {
 
   @Override
   public List<String> getEvents() {
-    return new ArrayList<>(List.of(PUSH_CODE_EVENT_NAME));
+    return Collections.singletonList(PUSH_CODE_EVENT_NAME);
   }
 }

@@ -49,6 +49,6 @@ public class PullRequestTriggerPlugin extends GithubTriggerPlugin {
 
   @Override
   public List<String> getEvents() {
-    return new ArrayList<>(List.of(CREATE_PULL_REQUEST_EVENT_NAME));
+    return Collections.singletonList(CREATE_PULL_REQUEST_EVENT_NAME);
   }
 }
