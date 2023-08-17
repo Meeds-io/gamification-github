@@ -52,8 +52,8 @@ public class WebHookMapper {
       String userIdentityId = identityManager.getOrCreateUserIdentity(webHook.getWatchedBy()).getId();
       webhookEntity.setWatchedBy(Long.parseLong(userIdentityId));
     }
-    if (CollectionUtils.isNotEmpty(webHook.getEvent())) {
-      webhookEntity.setTriggers(webHook.getEvent());
+    if (CollectionUtils.isNotEmpty(webHook.getTriggers())) {
+      webhookEntity.setTriggers(webHook.getTriggers());
     }
     if (StringUtils.isNotEmpty(webHook.getToken())) {
       webhookEntity.setToken(encode(webHook.getToken()));

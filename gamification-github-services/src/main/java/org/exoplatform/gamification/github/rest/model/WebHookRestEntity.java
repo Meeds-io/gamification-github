@@ -17,6 +17,8 @@
 package org.exoplatform.gamification.github.rest.model;
 
 import lombok.*;
+import org.exoplatform.gamification.github.model.Event;
+
 import java.util.List;
 
 @AllArgsConstructor
@@ -30,7 +32,7 @@ public class WebHookRestEntity {
 
   private long         organizationId;
 
-  private List<String> event;
+  private List<Event> events;
 
   private Boolean      enabled;
 
@@ -55,7 +57,7 @@ public class WebHookRestEntity {
   public WebHookRestEntity(long id, // NOSONAR
                            long webhookId,
                            long organizationId,
-                           List<String> event,
+                           List<Event> event,
                            boolean enabled,
                            String watchedDate,
                            String watchedBy,
@@ -70,7 +72,7 @@ public class WebHookRestEntity {
     this.id = id;
     this.webhookId = webhookId;
     this.organizationId = organizationId;
-    this.event = event;
+    this.events = event;
     this.enabled = enabled;
     this.name = name;
     this.watchedDate = watchedDate;
