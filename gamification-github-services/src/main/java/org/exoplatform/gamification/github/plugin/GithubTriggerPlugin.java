@@ -20,6 +20,7 @@ package org.exoplatform.gamification.github.plugin;
 import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.gamification.github.services.WebhookService;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,4 +53,11 @@ public abstract class GithubTriggerPlugin extends BaseComponentPlugin {
    * @return the event name
    */
   public abstract String getEventName(Map<String, Object> payload);
+
+  /**
+   * Gets events that can be reached form trigger
+   **
+   * @return the List of events
+   */
+  public abstract List<String> getEvents();
 }

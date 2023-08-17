@@ -15,36 +15,22 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package org.exoplatform.gamification.github.plugin;
+package org.exoplatform.gamification.github.model;
 
-import java.util.*;
 
-import static org.exoplatform.gamification.github.utils.Utils.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public class CommentPullRequestTriggerPlugin extends GithubTriggerPlugin {
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class Event {
 
-  @Override
-  public String parseSenderGithubUserId(Map<String, Object> payload) {
-    return null;
-  }
+  private String  name;
 
-  @Override
-  public String parseReceiverGithubUserId(Map<String, Object> payload) {
-    return extractSubItem(payload, COMMENT, USER, LOGIN);
-  }
+  private boolean enabled;
 
-  @Override
-  public String parseGithubObject(Map<String, Object> payload) {
-    return extractSubItem(payload, COMMENT, LINKS, HTML, HREF);
-  }
-
-  @Override
-  public String getEventName(Map<String, Object> payload) {
-    return COMMENT_PULL_REQUEST_EVENT_NAME;
-  }
-
-  @Override
-  public List<String> getEvents() {
-    return Collections.singletonList(COMMENT_PULL_REQUEST_EVENT_NAME);
-  }
 }
