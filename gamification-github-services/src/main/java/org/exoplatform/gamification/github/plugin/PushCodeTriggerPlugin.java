@@ -17,7 +17,7 @@
  */
 package org.exoplatform.gamification.github.plugin;
 
-import java.util.Map;
+import java.util.*;
 
 import static org.exoplatform.gamification.github.utils.Utils.*;
 import static org.exoplatform.gamification.github.utils.Utils.extractSubItem;
@@ -42,5 +42,10 @@ public class PushCodeTriggerPlugin extends GithubTriggerPlugin {
   @Override
   public String getEventName(Map<String, Object> payload) {
     return PUSH_CODE_EVENT_NAME;
+  }
+
+  @Override
+  public List<String> getEvents() {
+    return Collections.singletonList(PUSH_CODE_EVENT_NAME);
   }
 }

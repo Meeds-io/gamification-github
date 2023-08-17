@@ -33,7 +33,7 @@ public class WebHook implements Cloneable {
 
   private long         organizationId;
 
-  private List<String> event;
+  private List<String> triggers;
 
   private Boolean      enabled;
 
@@ -53,7 +53,7 @@ public class WebHook implements Cloneable {
     return new WebHook(id,
                        webhookId,
                        organizationId,
-                       event,
+                       triggers,
                        enabled,
                        watchedDate,
                        watchedBy,
