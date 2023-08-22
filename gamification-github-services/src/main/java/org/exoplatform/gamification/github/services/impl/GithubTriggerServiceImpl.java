@@ -18,14 +18,8 @@
 package org.exoplatform.gamification.github.services.impl;
 
 import io.meeds.gamification.service.ConnectorService;
-import io.meeds.gamification.utils.Utils;
+import io.meeds.gamification.service.EventService;
 import org.apache.commons.lang3.StringUtils;
-import org.exoplatform.commons.api.settings.SettingService;
-import org.exoplatform.commons.api.settings.SettingValue;
-import org.exoplatform.commons.api.settings.data.Context;
-import org.exoplatform.commons.api.settings.data.Scope;
-import org.exoplatform.gamification.github.model.Event;
-import org.exoplatform.gamification.github.model.WebHook;
 import org.exoplatform.gamification.github.plugin.GithubTriggerPlugin;
 import org.exoplatform.gamification.github.services.GithubTriggerService;
 import org.exoplatform.services.listener.ListenerService;
@@ -35,36 +29,31 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.IdentityManager;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.exoplatform.gamification.github.utils.Utils.*;
 
 public class GithubTriggerServiceImpl implements GithubTriggerService {
 
-  private static final Log                       LOG                    = ExoLogger.getLogger(GithubTriggerServiceImpl.class);
+  private static final Log                       LOG            = ExoLogger.getLogger(GithubTriggerServiceImpl.class);
 
-  private static final Context                   GITHUB_WEBHOOK_CONTEXT = Context.GLOBAL.id("githubWebhook");
-
-  private static final Scope                     DISABLED_EVENTS_SCOPE  = Scope.APPLICATION.id("disabledEvents");
-
-  private final Map<String, GithubTriggerPlugin> triggerPlugins         = new HashMap<>();
+  private final Map<String, GithubTriggerPlugin> triggerPlugins = new HashMap<>();
 
   private final ConnectorService                 connectorService;
+
+  private final EventService                     eventService;
 
   private final IdentityManager                  identityManager;
 
   private final ListenerService                  listenerService;
 
-  private final SettingService                   settingService;
-
   public GithubTriggerServiceImpl(ListenerService listenerService,
-                                  SettingService settingService,
                                   ConnectorService connectorService,
-                                  IdentityManager identityManager) {
+                                  IdentityManager identityManager,
+                                  EventService eventService) {
     this.listenerService = listenerService;
-    this.settingService = settingService;
     this.connectorService = connectorService;
     this.identityManager = identityManager;
+    this.eventService = eventService;
   }
 
   @Override
@@ -92,7 +81,7 @@ public class GithubTriggerServiceImpl implements GithubTriggerService {
       senderGithubUserId = triggerPlugin.parseSenderGithubUserId(payloadMap);
       event = triggerPlugin.getEventName(payloadMap);
     }
-    if (!isEventEnabled(organizationId, event)) {
+    if (!eventService.isEventEnabled("github", organizationId, event)) {
       return;
     }
     String receiverId = connectorService.getAssociatedUsername(CONNECTOR_NAME, receiverGithubUserId);
@@ -112,55 +101,6 @@ public class GithubTriggerServiceImpl implements GithubTriggerService {
 
   public String[] getTriggers() {
     return triggerPlugins.values().stream().map(GithubTriggerPlugin::getName).toArray(String[]::new);
-  }
-
-  public List<Event> getEvents(WebHook webHook) {
-    return triggerPlugins.values()
-                         .stream()
-                         .flatMap(trigger -> trigger.getEvents().stream())
-                         .map(event -> new Event(event, isEventEnabled(webHook.getOrganizationId(), event)))
-                         .toList();
-  }
-
-  @Override
-  public boolean isEventEnabled(long organizationId, String event) {
-    List<String> disabledEventList = new ArrayList<>();
-    SettingValue<?> settingValue = settingService.get(GITHUB_WEBHOOK_CONTEXT,
-                                                      DISABLED_EVENTS_SCOPE,
-                                                      String.valueOf(organizationId));
-    if (settingValue != null && settingValue.getValue() != null && StringUtils.isNotBlank(settingValue.getValue().toString())) {
-      disabledEventList = Arrays.stream(settingValue.getValue().toString().split(":")).toList();
-    }
-    return !disabledEventList.contains(event);
-  }
-
-  @Override
-  public void setEventEnabled(long organizationId,
-                              String event,
-                              boolean enabled,
-                              String currentUser) throws IllegalAccessException {
-    if (!Utils.isRewardingManager(currentUser)) {
-      throw new IllegalAccessException("The user is not authorized to enable/disable event");
-    }
-    List<String> disabledEventList = new ArrayList<>();
-    SettingValue<?> settingValue = settingService.get(GITHUB_WEBHOOK_CONTEXT,
-                                                      DISABLED_EVENTS_SCOPE,
-                                                      String.valueOf(organizationId));
-    if (settingValue != null && settingValue.getValue() != null && StringUtils.isNotBlank(settingValue.getValue().toString())) {
-      disabledEventList = Arrays.stream(settingValue.getValue().toString().split(":")).collect(Collectors.toList());
-    }
-    if (!enabled) {
-      if (!disabledEventList.contains(event)) {
-        disabledEventList.add(event);
-      }
-    } else {
-      disabledEventList.remove(event);
-    }
-    String disabledEvents = String.join(":", disabledEventList);
-    settingService.set(GITHUB_WEBHOOK_CONTEXT,
-                       DISABLED_EVENTS_SCOPE,
-                       String.valueOf(organizationId),
-                       SettingValue.create(disabledEvents));
   }
 
   private void broadcastGithubEvent(String ruleTitle, String senderId, String receiverId, String object) {

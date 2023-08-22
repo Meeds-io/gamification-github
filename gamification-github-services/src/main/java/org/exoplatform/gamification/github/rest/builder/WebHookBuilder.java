@@ -33,7 +33,7 @@ public class WebHookBuilder {
     // Class with static methods
   }
 
-  public static WebHookRestEntity toRestEntity(WebhookService webhookService, GithubTriggerService githubTriggerService, WebHook webHook) {
+  public static WebHookRestEntity toRestEntity(WebhookService webhookService, WebHook webHook) {
     if (webHook == null) {
       return null;
     }
@@ -45,7 +45,7 @@ public class WebHookBuilder {
     return new WebHookRestEntity(webHook.getId(),
                                  webHook.getWebhookId(),
                                  webHook.getOrganizationId(),
-                                 githubTriggerService.getEvents(webHook),
+                                 webHook.getTriggers(),
                                  webHook.getEnabled(),
                                  webHook.getWatchedDate(),
                                  webHook.getWatchedBy(),
@@ -58,7 +58,7 @@ public class WebHookBuilder {
                                  webhookService.isWebHookWatchLimitEnabled(webHook.getOrganizationId()));
   }
 
-  public static List<WebHookRestEntity> toRestEntities(WebhookService webhookService, GithubTriggerService githubTriggerService, Collection<WebHook> webHooks) {
-    return webHooks.stream().map(webHook -> toRestEntity(webhookService, githubTriggerService, webHook)).toList();
+  public static List<WebHookRestEntity> toRestEntities(WebhookService webhookService, Collection<WebHook> webHooks) {
+    return webHooks.stream().map(webHook -> toRestEntity(webhookService, webHook)).toList();
   }
 }
