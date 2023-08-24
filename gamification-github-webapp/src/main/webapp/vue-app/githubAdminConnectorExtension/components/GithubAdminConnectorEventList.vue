@@ -6,7 +6,7 @@
       :headers="eventsHeaders"
       :items="events"
       :options.sync="options"
-      :server-items-length="totalSize"
+      :server-items-length="pageSize"
       :show-rows-border="false"
       :loading="loading"
       class="pt-5"
@@ -64,8 +64,8 @@ export default {
     },
     eventsHeaders() {
       return [
-        {text: this.$t('githubConnector.webhook.details.event'), align: 'start', width: '80%'},
-        {text: this.$t('githubConnector.webhook.details.status'), align: 'center', width: '20%'},];
+        {text: this.$t('githubConnector.webhook.details.event'), align: 'start', width: '80%' , class: 'dark-grey-color ps-0'},
+        {text: this.$t('githubConnector.webhook.details.status'), align: 'center', width: '20%', class: 'dark-grey-color'},];
     },
   },
   created() {

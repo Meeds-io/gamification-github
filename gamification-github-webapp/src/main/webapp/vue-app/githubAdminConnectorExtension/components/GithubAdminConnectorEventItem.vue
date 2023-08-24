@@ -1,7 +1,7 @@
 <template>
   <tr>
-    <td>
-      <div class="clickable d-flex flex-row ma-auto">
+    <td class="ps-0 no-border-bottom">
+      <div class="d-flex flex-row ma-auto py-2">
         <div class="d-flex flex-column pa-0 justify-center pe-3">
           <v-icon size="40" class="text-color">fab fa-github</v-icon>
         </div>
@@ -11,10 +11,10 @@
         </div>
       </div>
     </td>
-    <td>
+    <td class="no-border-bottom">
       <div class="d-flex flex-column align-center">
         <v-switch
-          v-model="event.enabled"
+          v-model="enabled"
           :ripple="false"
           color="primary"
           class="connectorSwitcher my-auto"
@@ -37,8 +37,18 @@ export default {
     },
   },
   computed: {
+    id() {
+      return this.event?.id;
+    },
     title() {
       return this.event?.title;
+    },
+    enabled() {
+      const eventProperties = this.event?.properties;
+      if (eventProperties && eventProperties[`${this.organizationId}.enabled`]) {
+        return eventProperties[`${this.organizationId}.enabled`].toLowerCase() === 'true';
+      }
+      return true;
     },
     titleLabel() {
       return this.$t(`gamification.event.title.${this.title}`);
@@ -49,7 +59,7 @@ export default {
   },
   methods: {
     enableDisableEvent() {
-      this.$gamificationConnectorService.saveEventStatus('github', this.organizationId, this.title, this.event.enabled);
+      this.$gamificationConnectorService.saveEventStatus(this.id, this.organizationId, !this.enabled);
     },
   }
 };
