@@ -17,6 +17,7 @@
  */
 package org.exoplatform.gamification.github.services.impl;
 
+import io.meeds.gamification.model.EventDTO;
 import io.meeds.gamification.service.ConnectorService;
 import io.meeds.gamification.service.EventService;
 import org.apache.commons.lang3.StringUtils;
@@ -81,7 +82,9 @@ public class GithubTriggerServiceImpl implements GithubTriggerService {
       senderGithubUserId = triggerPlugin.parseSenderGithubUserId(payloadMap);
       event = triggerPlugin.getEventName(payloadMap);
     }
-    if (!eventService.isEventEnabled("github", organizationId, event)) {
+    EventDTO eventDTO =  eventService.getEventByTitleAndTrigger(event, trigger);
+    if (eventDTO.getProperties() != null && eventDTO.getProperties().get(organizationId + ".enabled") != null
+        && Boolean.parseBoolean(eventDTO.getProperties().get(organizationId + ".enabled"))) {
       return;
     }
     String receiverId = connectorService.getAssociatedUsername(CONNECTOR_NAME, receiverGithubUserId);
