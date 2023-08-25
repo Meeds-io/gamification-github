@@ -5,7 +5,8 @@ export function init() {
     type: 'github',
     options: {
       rank: 60,
-      icon: 'mdi-github',
+      icon: 'fab fa-github',
+      iconColorClass: 'text-color',
       match: (actionLabel) => githubUserActions.includes(actionLabel),
       getLabel: () => ''
     },

@@ -1,12 +1,12 @@
 <template>
   <tr>
-    <td>
+    <td class="ps-0 no-border-bottom text-truncate">
       {{ name }}
     </td>
-    <td class="py-3">
+    <td class="no-border-bottom text-truncate">
       {{ description }}
     </td>
-    <td>
+    <td class="no-border-bottom">
       <div class="d-flex flex-column align-center">
         <v-switch
           v-model="repository.enabled"
