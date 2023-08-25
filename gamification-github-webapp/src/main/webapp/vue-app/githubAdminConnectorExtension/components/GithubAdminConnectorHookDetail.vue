@@ -20,7 +20,7 @@
       </v-tooltip>
     </div>
     <github-admin-connector-repository-list :hook="hook" />
-    <github-admin-connector-event-list :hook="hook"/>
+    <github-admin-connector-event-list :hook="hook" />
   </v-card>
 </template>
 <script>

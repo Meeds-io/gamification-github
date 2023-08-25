@@ -1,24 +1,24 @@
 <template>
   <tr>
-    <td>
-      <div class="clickable d-flex flex-row ma-auto">
+    <td class="ps-0 no-border-bottom">
+      <div class="d-flex flex-row ma-auto py-2">
         <div class="d-flex flex-column pa-0 justify-center pe-3">
-          <v-icon size="40">mdi-github</v-icon>
+          <v-icon size="40" class="text-color">fab fa-github</v-icon>
         </div>
         <div class="d-flex flex-column pa-0 text-truncate">
-          <span class="text-caption">{{ title }} </span>
+          <span class="text-caption">{{ titleLabel }} </span>
           <span class="text-caption text-sub-title">{{ description }} </span>
         </div>
       </div>
     </td>
-    <td>
+    <td class="no-border-bottom">
       <div class="d-flex flex-column align-center">
         <v-switch
-          v-model="event.enabled"
+          v-model="enabled"
           :ripple="false"
           color="primary"
           class="connectorSwitcher my-auto"
-          @change="enableDisableEvent"/>
+          @change="enableDisableEvent" />
       </div>
     </td>
   </tr>
@@ -37,19 +37,29 @@ export default {
     },
   },
   computed: {
-    name() {
-      return this.event?.name;
+    id() {
+      return this.event?.id;
     },
     title() {
-      return this.$t(`githubConnector.webhook.event.title.${this.name}`);
+      return this.event?.title;
+    },
+    enabled() {
+      const eventProperties = this.event?.properties;
+      if (eventProperties && eventProperties[`${this.organizationId}.enabled`]) {
+        return eventProperties[`${this.organizationId}.enabled`].toLowerCase() === 'true';
+      }
+      return true;
+    },
+    titleLabel() {
+      return this.$t(`gamification.event.title.${this.title}`);
     },
     description() {
-      return this.$t(`githubConnector.webhook.event.description.${this.name}`);
+      return this.$t(`gamification.event.description.${this.title}`);
     },
   },
   methods: {
     enableDisableEvent() {
-      this.$githubConnectorService.saveEventStatus(this.organizationId, this.name, this.event.enabled);
+      this.$gamificationConnectorService.saveEventStatus(this.id, this.organizationId, !this.enabled);
     },
   }
 };
