@@ -52,11 +52,8 @@ public class HooksManagementRest implements ResourceContainer {
 
   private final WebhookService       webhookService;
 
-  private final GithubTriggerService githubTriggerService;
-
-  public HooksManagementRest(WebhookService webhookService, GithubTriggerService githubTriggerService) {
+  public HooksManagementRest(WebhookService webhookService) {
     this.webhookService = webhookService;
-    this.githubTriggerService = githubTriggerService;
   }
 
   @GET
@@ -246,30 +243,8 @@ public class HooksManagementRest implements ResourceContainer {
     }
   }
 
-  @Path("event/status")
-  @POST
-  @RolesAllowed("users")
-  @Operation(summary = "enables/disables webhook event.", description = "enables/disables webhook event", method = "POST")
-  @ApiResponses(value = {
-          @ApiResponse(responseCode = "204", description = "Request fulfilled"),
-          @ApiResponse(responseCode = "400", description = "Bad request"),
-          @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
-          @ApiResponse(responseCode = "500", description = "Internal server error"), })
-  public Response updateWebHookEventStatus(@Parameter(description = "GitHub organization remote Id", required = true) @FormParam("organizationId") long organizationId,
-                                          @Parameter(description = "Event name", required = true) @FormParam("event") String event,
-                                          @Parameter(description = "Event status enabled/disabled. possible values: true for enabled, else false", required = true) @FormParam("enabled") boolean enabled) {
-
-    String currentUser = getCurrentUser();
-    try {
-      githubTriggerService.setEventEnabled(organizationId, event, enabled, currentUser);
-      return Response.noContent().build();
-    } catch (IllegalAccessException e) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-    }
-  }
-
   private List<WebHookRestEntity> getWebHookRestEntities(String username) throws IllegalAccessException {
     Collection<WebHook> webHooks = webhookService.getWebhooks(username, 0, 20, false);
-    return WebHookBuilder.toRestEntities(webhookService, githubTriggerService, webHooks);
+    return WebHookBuilder.toRestEntities(webhookService, webHooks);
   }
 }
