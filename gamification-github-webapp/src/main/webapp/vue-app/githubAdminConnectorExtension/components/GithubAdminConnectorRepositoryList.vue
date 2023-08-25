@@ -73,9 +73,9 @@ export default {
     },
     repositoriesHeaders() {
       return [
-        {text: this.$t('githubConnector.webhook.details.repository'), value: 'title', align: 'start', width: '30%'},
-        {text: this.$t('githubConnector.webhook.details.description'), value: 'description', align: 'start', width: '50%'},
-        {text: this.$t('githubConnector.webhook.details.status'), value: 'enabled', align: 'center', width: '20%'},];
+        {text: this.$t('githubConnector.webhook.details.repository'), value: 'title', align: 'start', width: '20%' , class: 'dark-grey-color ps-0',},
+        {text: this.$t('githubConnector.webhook.details.description'), value: 'description', align: 'start', width: '60%', class: 'dark-grey-color'},
+        {text: this.$t('githubConnector.webhook.details.status'), value: 'enabled', align: 'center', width: '20%', class: 'dark-grey-color'},];
     },
     displayFooter() {
       return this.totalSize > this.options.itemsPerPage;
