@@ -41,7 +41,13 @@ export function saveGithubWebHook(organizationName, accessToken) {
     body: new URLSearchParams(formData).toString(),
   }).then(resp => {
     if (!resp?.ok) {
-      throw new Error('Error when saving github webhook');
+      if (resp.status === 404 || resp.status === 401) {
+        return resp.text().then((text) => {
+          throw new Error(text);
+        });
+      } else {
+        throw new Error('Error when saving github webhook');
+      }
     }
   });
 }

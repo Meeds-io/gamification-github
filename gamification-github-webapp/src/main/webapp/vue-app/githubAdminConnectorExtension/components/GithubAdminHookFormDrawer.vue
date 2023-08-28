@@ -191,6 +191,15 @@ export default {
         return this.$githubConnectorService.saveGithubWebHook(this.organizationName, this.accessToken).then(() => {
           this.$root.$emit('github-hooks-updated');
           this.close();
+        }).catch(e => {
+          if (e.message === 'github.unauthorizedOperation' || e.message === 'github.organizationNotFound') {
+            document.dispatchEvent(new CustomEvent('notification-alert', {
+              detail: {
+                message: this.$t(`githubConnector.webhook.${e.message}`),
+                type: 'error',
+              }
+            }));
+          }
         }).finally(() => this.loading = false);
       } else {
         return this.$githubConnectorService.updateWebHookAccessToken(this.hookId, this.accessToken).then(() => {
