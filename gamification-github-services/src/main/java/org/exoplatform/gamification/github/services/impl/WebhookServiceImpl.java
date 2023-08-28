@@ -125,7 +125,7 @@ public class WebhookServiceImpl implements WebhookService {
 
   @SuppressWarnings("unchecked")
   public void createWebhook(String organizationName, String accessToken, String currentUser) throws ObjectAlreadyExistsException,
-                                                                                             IllegalAccessException {
+          IllegalAccessException, ObjectNotFoundException {
     if (!Utils.isRewardingManager(currentUser)) {
       throw new IllegalAccessException("The user is not authorized to create GitHub hook");
     }
@@ -162,6 +162,8 @@ public class WebhookServiceImpl implements WebhookService {
         webHook.setToken(accessToken);
         webHook.setSecret(secret);
         webHookStorage.saveWebHook(webHook);
+      } else {
+        throw new IllegalAccessException("github.unauthorizedOperation");
       }
     } catch (GithubConnectionException e) {
       throw new IllegalStateException("Unable to open GitHub connection", e);
@@ -401,13 +403,16 @@ public class WebhookServiceImpl implements WebhookService {
     }
   }
 
-  private RemoteOrganization retrieveRemoteOrganization(String organizationName, String accessToken) {
+  private RemoteOrganization retrieveRemoteOrganization(String organizationName, String accessToken) throws ObjectNotFoundException {
     URI uri = URI.create(GITHUB_API_URL + organizationName);
     String response;
     try {
       response = processGet(uri, accessToken);
     } catch (GithubConnectionException e) {
       throw new IllegalStateException("Unable to retrieve GitHub organization info.", e);
+    }
+    if (response == null) {
+      throw new ObjectNotFoundException("github.organizationNotFound");
     }
     Map<String, Object> resultMap = fromJsonStringToMap(response);
     RemoteOrganization gitHubOrganization = new RemoteOrganization();
