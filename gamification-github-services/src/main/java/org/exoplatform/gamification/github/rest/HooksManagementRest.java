@@ -34,7 +34,6 @@ import org.exoplatform.gamification.github.rest.builder.WebHookBuilder;
 import org.exoplatform.gamification.github.rest.model.RepositoryList;
 import org.exoplatform.gamification.github.rest.model.WebHookList;
 import org.exoplatform.gamification.github.rest.model.WebHookRestEntity;
-import org.exoplatform.gamification.github.services.GithubTriggerService;
 import org.exoplatform.gamification.github.services.WebhookService;
 import org.exoplatform.services.rest.http.PATCH;
 import org.exoplatform.services.rest.resource.ResourceContainer;
@@ -111,6 +110,8 @@ public class HooksManagementRest implements ResourceContainer {
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
     } catch (ObjectAlreadyExistsException e) {
       return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
+    } catch (ObjectNotFoundException e) {
+      return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
     }
   }
 

@@ -65,9 +65,15 @@ public interface WebhookService {
    * @param organizationName github organization name
    * @param accessToken gitHub personal access token
    * @param currentUser user name attempting to create github hook
+   * @throws ObjectAlreadyExistsException when webhook already exists
+   * @throws IllegalAccessException when user is not authorized to create github
+   *           webhook
+   * @throws ObjectNotFoundException when the github organization identified by
+   *           its technical name is not found
    */
   void createWebhook(String organizationName, String accessToken, String currentUser) throws ObjectAlreadyExistsException,
-                                                                                      IllegalAccessException;
+                                                                                      IllegalAccessException,
+                                                                                      ObjectNotFoundException;
 
   /**
    * Update github organization hook.
