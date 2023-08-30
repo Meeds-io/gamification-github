@@ -20,18 +20,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.exoplatform.gamification.github.services.GithubTriggerService;
-import org.exoplatform.gamification.github.services.WebhookService;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
 @Path("/gamification/connectors/github/")
 public class GithubWebHookRest implements ResourceContainer {
 
-  private final WebhookService       webhookService;
-
   private final GithubTriggerService githubTriggerService;
 
-  public GithubWebHookRest(WebhookService webhookService, GithubTriggerService githubTriggerService) {
-    this.webhookService = webhookService;
+  public GithubWebHookRest(GithubTriggerService githubTriggerService) {
     this.githubTriggerService = githubTriggerService;
   }
 
@@ -43,14 +39,8 @@ public class GithubWebHookRest implements ResourceContainer {
                               @HeaderParam("x-hub-signature") String signature,
                               String payload) {
 
-    if (!webhookService.verifyWebhookSecret(payload, signature)) {
-      return Response.status(Response.Status.UNAUTHORIZED).build();
-    }
-    if (!webhookService.isWebHookRepositoryEnabled(payload)) {
-      return Response.noContent().build();
-    }
     try {
-      githubTriggerService.handleTrigger(payload, event);
+      githubTriggerService.handleTriggerAsync(event, signature, payload);
       return Response.ok().build();
     } catch (Exception e) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

@@ -17,7 +17,10 @@
  */
 package org.exoplatform.gamification.github.plugin;
 
+import org.exoplatform.gamification.github.model.Event;
+
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,39 +30,23 @@ import static org.exoplatform.gamification.github.utils.Utils.extractSubItem;
 public class PullRequestReviewTriggerPlugin extends GithubTriggerPlugin {
 
   @Override
-  public String parseSenderGithubUserId(Map<String, Object> payload) {
-    return extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN);
-  }
-
-  @Override
-  public String parseReceiverGithubUserId(Map<String, Object> payload) {
-    String pullState = extractSubItem(payload, PULL_REQUEST_REVIEW, STATE);
-    if (pullState != null && pullState.equals(PULL_REQUEST_COMMENTED)) {
-      return parseSenderGithubUserId(payload);
-    } else if (pullState != null && pullState.equals(PULL_REQUEST_VALIDATED)) {
-      return extractSubItem(payload, PULL_REQUEST, USER, LOGIN);
-    }
-    return null;
-  }
-
-  @Override
-  public String parseGithubObject(Map<String, Object> payload) {
-    return extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL);
-  }
-
-  @Override
-  public String getEventName(Map<String, Object> payload) {
+  public List<Event> getEvents(Map<String, Object> payload) {
     String pullState = extractSubItem(payload, PULL_REQUEST_REVIEW, PULL_REQUEST_REVIEW_STATE);
     if (pullState != null && pullState.equals(PULL_REQUEST_COMMENTED)) {
-      return REVIEW_PULL_REQUEST_EVENT_NAME;
+      return Collections.singletonList(new Event(REVIEW_PULL_REQUEST_EVENT_NAME,
+                                                 extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
+                                                 extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
+                                                 extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL)));
     } else if (pullState != null && pullState.equals(PULL_REQUEST_VALIDATED)) {
-      return PULL_REQUEST_VALIDATED_EVENT_NAME;
+      return Arrays.asList(new Event(PULL_REQUEST_VALIDATED_EVENT_NAME,
+                                     extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
+                                     extractSubItem(payload, PULL_REQUEST, USER, LOGIN),
+                                     extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL)),
+                           new Event(VALIDATE_PULL_REQUEST_EVENT_NAME,
+                                     extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
+                                     extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
+                                     extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL)));
     }
-    return null;
-  }
-
-  @Override
-  public List<String> getEvents() {
-    return Arrays.asList(REVIEW_PULL_REQUEST_EVENT_NAME, PULL_REQUEST_VALIDATED_EVENT_NAME);
+    return Collections.emptyList();
   }
 }

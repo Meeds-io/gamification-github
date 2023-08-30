@@ -17,6 +17,8 @@
  */
 package org.exoplatform.gamification.github.plugin;
 
+import org.exoplatform.gamification.github.model.Event;
+
 import java.util.*;
 
 import static org.exoplatform.gamification.github.utils.Utils.*;
@@ -24,27 +26,11 @@ import static org.exoplatform.gamification.github.utils.Utils.*;
 public class CommentPullRequestTriggerPlugin extends GithubTriggerPlugin {
 
   @Override
-  public String parseSenderGithubUserId(Map<String, Object> payload) {
-    return null;
+  public List<Event> getEvents(Map<String, Object> payload) {
+    return Collections.singletonList(new Event(PULL_REQUEST_REVIEW_COMMENT_EVENT_NAME,
+                                               null,
+                                               extractSubItem(payload, COMMENT, USER, LOGIN),
+                                               extractSubItem(payload, COMMENT, LINKS, HTML, HREF)));
   }
 
-  @Override
-  public String parseReceiverGithubUserId(Map<String, Object> payload) {
-    return extractSubItem(payload, COMMENT, USER, LOGIN);
-  }
-
-  @Override
-  public String parseGithubObject(Map<String, Object> payload) {
-    return extractSubItem(payload, COMMENT, LINKS, HTML, HREF);
-  }
-
-  @Override
-  public String getEventName(Map<String, Object> payload) {
-    return COMMENT_PULL_REQUEST_EVENT_NAME;
-  }
-
-  @Override
-  public List<String> getEvents() {
-    return Collections.singletonList(COMMENT_PULL_REQUEST_EVENT_NAME);
-  }
 }

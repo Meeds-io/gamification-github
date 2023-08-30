@@ -49,6 +49,8 @@ public class Utils {
 
   public static final String  PULL_REQUEST                       = "pull_request";
 
+  public static final String  ISSUE                              = "issue";
+
   public static final String  URL                                = "url";
 
   public static final String  HTML                               = "html";
@@ -79,15 +81,31 @@ public class Utils {
 
   public static final String  PULL_REQUEST_VALIDATED             = "approved";
 
-  public static final String  PULL_REQUEST_OPENED                = "opened";
+  public static final String OPENED = "opened";
+
+  public static final String LABELED = "labeled";
+
+  public static final String REVIEW_REQUESTED = "review_requested";
 
   public static final String  REVIEW_PULL_REQUEST_EVENT_NAME     = "reviewPullRequest";
 
   public static final String  PULL_REQUEST_VALIDATED_EVENT_NAME  = "pullRequestValidated";
 
+  public static final String VALIDATE_PULL_REQUEST_EVENT_NAME = "validatePullRequest";
+
   public static final String  CREATE_PULL_REQUEST_EVENT_NAME     = "creatPullRequest";
 
-  public static final String  COMMENT_PULL_REQUEST_EVENT_NAME    = "commentPullRequest";
+  public static final String PULL_REQUEST_REVIEW_COMMENT_EVENT_NAME = "pullRequestReviewComment";
+
+  public static final String  COMMENT_PULL_REQUEST_EVENT_NAME        = "commentPullRequest";
+
+  public static final String CREATE_ISSUE_EVENT_NAME = "createIssue";
+
+  public static final String ADD_ISSUE_LABEL_EVENT_NAME = "addIssueLabel";
+
+  public static final String REQUEST_REVIEW_FOR_PULL_REQUEST_EVENT_NAME = "requestReviewForPullRequest";
+
+  public static final String  COMMENT_ISSUE_EVENT_NAME               = "commentIssue";
 
   public static final String  PUSH_CODE_EVENT_NAME               = "pushCode";
 
@@ -170,7 +188,7 @@ public class Utils {
         return null;
       }
     }
-    return currentObject.toString();
+    return currentObject != null ? currentObject.toString() : null;
   }
 
   public static String generateRandomSecret(int length) {
