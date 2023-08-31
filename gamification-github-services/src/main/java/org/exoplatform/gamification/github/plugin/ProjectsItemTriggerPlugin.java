@@ -27,18 +27,16 @@ import java.util.Objects;
 import static org.exoplatform.gamification.github.utils.Utils.*;
 import static org.exoplatform.gamification.github.utils.Utils.extractSubItem;
 
-public class IssueTriggerPlugin extends GithubTriggerPlugin {
+public class ProjectsItemTriggerPlugin extends GithubTriggerPlugin {
 
   @Override
   public List<Event> getEvents(Map<String, Object> payload) {
-    String issueState = extractSubItem(payload, ACTION);
-    String object = extractSubItem(payload, ISSUE, HTML_URL);
+    String projectItemState = extractSubItem(payload, ACTION);
+    String object = extractSubItem(payload, "projects_v2_item", HTML_URL);
     String userId = extractSubItem(payload, SENDER, LOGIN);
-    if (Objects.equals(issueState, OPENED)) {
-      return Collections.singletonList(new Event(CREATE_ISSUE_EVENT_NAME, userId, userId, object));
+    if (Objects.equals(projectItemState, CREATED)) {
+      return Collections.singletonList(new Event(LINK_ISSUE_TO_PROJECT_EVENT_NAME, userId, userId, object));
 
-    } else if (Objects.equals(issueState, LABELED)) {
-      return Collections.singletonList(new Event(ADD_ISSUE_LABEL_EVENT_NAME, userId, userId, object));
     }
     return Collections.emptyList();
   }

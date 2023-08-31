@@ -23,6 +23,7 @@ import io.meeds.gamification.service.EventService;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.exoplatform.commons.api.persistence.ExoTransactional;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.gamification.github.model.Event;
 import org.exoplatform.gamification.github.plugin.GithubTriggerPlugin;
 import org.exoplatform.gamification.github.services.GithubTriggerService;
@@ -50,7 +51,7 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
 
   private final EventService                     eventService;
 
-  private final WebhookService                   webhookService;
+  private WebhookService                         webhookService;
 
   private final IdentityManager                  identityManager;
 
@@ -61,20 +62,19 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
   public GithubTriggerServiceImpl(ListenerService listenerService,
                                   ConnectorService connectorService,
                                   IdentityManager identityManager,
-                                  EventService eventService,
-                                  WebhookService webhookService) {
+                                  EventService eventService) {
     this.listenerService = listenerService;
     this.connectorService = connectorService;
     this.identityManager = identityManager;
     this.eventService = eventService;
-    this.webhookService = webhookService;
   }
 
   @Override
   public void start() {
     QueuedThreadPool threadFactory = new QueuedThreadPool(5, 1, 1);
     threadFactory.setName("Gamification - Github connector");
-    executorService = Executors.newCachedThreadPool(threadFactory);  }
+    executorService = Executors.newCachedThreadPool(threadFactory);
+  }
 
   @Override
   public void stop() {
@@ -104,7 +104,8 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
 
   @Override
   public void handleTrigger(String trigger, String signature, String payload) {
-    if (!webhookService.verifyWebhookSecret(payload, signature) || !webhookService.isWebHookRepositoryEnabled(payload)) {
+    if (!getWebhookService().verifyWebhookSecret(payload, signature)
+        || !getWebhookService().isWebHookRepositoryEnabled(payload)) {
       return;
     }
     Map<String, Object> payloadMap = fromJsonStringToMap(payload);
@@ -129,27 +130,26 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
   private boolean isOrganizationEventEnabled(EventDTO eventDTO, String organizationId) {
     String organizationPropertyKey = organizationId + ".enabled";
     Map<String, String> properties = eventDTO.getProperties();
-    return properties != null && Boolean.parseBoolean(properties.get(organizationPropertyKey));
+    if (properties != null && !properties.isEmpty()) {
+      return Boolean.parseBoolean(properties.get(organizationPropertyKey));
+    }
+    return true;
   }
 
   private void processEvent(Event event) {
     String receiverId = connectorService.getAssociatedUsername(CONNECTOR_NAME, event.getReceiver());
-    String senderId = getSenderId(event);
-
+    String senderId;
+    if (event.getSender() != null && !StringUtils.equals(event.getReceiver(), event.getSender())) {
+      senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, event.getSender());
+    } else {
+      senderId = receiverId;
+    }
     if (StringUtils.isNotBlank(senderId)) {
       Identity socialIdentity = identityManager.getOrCreateUserIdentity(senderId);
       if (socialIdentity != null) {
         broadcastGithubEvent(event.getName(), senderId, receiverId, event.getObject());
       }
     }
-  }
-
-  private String getSenderId(Event event) {
-    String senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, event.getSender());
-    if (StringUtils.isBlank(senderId) || StringUtils.equals(event.getReceiver(), event.getSender())) {
-      senderId = connectorService.getAssociatedUsername(CONNECTOR_NAME, event.getReceiver());
-    }
-    return senderId;
   }
 
   public String[] getTriggers() {
@@ -172,5 +172,12 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
 
   private GithubTriggerPlugin getGithubTriggerPlugin(String trigger) {
     return triggerPlugins.get(trigger);
+  }
+
+  private WebhookService getWebhookService() {
+    if (webhookService == null) {
+      webhookService = ExoContainerContext.getService(WebhookService.class);
+    }
+    return webhookService;
   }
 }

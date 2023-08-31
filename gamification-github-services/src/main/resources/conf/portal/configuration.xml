@@ -98,6 +98,16 @@
       <set-method>addPlugin</set-method>
       <type>org.exoplatform.gamification.github.plugin.CommentTriggerPlugin</type>
     </component-plugin>
+    <component-plugin>
+      <name>issue_comment</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.gamification.github.plugin.CommentTriggerPlugin</type>
+    </component-plugin>
+    <component-plugin>
+      <name>projects_v2_item</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.gamification.github.plugin.ProjectsItemTriggerPlugin</type>
+    </component-plugin>
   </external-component-plugins>
 
   <import>jar:/conf/portal/gamification-github-connector-configuration.xml</import>

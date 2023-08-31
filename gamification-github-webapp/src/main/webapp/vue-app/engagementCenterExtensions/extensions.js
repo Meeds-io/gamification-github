@@ -1,5 +1,3 @@
-const githubUserActions = ['commentPullRequest', 'creatPullRequest', 'reviewPullRequest', 'pullRequestValidated', 'pushCode'];
-
 export function init() {
   extensionRegistry.registerExtension('engagementCenterActions', 'user-actions', {
     type: 'github',
@@ -7,7 +5,19 @@ export function init() {
       rank: 60,
       icon: 'fab fa-github',
       iconColorClass: 'text-color',
-      match: (actionLabel) => githubUserActions.includes(actionLabel),
+      match: (actionLabel) => [
+        'commentPullRequest',
+        'creatPullRequest',
+        'reviewPullRequest',
+        'pullRequestValidated',
+        'pushCode',
+        'linkIssueToProject',
+        'addIssueLabel',
+        'validatePullRequest',
+        'commentIssue',
+        'createIssue',
+        'requestReviewForPullRequest'
+      ].includes(actionLabel),
       getLabel: () => ''
     },
   });

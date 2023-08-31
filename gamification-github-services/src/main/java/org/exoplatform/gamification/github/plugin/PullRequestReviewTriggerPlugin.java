@@ -31,7 +31,7 @@ public class PullRequestReviewTriggerPlugin extends GithubTriggerPlugin {
 
   @Override
   public List<Event> getEvents(Map<String, Object> payload) {
-    String pullState = extractSubItem(payload, PULL_REQUEST_REVIEW, PULL_REQUEST_REVIEW_STATE);
+    String pullState = extractSubItem(payload, PULL_REQUEST_REVIEW, STATE);
     if (pullState != null && pullState.equals(PULL_REQUEST_COMMENTED)) {
       return Collections.singletonList(new Event(REVIEW_PULL_REQUEST_EVENT_NAME,
                                                  extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
