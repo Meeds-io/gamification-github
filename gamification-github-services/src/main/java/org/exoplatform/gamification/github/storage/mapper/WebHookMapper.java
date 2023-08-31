@@ -44,6 +44,9 @@ public class WebHookMapper {
     if (webHook.getOrganizationId() > 0) {
       webhookEntity.setOrganizationId(webHook.getOrganizationId());
     }
+    if (StringUtils.isNotEmpty(webHook.getOrganizationName())) {
+      webhookEntity.setOrganizationName(webHook.getOrganizationName());
+    }
     if (webHook.getWebhookId() > 0) {
       webhookEntity.setWebhookId(webHook.getWebhookId());
     }
@@ -73,6 +76,7 @@ public class WebHookMapper {
     return new WebHook(webhookEntity.getId(),
                        webhookEntity.getWebhookId(),
                        webhookEntity.getOrganizationId(),
+                       webhookEntity.getOrganizationName(),
                        webhookEntity.getTriggers(),
                        webhookEntity.getEnabled(),
                        webhookEntity.getWatchedDate() != null ? Utils.toSimpleDateFormat(webhookEntity.getWatchedDate()) : null,

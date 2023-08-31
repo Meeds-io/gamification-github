@@ -80,30 +80,30 @@
   </external-component-plugins>
 
   <external-component-plugins>
-  <target-component>io.meeds.gamification.service.EventRegistry</target-component>
-  <component-plugin>
-    <name>PushCode</name>
-    <set-method>addPlugin</set-method>
-    <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
-    <init-params>
-      <value-param>
-        <name>event-title</name>
-        <value>pushCode</value>
-      </value-param>
-      <value-param>
-        <name>event-type</name>
-        <value>github</value>
-      </value-param>
-      <value-param>
-        <name>event-trigger</name>
-        <value>push</value>
-      </value-param>
-      <value-param>
-        <name>event-can-cancel</name>
-        <value>true</value>
-      </value-param>
-    </init-params>
-  </component-plugin>
+    <target-component>io.meeds.gamification.service.EventRegistry</target-component>
+    <component-plugin>
+      <name>PushCode</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <value-param>
+          <name>event-title</name>
+          <value>pushCode</value>
+        </value-param>
+        <value-param>
+          <name>event-type</name>
+          <value>github</value>
+        </value-param>
+        <value-param>
+          <name>event-trigger</name>
+          <value>push</value>
+        </value-param>
+        <value-param>
+          <name>event-can-cancel</name>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
     <component-plugin>
       <name>CreatPullRequest</name>
       <set-method>addPlugin</set-method>
@@ -188,7 +188,7 @@
         </value-param>
         <value-param>
           <name>event-trigger</name>
-          <value>pull_request_review_comment</value>
+          <value>issue_comment</value>
         </value-param>
         <value-param>
           <name>event-can-cancel</name>
@@ -196,6 +196,122 @@
         </value-param>
       </init-params>
     </component-plugin>
+    <component-plugin>
+      <name>AddIssueLabel</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <value-param>
+          <name>event-title</name>
+          <value>addIssueLabel</value>
+        </value-param>
+        <value-param>
+          <name>event-type</name>
+          <value>github</value>
+        </value-param>
+        <value-param>
+          <name>event-trigger</name>
+          <value>issues</value>
+        </value-param>
+        <value-param>
+          <name>event-can-cancel</name>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>ValidatePullRequest</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <value-param>
+          <name>event-title</name>
+          <value>validatePullRequest</value>
+        </value-param>
+        <value-param>
+          <name>event-type</name>
+          <value>github</value>
+        </value-param>
+        <value-param>
+          <name>event-trigger</name>
+          <value>pull_request_review</value>
+        </value-param>
+        <value-param>
+          <name>event-can-cancel</name>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>CommentIssue</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <value-param>
+          <name>event-title</name>
+          <value>commentIssue</value>
+        </value-param>
+        <value-param>
+          <name>event-type</name>
+          <value>github</value>
+        </value-param>
+        <value-param>
+          <name>event-trigger</name>
+          <value>issue_comment</value>
+        </value-param>
+        <value-param>
+          <name>event-can-cancel</name>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>CreateIssue</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <value-param>
+          <name>event-title</name>
+          <value>createIssue</value>
+        </value-param>
+        <value-param>
+          <name>event-type</name>
+          <value>github</value>
+        </value-param>
+        <value-param>
+          <name>event-trigger</name>
+          <value>issues</value>
+        </value-param>
+        <value-param>
+          <name>event-can-cancel</name>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>RequestReviewForPullRequest</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <value-param>
+          <name>event-title</name>
+          <value>requestReviewForPullRequest</value>
+        </value-param>
+        <value-param>
+          <name>event-type</name>
+          <value>github</value>
+        </value-param>
+        <value-param>
+          <name>event-trigger</name>
+          <value>pull_request</value>
+        </value-param>
+        <value-param>
+          <name>event-can-cancel</name>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+
   </external-component-plugins>
 
 

@@ -17,7 +17,6 @@ package org.exoplatform.gamification.github.services;
 
 import org.exoplatform.commons.ObjectAlreadyExistsException;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
-import org.exoplatform.gamification.github.model.RemoteOrganization;
 import org.exoplatform.gamification.github.model.RemoteRepository;
 import org.exoplatform.gamification.github.model.WebHook;
 
@@ -94,15 +93,6 @@ public interface WebhookService {
    *           gitHub hook
    */
   void deleteWebhookHook(long organizationId, String currentUser) throws IllegalAccessException, ObjectNotFoundException;
-
-  /**
-   * Retrieve available github organization info.
-   *
-   * @param organizationRemoteId gitHub organization remote Id
-   * @param accessToken gitHub personal access token
-   * @return {@link RemoteOrganization}
-   */
-  RemoteOrganization retrieveRemoteOrganization(long organizationRemoteId, String accessToken);
 
   /**
    * Force update the stored github organization webhooks if there is a change to
