@@ -234,7 +234,7 @@ public class WebhookServiceImpl implements WebhookService {
     if (organizationId != null && repositoryId != null) {
       return isWebHookRepositoryEnabled(Long.parseLong(organizationId), Long.parseLong(repositoryId));
     }
-    return false;
+    return true;
   }
 
   @Override
