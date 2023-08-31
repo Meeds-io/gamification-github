@@ -15,27 +15,19 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package org.exoplatform.gamification.github.plugin;
+package org.exoplatform.gamification.github.model;
 
-import org.exoplatform.container.component.BaseComponentPlugin;
-import org.exoplatform.gamification.github.model.Event;
-import org.exoplatform.gamification.github.services.WebhookService;
+import lombok.*;
 
-import java.util.List;
-import java.util.Map;
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@ToString(callSuper = true)
+public class TokenStatus {
 
-/**
- * A plugin that will be used by {@link WebhookService} to handle github
- * triggers
- */
-public abstract class GithubTriggerPlugin extends BaseComponentPlugin {
+  private boolean isValid;
 
-  /**
-   * Gets List of triggered events
-   *
-   * @param payload payload The raw payload of the webhook request.
-   * @return List of triggered events
-   */
-  public abstract List<Event> getEvents(Map<String, Object> payload);
+  private Long    remaining;
 
+  private Long    reset;
 }

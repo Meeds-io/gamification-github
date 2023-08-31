@@ -52,6 +52,9 @@ public class WebhookEntity implements Serializable {
   @Column(name = "ORGANIZATION_ID", nullable = false)
   private Long              organizationId;
 
+  @Column(name = "ORGANIZATION_NAME", nullable = false)
+  private String              organizationName;
+
   @Convert(converter = StringListConverter.class)
   @Column(name = "TRIGGERS", nullable = false)
   private List<String>      triggers;

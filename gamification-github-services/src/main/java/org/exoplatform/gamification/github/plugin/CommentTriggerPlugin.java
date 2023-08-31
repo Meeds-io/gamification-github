@@ -17,24 +17,29 @@
  */
 package org.exoplatform.gamification.github.plugin;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.gamification.github.model.Event;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.exoplatform.gamification.github.utils.Utils.*;
 import static org.exoplatform.gamification.github.utils.Utils.extractSubItem;
 
-public class PullRequestTriggerPlugin extends GithubTriggerPlugin {
+public class CommentTriggerPlugin extends GithubTriggerPlugin {
 
   @Override
   public List<Event> getEvents(Map<String, Object> payload) {
+    String pullRequest = extractSubItem(payload, ISSUE, PULL_REQUEST);
     String userId = extractSubItem(payload, SENDER, LOGIN);
-    String object = extractSubItem(payload, PULL_REQUEST, HTML_URL);
-    if (Objects.equals(extractSubItem(payload, ACTION), OPENED)) {
-      return Collections.singletonList(new Event(CREATE_PULL_REQUEST_EVENT_NAME, null, userId, object));
-    } else if (Objects.equals(extractSubItem(payload, ACTION), REVIEW_REQUESTED)) {
-      return Collections.singletonList(new Event(REQUEST_REVIEW_FOR_PULL_REQUEST_EVENT_NAME, null, userId, object));
+    if (StringUtils.isNotBlank(pullRequest)) {
+      return Collections.singletonList(new Event(COMMENT_PULL_REQUEST_EVENT_NAME, null, userId, pullRequest));
+    } else {
+      return Collections.singletonList(new Event(COMMENT_ISSUE_EVENT_NAME,
+                                                 null,
+                                                 userId,
+                                                 extractSubItem(payload, ISSUE, HTML_URL)));
     }
-    return Collections.emptyList();
   }
 }
