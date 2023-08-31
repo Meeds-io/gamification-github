@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     retrieveWebHookEvents() {
-      this.$gamificationConnectorService.getEvents('github', this.triggers, 0 , this.limit)
+      this.$gamificationConnectorService.getEvents('github', this.triggers)
         .then(data => {
           this.events = data.entities;
           this.eventsSize = data.size;
