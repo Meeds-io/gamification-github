@@ -11,7 +11,6 @@ export function init() {
         'reviewPullRequest',
         'pullRequestValidated',
         'pushCode',
-        'linkIssueToProject',
         'addIssueLabel',
         'validatePullRequest',
         'commentIssue',

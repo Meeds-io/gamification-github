@@ -197,29 +197,6 @@
       </init-params>
     </component-plugin>
     <component-plugin>
-      <name>LinkIssueToProject</name>
-      <set-method>addPlugin</set-method>
-      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
-      <init-params>
-        <value-param>
-          <name>event-title</name>
-          <value>linkIssueToProject</value>
-        </value-param>
-        <value-param>
-          <name>event-type</name>
-          <value>github</value>
-        </value-param>
-        <value-param>
-          <name>event-trigger</name>
-          <value>projects_v2_item</value>
-        </value-param>
-        <value-param>
-          <name>event-can-cancel</name>
-          <value>true</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
       <name>AddIssueLabel</name>
       <set-method>addPlugin</set-method>
       <type>io.meeds.gamification.plugin.EventConfigPlugin</type>

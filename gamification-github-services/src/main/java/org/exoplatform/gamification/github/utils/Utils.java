@@ -103,8 +103,6 @@ public class Utils {
 
   public static final String  ADD_ISSUE_LABEL_EVENT_NAME                 = "addIssueLabel";
 
-  public static final String  LINK_ISSUE_TO_PROJECT_EVENT_NAME           = "linkIssueToProject";
-
   public static final String  REQUEST_REVIEW_FOR_PULL_REQUEST_EVENT_NAME = "requestReviewForPullRequest";
 
   public static final String  COMMENT_ISSUE_EVENT_NAME                   = "commentIssue";
