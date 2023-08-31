@@ -192,7 +192,7 @@ export default {
           this.$root.$emit('github-hooks-updated');
           this.close();
         }).catch(e => {
-          if (e.message === 'github.unauthorizedOperation' || e.message === 'github.organizationNotFound') {
+          if (['github.unauthorizedOperation', 'github.organizationNotFound', 'github.tokenExpiredOrInvalid', 'github.tokenRateLimitReached'].indexOf(e.message ) !== -1) {
             document.dispatchEvent(new CustomEvent('notification-alert', {
               detail: {
                 message: this.$t(`githubConnector.webhook.${e.message}`),

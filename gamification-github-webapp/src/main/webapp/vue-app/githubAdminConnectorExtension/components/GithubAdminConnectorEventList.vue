@@ -4,7 +4,7 @@
     <v-card-text class="dark-grey-color text-subtitle-1 pa-0">{{ $t('gamification.label.events.placeholder') }}</v-card-text>
     <v-data-table
       :headers="eventsHeaders"
-      :items="events"
+      :items="eventToDisplay"
       :options.sync="options"
       :server-items-length="pageSize"
       :show-rows-border="false"
@@ -43,21 +43,17 @@ export default {
     return {
       options: {
         page: 1,
-        itemsPerPage: 10,
+        itemsPerPage: 5,
       },
       events: [],
       eventsSize: 0,
       pageSize: 5,
-      limit: 5,
       loading: true,
     };
   },
   computed: {
     organizationId() {
       return this.hook?.organizationId;
-    },
-    hasMoreEvents() {
-      return this.eventsSize > this.limit;
     },
     triggers() {
       return this.hook?.triggers || [];
@@ -67,13 +63,28 @@ export default {
         {text: this.$t('githubConnector.webhook.details.event'), align: 'start', width: '80%' , class: 'dark-grey-color ps-0'},
         {text: this.$t('githubConnector.webhook.details.status'), align: 'center', width: '20%', class: 'dark-grey-color'},];
     },
+    hasMoreEvents() {
+      return this.keyword ? this.sortedEvent.length > this.pageSize : this.eventsSize > this.pageSize;
+    },
+    sortedEvent() {
+      let filteredEvent = this.events;
+      if (this.keyword) {
+        filteredEvent = this.events.filter(item =>
+          this.getEventLabel(item).toLowerCase().includes(this.keyword.toLowerCase())
+        );
+      }
+      return filteredEvent.sort((a, b) => this.getEventLabel(a).localeCompare(b.title));
+    },
+    eventToDisplay() {
+      return this.sortedEvent.slice(0, this.pageSize);
+    },
   },
   created() {
     this.retrieveWebHookEvents();
   },
   methods: {
     retrieveWebHookEvents() {
-      this.$gamificationConnectorService.getEvents('github', this.organizationId, this.triggers, 0 , this.limit)
+      this.$gamificationConnectorService.getEvents('github', this.triggers)
         .then(data => {
           this.events = data.entities;
           this.eventsSize = data.size;
@@ -81,9 +92,12 @@ export default {
         .finally(() => this.loading = false);
     },
     loadMore() {
-      this.limit += this.pageSize;
+      this.pageSize += this.pageSize;
       this.retrieveWebHookEvents();
     },
+    getEventLabel(event) {
+      return this.$t(`gamification.event.title.${event.title}`);
+    }
   }
 };
 </script>

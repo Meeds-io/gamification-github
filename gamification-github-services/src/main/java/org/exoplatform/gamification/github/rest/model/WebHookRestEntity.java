@@ -17,6 +17,7 @@
 package org.exoplatform.gamification.github.rest.model;
 
 import lombok.*;
+import org.exoplatform.gamification.github.model.TokenStatus;
 
 import java.util.List;
 
@@ -53,6 +54,8 @@ public class WebHookRestEntity {
 
   private boolean watchScopeLimited;
 
+  private TokenStatus tokenStatus;
+
   public WebHookRestEntity(long id, // NOSONAR
                            long webhookId,
                            long organizationId,
@@ -66,7 +69,8 @@ public class WebHookRestEntity {
                            String title,
                            String description,
                            String avatarUrl,
-                           boolean watchScopeLimited) {
+                           boolean watchScopeLimited,
+                           TokenStatus tokenStatus) {
 
     this.id = id;
     this.webhookId = webhookId;
@@ -82,5 +86,6 @@ public class WebHookRestEntity {
     this.description = description;
     this.avatarUrl = avatarUrl;
     this.watchScopeLimited = watchScopeLimited;
+    this.tokenStatus = tokenStatus;
   }
 }

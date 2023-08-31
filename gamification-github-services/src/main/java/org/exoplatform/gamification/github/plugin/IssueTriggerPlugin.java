@@ -19,21 +19,26 @@ package org.exoplatform.gamification.github.plugin;
 
 import org.exoplatform.gamification.github.model.Event;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.exoplatform.gamification.github.utils.Utils.*;
 import static org.exoplatform.gamification.github.utils.Utils.extractSubItem;
 
-public class PullRequestTriggerPlugin extends GithubTriggerPlugin {
+public class IssueTriggerPlugin extends GithubTriggerPlugin {
 
   @Override
   public List<Event> getEvents(Map<String, Object> payload) {
+    String issueState = extractSubItem(payload, ACTION);
+    String object = extractSubItem(payload, ISSUE, HTML_URL);
     String userId = extractSubItem(payload, SENDER, LOGIN);
-    String object = extractSubItem(payload, PULL_REQUEST, HTML_URL);
-    if (Objects.equals(extractSubItem(payload, ACTION), OPENED)) {
-      return Collections.singletonList(new Event(CREATE_PULL_REQUEST_EVENT_NAME, null, userId, object));
-    } else if (Objects.equals(extractSubItem(payload, ACTION), REVIEW_REQUESTED)) {
-      return Collections.singletonList(new Event(REQUEST_REVIEW_FOR_PULL_REQUEST_EVENT_NAME, null, userId, object));
+    if (Objects.equals(issueState, OPENED)) {
+      return Collections.singletonList(new Event(CREATE_ISSUE_EVENT_NAME, userId, userId, object));
+
+    } else if (Objects.equals(issueState, LABELED)) {
+      return Collections.singletonList(new Event(ADD_ISSUE_LABEL_EVENT_NAME, userId, userId, object));
     }
     return Collections.emptyList();
   }

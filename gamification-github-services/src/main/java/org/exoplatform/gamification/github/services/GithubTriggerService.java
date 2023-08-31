@@ -36,12 +36,22 @@ public interface GithubTriggerService {
   void removePlugin(String triggerName);
 
   /**
-   * To handle the event sent by github.
+   * Handle github trigger asynchronously
    *
+   * @param trigger gitHub sent trigger.
+   * @param signature The signature received from the external system.
    * @param payload payload The raw payload of the webhook request.
-   * @param event gitHub sent event.
    */
-  void handleTrigger(String payload, String event);
+  void handleTriggerAsync(String trigger, String signature, String payload);
+
+  /**
+   * Handle github trigger
+   * 
+   * @param trigger gitHub sent trigger.
+   * @param signature The signature received from the external system.
+   * @param payload payload The raw payload of the webhook request.
+   */
+  void handleTrigger(String trigger, String signature, String payload);
 
   /**
    * Gets list of configured github triggers

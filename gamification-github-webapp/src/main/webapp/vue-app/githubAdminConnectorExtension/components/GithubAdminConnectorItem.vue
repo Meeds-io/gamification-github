@@ -20,18 +20,27 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
       <div class="py-2 py-sm-5 d-flex align-center">
         <v-tooltip :disabled="$root.isMobile" bottom>
           <template #activator="{ on }">
-            <v-card
-              class="d-flex align-center"
-              flat
-              v-on="on"
-              @click="backToConnectorDetail">
+            <div class="d-flex flex-row flex-wrap full-width">
+              <v-card
+                class="d-flex align-center"
+                flat
+                v-on="on"
+                @click="backToConnectorDetail">
+                <v-btn
+                  class="width-auto ms-n3"
+                  icon>
+                  <v-icon size="18" class="icon-default-color mx-2">fa-arrow-left</v-icon>
+                </v-btn>
+                <div class="text-header-title">{{ $t('githubConnector.admin.label.summary') }}</div>
+              </v-card>
+              <v-spacer />
               <v-btn
                 class="width-auto ms-n3"
-                icon>
-                <v-icon size="18" class="icon-default-color mx-2">fa-arrow-left</v-icon>
+                icon
+                @click="forceUpdateWebhooks">
+                <v-icon size="18" class="icon-default-color mx-2">fas fa-redo-alt</v-icon>
               </v-btn>
-              <div class="text-header-title">{{ $t('githubConnector.admin.label.summary') }}</div>
-            </v-card>
+            </div>
           </template>
           <span>{{ $t('gamification.connectors.settings.BackToDetail') }}</span>
         </v-tooltip>
@@ -228,6 +237,11 @@ export default {
       this.selectedHook = hook;
       this.displayHookDetail = true;
     },
+    forceUpdateWebhooks() {
+      return this.$githubConnectorService.forceUpdateWebhooks().then(() => {
+        this.$root.$emit('github-hooks-updated');
+      });
+    }
   }
 };
 </script>

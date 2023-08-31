@@ -34,6 +34,7 @@ import org.exoplatform.gamification.github.rest.builder.WebHookBuilder;
 import org.exoplatform.gamification.github.rest.model.RepositoryList;
 import org.exoplatform.gamification.github.rest.model.WebHookList;
 import org.exoplatform.gamification.github.rest.model.WebHookRestEntity;
+import org.exoplatform.gamification.github.services.GithubConsumerService;
 import org.exoplatform.gamification.github.services.WebhookService;
 import org.exoplatform.services.rest.http.PATCH;
 import org.exoplatform.services.rest.resource.ResourceContainer;
@@ -49,10 +50,13 @@ public class HooksManagementRest implements ResourceContainer {
 
   public static final String         GITHUB_HOOK_NOT_FOUND = "The GitHub hook doesn't exit";
 
-  private final WebhookService       webhookService;
+  private final WebhookService        webhookService;
 
-  public HooksManagementRest(WebhookService webhookService) {
+  private final GithubConsumerService githubConsumerService;
+
+  public HooksManagementRest(WebhookService webhookService, GithubConsumerService githubConsumerService) {
     this.webhookService = webhookService;
+    this.githubConsumerService = githubConsumerService;
   }
 
   @GET
@@ -244,8 +248,22 @@ public class HooksManagementRest implements ResourceContainer {
     }
   }
 
+  @Path("forceUpdate")
+  @PATCH
+  @RolesAllowed("users")
+  @Operation(summary = "Force Update a github stored webhooks", description = "Force Update a github stored webhooks", method = "PATCH")
+  @ApiResponses(value = { @ApiResponse(responseCode = "500", description = "Internal server error") })
+  public Response forceUpdateWebhooks() {
+    try {
+      webhookService.forceUpdateWebhooks();
+      return Response.noContent().build();
+    } catch (Exception e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
+
   private List<WebHookRestEntity> getWebHookRestEntities(String username) throws IllegalAccessException {
     Collection<WebHook> webHooks = webhookService.getWebhooks(username, 0, 20, false);
-    return WebHookBuilder.toRestEntities(webhookService, webHooks);
+    return WebHookBuilder.toRestEntities(webhookService, githubConsumerService, webHooks);
   }
 }

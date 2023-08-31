@@ -17,6 +17,8 @@
  */
 package org.exoplatform.gamification.github.plugin;
 
+import org.exoplatform.gamification.github.model.Event;
+
 import java.util.*;
 
 import static org.exoplatform.gamification.github.utils.Utils.*;
@@ -25,27 +27,10 @@ import static org.exoplatform.gamification.github.utils.Utils.extractSubItem;
 public class PushCodeTriggerPlugin extends GithubTriggerPlugin {
 
   @Override
-  public String parseSenderGithubUserId(Map<String, Object> payload) {
-    return null;
-  }
-
-  @Override
-  public String parseReceiverGithubUserId(Map<String, Object> payload) {
-    return extractSubItem(payload, PUSHER, NAME);
-  }
-
-  @Override
-  public String parseGithubObject(Map<String, Object> payload) {
-    return extractSubItem(payload, HEAD_COMMIT, URL);
-  }
-
-  @Override
-  public String getEventName(Map<String, Object> payload) {
-    return PUSH_CODE_EVENT_NAME;
-  }
-
-  @Override
-  public List<String> getEvents() {
-    return Collections.singletonList(PUSH_CODE_EVENT_NAME);
+  public List<Event> getEvents(Map<String, Object> payload) {
+    return Collections.singletonList(new Event(PUSH_CODE_EVENT_NAME,
+                                               null,
+                                               extractSubItem(payload, PUSHER, NAME),
+                                               extractSubItem(payload, HEAD_COMMIT, URL)));
   }
 }
