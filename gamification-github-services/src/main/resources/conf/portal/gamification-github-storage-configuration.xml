@@ -29,6 +29,15 @@
   </component>
 
   <component>
+    <type>org.exoplatform.gamification.github.storage.GithubConsumerStorage</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.gamification.github.storage.GithubConsumerStorage</key>
+    <type>org.exoplatform.gamification.github.storage.cached.GithubConsumerCachedStorage</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.gamification.github.services.WebhookService</key>
     <type>org.exoplatform.gamification.github.services.impl.WebhookServiceImpl</type>
   </component>
@@ -41,6 +50,11 @@
   <component>
     <key>org.exoplatform.gamification.github.services.GithubTriggerService</key>
     <type>org.exoplatform.gamification.github.services.impl.GithubTriggerServiceImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.gamification.github.services.GithubConsumerService</key>
+    <type>org.exoplatform.gamification.github.services.impl.GithubConsumerServiceImpl</type>
   </component>
 
   <external-component-plugins>

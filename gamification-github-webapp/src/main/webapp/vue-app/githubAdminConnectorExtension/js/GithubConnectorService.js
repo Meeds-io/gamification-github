@@ -131,3 +131,17 @@ export function enableDisableWatchScope(organizationId, enabled) {
     }
   });
 }
+
+export function forceUpdateWebhooks() {
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/forceUpdate`, {
+    method: 'PATCH',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  }).then(resp => {
+    if (!resp?.ok) {
+      throw new Error('Error when updating github webhooks');
+    }
+  });
+}
