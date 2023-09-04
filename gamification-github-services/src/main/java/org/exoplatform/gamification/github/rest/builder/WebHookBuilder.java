@@ -20,11 +20,11 @@ package org.exoplatform.gamification.github.rest.builder;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.exoplatform.gamification.github.model.RemoteOrganization;
+import org.exoplatform.gamification.github.model.TokenStatus;
 import org.exoplatform.gamification.github.model.WebHook;
 import org.exoplatform.gamification.github.rest.model.WebHookRestEntity;
-import org.exoplatform.gamification.github.services.GithubTriggerService;
+import org.exoplatform.gamification.github.services.GithubConsumerService;
 import org.exoplatform.gamification.github.services.WebhookService;
 
 public class WebHookBuilder {
@@ -33,14 +33,15 @@ public class WebHookBuilder {
     // Class with static methods
   }
 
-  public static WebHookRestEntity toRestEntity(WebhookService webhookService, WebHook webHook) {
+  public static WebHookRestEntity toRestEntity(WebhookService webhookService, GithubConsumerService githubConsumerService, WebHook webHook) {
     if (webHook == null) {
       return null;
     }
-
-    RemoteOrganization remoteOrganization = webhookService.retrieveRemoteOrganization(webHook.getOrganizationId(),
-                                                                                      webHook.getToken());
-
+    RemoteOrganization remoteOrganization = null;
+    TokenStatus tokenStatus = githubConsumerService.checkGitHubTokenStatus(webHook.getToken());
+    if (tokenStatus.isValid() && tokenStatus.getRemaining() > 0) {
+      remoteOrganization = githubConsumerService.retrieveRemoteOrganization(webHook.getOrganizationId(), webHook.getToken());
+    }
 
     return new WebHookRestEntity(webHook.getId(),
                                  webHook.getWebhookId(),
@@ -51,14 +52,15 @@ public class WebHookBuilder {
                                  webHook.getWatchedBy(),
                                  webHook.getUpdatedDate(),
                                  webHook.getRefreshDate(),
-                                 remoteOrganization.getName(),
-                                 remoteOrganization.getTitle(),
-                                 remoteOrganization.getDescription(),
-                                 remoteOrganization.getAvatarUrl(),
-                                 webhookService.isWebHookWatchLimitEnabled(webHook.getOrganizationId()));
+                                 webHook.getOrganizationName(),
+                                 remoteOrganization != null ? remoteOrganization.getTitle() : null,
+                                 remoteOrganization != null ? remoteOrganization.getDescription() : null,
+                                 remoteOrganization != null ? remoteOrganization.getAvatarUrl() : null,
+                                 webhookService.isWebHookWatchLimitEnabled(webHook.getOrganizationId()),
+                                 tokenStatus);
   }
 
-  public static List<WebHookRestEntity> toRestEntities(WebhookService webhookService, Collection<WebHook> webHooks) {
-    return webHooks.stream().map(webHook -> toRestEntity(webhookService, webHook)).toList();
+  public static List<WebHookRestEntity> toRestEntities(WebhookService webhookService, GithubConsumerService githubConsumerService, Collection<WebHook> webHooks) {
+    return webHooks.stream().map(webHook -> toRestEntity(webhookService, githubConsumerService, webHook)).toList();
   }
 }
