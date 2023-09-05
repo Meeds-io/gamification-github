@@ -21,7 +21,8 @@ export function init() {
   extensionRegistry.registerComponent('gamification-admin-connector', 'admin-connector-item', {
     id: 'githubSetting',
     name: 'github',
-    logo: '/gamification-github/skin/images/GitHub-Mark.png',
+    icon: 'fab fa-github',
+    iconColorClass: 'text-color',
     title: 'Github',
     description: 'githubConnector.admin.label.description',
     init: () => {
