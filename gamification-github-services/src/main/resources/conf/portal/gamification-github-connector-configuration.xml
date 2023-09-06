@@ -21,65 +21,6 @@
                xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <external-component-plugins>
-    <target-component>io.meeds.gamification.service.RuleRegistry</target-component>
-    <component-plugin>
-      <name>rule.PushCode</name>
-      <set-method>addPlugin</set-method>
-      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
-      <init-params>
-        <value-param>
-          <name>rule-event</name>
-          <value>pushCode</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>rule.CreatPullRequest</name>
-      <set-method>addPlugin</set-method>
-      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
-      <init-params>
-        <value-param>
-          <name>rule-event</name>
-          <value>creatPullRequest</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>rule.ReviewPullRequest</name>
-      <set-method>addPlugin</set-method>
-      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
-      <init-params>
-        <value-param>
-          <name>rule-event</name>
-          <value>reviewPullRequest</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>rule.CommentPullRequest</name>
-      <set-method>addPlugin</set-method>
-      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
-      <init-params>
-        <value-param>
-          <name>rule-event</name>
-          <value>commentPullRequest</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>rule.PullRequestValidated</name>
-      <set-method>addPlugin</set-method>
-      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
-      <init-params>
-        <value-param>
-          <name>rule-event</name>
-          <value>pullRequestValidated</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
     <target-component>io.meeds.gamification.service.EventRegistry</target-component>
     <component-plugin>
       <name>PushCode</name>
@@ -311,9 +252,7 @@
         </value-param>
       </init-params>
     </component-plugin>
-
   </external-component-plugins>
-
 
   <external-component-plugins>
     <target-component>io.meeds.gamification.service.BadgeRegistry</target-component>

@@ -60,7 +60,7 @@
           <property name="jobName" value="GitHubWebHookForceUpdate"/>
           <property name="groupName" value="Gamification"/>
           <property name="job" value="org.exoplatform.gamification.github.scheduled.GitHubWebHookForceUpdate"/>
-          <property name="expression" value="${io.meeds.gamification.GitHubWebHookForceUpdate.expression:0 * * * *}"/><!-- Every hour -->
+          <property name="expression" value="${io.meeds.gamification.GitHubWebHookForceUpdate.expression:0 0 * ? * * *}"/><!-- Every hour -->
         </properties-param>
       </init-params>
     </component-plugin>
@@ -92,11 +92,6 @@
       <name>issues</name>
       <set-method>addPlugin</set-method>
       <type>org.exoplatform.gamification.github.plugin.IssueTriggerPlugin</type>
-    </component-plugin>
-    <component-plugin>
-      <name>issue_comment</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.gamification.github.plugin.CommentTriggerPlugin</type>
     </component-plugin>
     <component-plugin>
       <name>issue_comment</name>
