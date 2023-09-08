@@ -31,15 +31,26 @@ public class CommentTriggerPlugin extends GithubTriggerPlugin {
 
   @Override
   public List<Event> getEvents(Map<String, Object> payload) {
+
     String pullRequest = extractSubItem(payload, ISSUE, PULL_REQUEST);
+    String action = extractSubItem(payload, ACTION);
+    String comment = extractSubItem(payload, COMMENT, HTML_URL);
     String userId = extractSubItem(payload, SENDER, LOGIN);
-    if (StringUtils.isNotBlank(pullRequest)) {
-      return Collections.singletonList(new Event(COMMENT_PULL_REQUEST_EVENT_NAME, null, userId, pullRequest));
-    } else {
-      return Collections.singletonList(new Event(COMMENT_ISSUE_EVENT_NAME,
-                                                 null,
-                                                 userId,
-                                                 extractSubItem(payload, ISSUE, HTML_URL)));
+    String eventName;
+    String eventType = StringUtils.isBlank(pullRequest) ? COMMENT_ISSUE_TYPE : COMMENT_PR_TYPE;
+    if (action != null) {
+      switch (action) {
+      case CREATED:
+        eventName = StringUtils.isBlank(pullRequest) ? COMMENT_ISSUE_EVENT_NAME : COMMENT_PULL_REQUEST_EVENT_NAME;
+        break;
+      case DELETED:
+        eventName = StringUtils.isBlank(pullRequest) ? DELETE_ISSUE_COMMENT_EVENT_NAME : DELETE_PULL_REQUEST_COMMENT_EVENT_NAME;
+        break;
+      default:
+        return Collections.emptyList();
+      }
+      return Collections.singletonList(new Event(eventName, null, userId, comment, eventType));
     }
+    return Collections.emptyList();
   }
 }
