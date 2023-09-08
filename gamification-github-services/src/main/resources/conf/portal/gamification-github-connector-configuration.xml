@@ -27,22 +27,20 @@
       <set-method>addPlugin</set-method>
       <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>event-title</name>
-          <value>pushCode</value>
-        </value-param>
-        <value-param>
-          <name>event-type</name>
-          <value>github</value>
-        </value-param>
-        <value-param>
-          <name>event-trigger</name>
-          <value>push</value>
-        </value-param>
-        <value-param>
-          <name>event-can-cancel</name>
-          <value>true</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>pushCode</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>push</string>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
@@ -50,22 +48,55 @@
       <set-method>addPlugin</set-method>
       <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>event-title</name>
-          <value>creatPullRequest</value>
-        </value-param>
-        <value-param>
-          <name>event-type</name>
-          <value>github</value>
-        </value-param>
-        <value-param>
-          <name>event-trigger</name>
-          <value>pull_request</value>
-        </value-param>
-        <value-param>
-          <name>event-can-cancel</name>
-          <value>true</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>creatPullRequest</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>pull_request</string>
+            </field>
+            <field name="cancellerEvents">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>closePullRequest</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>RequestReviewForPullRequest</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>requestReviewForPullRequest</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>pull_request</string>
+            </field>
+            <field name="cancellerEvents">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>reviewRequestRemoved</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
@@ -73,22 +104,20 @@
       <set-method>addPlugin</set-method>
       <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>event-title</name>
-          <value>reviewPullRequest</value>
-        </value-param>
-        <value-param>
-          <name>event-type</name>
-          <value>github</value>
-        </value-param>
-        <value-param>
-          <name>event-trigger</name>
-          <value>pull_request_review</value>
-        </value-param>
-        <value-param>
-          <name>event-can-cancel</name>
-          <value>true</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>reviewPullRequest</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>pull_request_review</string>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
@@ -96,22 +125,20 @@
       <set-method>addPlugin</set-method>
       <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>event-title</name>
-          <value>pullRequestValidated</value>
-        </value-param>
-        <value-param>
-          <name>event-type</name>
-          <value>github</value>
-        </value-param>
-        <value-param>
-          <name>event-trigger</name>
-          <value>pull_request_review</value>
-        </value-param>
-        <value-param>
-          <name>event-can-cancel</name>
-          <value>true</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>pullRequestValidated</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>pull_request_review</string>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
@@ -119,22 +146,27 @@
       <set-method>addPlugin</set-method>
       <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>event-title</name>
-          <value>commentPullRequest</value>
-        </value-param>
-        <value-param>
-          <name>event-type</name>
-          <value>github</value>
-        </value-param>
-        <value-param>
-          <name>event-trigger</name>
-          <value>issue_comment</value>
-        </value-param>
-        <value-param>
-          <name>event-can-cancel</name>
-          <value>true</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>commentPullRequest</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>issue_comment</string>
+            </field>
+            <field name="cancellerEvents">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>deletePullRequestComment</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
@@ -142,22 +174,27 @@
       <set-method>addPlugin</set-method>
       <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>event-title</name>
-          <value>addIssueLabel</value>
-        </value-param>
-        <value-param>
-          <name>event-type</name>
-          <value>github</value>
-        </value-param>
-        <value-param>
-          <name>event-trigger</name>
-          <value>issues</value>
-        </value-param>
-        <value-param>
-          <name>event-can-cancel</name>
-          <value>true</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>addIssueLabel</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>issues</string>
+            </field>
+            <field name="cancellerEvents">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>deleteIssueLabel</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
@@ -165,22 +202,20 @@
       <set-method>addPlugin</set-method>
       <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>event-title</name>
-          <value>validatePullRequest</value>
-        </value-param>
-        <value-param>
-          <name>event-type</name>
-          <value>github</value>
-        </value-param>
-        <value-param>
-          <name>event-trigger</name>
-          <value>pull_request_review</value>
-        </value-param>
-        <value-param>
-          <name>event-can-cancel</name>
-          <value>true</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>validatePullRequest</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>pull_request_review</string>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
@@ -188,22 +223,27 @@
       <set-method>addPlugin</set-method>
       <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>event-title</name>
-          <value>commentIssue</value>
-        </value-param>
-        <value-param>
-          <name>event-type</name>
-          <value>github</value>
-        </value-param>
-        <value-param>
-          <name>event-trigger</name>
-          <value>issue_comment</value>
-        </value-param>
-        <value-param>
-          <name>event-can-cancel</name>
-          <value>true</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>commentIssue</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>issue_comment</string>
+            </field>
+            <field name="cancellerEvents">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>deleteIssueComment</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
@@ -211,22 +251,27 @@
       <set-method>addPlugin</set-method>
       <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>event-title</name>
-          <value>createIssue</value>
-        </value-param>
-        <value-param>
-          <name>event-type</name>
-          <value>github</value>
-        </value-param>
-        <value-param>
-          <name>event-trigger</name>
-          <value>issues</value>
-        </value-param>
-        <value-param>
-          <name>event-can-cancel</name>
-          <value>true</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>createIssue</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>issues</string>
+            </field>
+            <field name="cancellerEvents">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>closeIssue</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
