@@ -73,6 +73,12 @@ public class Utils {
 
   public static final String  STATE                                      = "state";
 
+  public static final String  NOT_PLANNED                                = "not_planned";
+
+  public static final String  STATE_REASON                               = "state_reason";
+
+  public static final String  LABEL                                      = "label";
+
   public static final String  PULL_REQUEST_REVIEW                        = "review";
 
   public static final String  PULL_REQUEST_COMMENTED                     = "commented";
@@ -83,9 +89,19 @@ public class Utils {
 
   public static final String  CREATED                                    = "created";
 
+  public static final String  CLOSED                                     = "closed";
+
+  public static final String  DELETED                                    = "deleted";
+
   public static final String  LABELED                                    = "labeled";
 
+  public static final String  UNLABELED                                  = "unlabeled";
+
   public static final String  REVIEW_REQUESTED                           = "review_requested";
+
+  public static final String  REVIEW_REQUEST_REMOVED                     = "review_request_removed";
+
+  public static final String  REQUESTED_REVIEWER                         = "requested_reviewer";
 
   public static final String  REVIEW_PULL_REQUEST_EVENT_NAME             = "reviewPullRequest";
 
@@ -99,6 +115,8 @@ public class Utils {
 
   public static final String  COMMENT_PULL_REQUEST_EVENT_NAME            = "commentPullRequest";
 
+  public static final String  DELETE_PULL_REQUEST_COMMENT_EVENT_NAME     = "deletePullRequestComment";
+
   public static final String  CREATE_ISSUE_EVENT_NAME                    = "createIssue";
 
   public static final String  ADD_ISSUE_LABEL_EVENT_NAME                 = "addIssueLabel";
@@ -107,7 +125,31 @@ public class Utils {
 
   public static final String  COMMENT_ISSUE_EVENT_NAME                   = "commentIssue";
 
+  public static final String  DELETE_ISSUE_COMMENT_EVENT_NAME            = "deleteIssueComment";
+
+  public static final String  CLOSE_PULL_REQUEST_EVENT_NAME              = "closePullRequest";
+
+  public static final String  REVIEW_REQUEST_REMOVED_EVENT_NAME          = "reviewRequestRemoved";
+
+  public static final String  CLOSE_ISSUE_EVENT_NAME                     = "closeIssue";
+
+  public static final String  DELETE_ISSUE_LABEL_EVENT_NAME              = "deleteIssueLabel";
+
   public static final String  PUSH_CODE_EVENT_NAME                       = "pushCode";
+
+  public static final String  GITHUB_ACTION_EVENT                        = "github.action.event";
+
+  public static final String  GITHUB_CANCEL_ACTION_EVENT                 = "github.cancel.action.event";
+
+  public static final String  ISSUE_TYPE                                 = "githubIssue";
+
+  public static final String  PR_TYPE                                    = "githubPR";
+
+  public static final String  REVIEW_COMMENT_TYPE                        = "githubReviewComment";
+
+  public static final String  COMMENT_PR_TYPE                            = "githubCommentPR";
+
+  public static final String  COMMENT_ISSUE_TYPE                         = "githubCommentIssue";
 
   public static final String  GITHUB_API_URL                             = "https://api.github.com/orgs/";
 

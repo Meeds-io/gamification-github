@@ -32,13 +32,21 @@ public class IssueTriggerPlugin extends GithubTriggerPlugin {
   @Override
   public List<Event> getEvents(Map<String, Object> payload) {
     String issueState = extractSubItem(payload, ACTION);
-    String object = extractSubItem(payload, ISSUE, HTML_URL);
+    String objectId = extractSubItem(payload, ISSUE, HTML_URL);
     String userId = extractSubItem(payload, SENDER, LOGIN);
     if (Objects.equals(issueState, OPENED)) {
-      return Collections.singletonList(new Event(CREATE_ISSUE_EVENT_NAME, userId, userId, object));
-
+      return Collections.singletonList(new Event(CREATE_ISSUE_EVENT_NAME, userId, userId, objectId, ISSUE_TYPE));
+    } else if (Objects.equals(issueState, CLOSED)) {
+      if (Objects.equals(extractSubItem(payload, ISSUE, STATE_REASON), NOT_PLANNED)) {
+        return Collections.singletonList(new Event(CLOSE_ISSUE_EVENT_NAME, userId, userId, objectId, ISSUE_TYPE));
+      }
+      return Collections.emptyList();
     } else if (Objects.equals(issueState, LABELED)) {
-      return Collections.singletonList(new Event(ADD_ISSUE_LABEL_EVENT_NAME, userId, userId, object));
+      objectId = objectId + "?label=" + extractSubItem(payload, LABEL, NAME);
+      return Collections.singletonList(new Event(ADD_ISSUE_LABEL_EVENT_NAME, userId, userId, objectId, ISSUE_TYPE));
+    } else if (Objects.equals(issueState, UNLABELED)) {
+      objectId = objectId + "?label=" + extractSubItem(payload, LABEL, NAME);
+      return Collections.singletonList(new Event(DELETE_ISSUE_LABEL_EVENT_NAME, userId, userId, objectId, ISSUE_TYPE));
     }
     return Collections.emptyList();
   }
