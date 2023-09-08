@@ -18,8 +18,10 @@
 package org.exoplatform.gamification.github.services.impl;
 
 import io.meeds.gamification.model.EventDTO;
+import io.meeds.gamification.model.filter.EventFilter;
 import io.meeds.gamification.service.ConnectorService;
 import io.meeds.gamification.service.EventService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.exoplatform.commons.api.persistence.ExoTransactional;
@@ -38,6 +40,7 @@ import org.picocontainer.Startable;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static org.exoplatform.gamification.github.utils.Utils.*;
 
@@ -124,7 +127,10 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
 
   private boolean isEventEnabled(String eventName, String trigger, String organizationId) {
     EventDTO eventDTO = eventService.getEventByTitleAndTrigger(eventName, trigger);
-    return eventDTO != null && isOrganizationEventEnabled(eventDTO, organizationId);
+    if (eventDTO != null) {
+      return isOrganizationEventEnabled(eventDTO, organizationId);
+    }
+    return true;
   }
 
   private boolean isOrganizationEventEnabled(EventDTO eventDTO, String organizationId) {
@@ -147,7 +153,7 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
     if (StringUtils.isNotBlank(senderId)) {
       Identity socialIdentity = identityManager.getOrCreateUserIdentity(senderId);
       if (socialIdentity != null) {
-        broadcastGithubEvent(event.getName(), senderId, receiverId, event.getObject());
+        broadcastGithubEvent(event.getName(), senderId, receiverId, event.getObjectId(), event.getObjectType());
       }
     }
   }
@@ -156,14 +162,30 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
     return triggerPlugins.values().stream().map(GithubTriggerPlugin::getName).toArray(String[]::new);
   }
 
-  private void broadcastGithubEvent(String ruleTitle, String senderId, String receiverId, String object) {
+  private void broadcastGithubEvent(String ruleTitle, String senderId, String receiverId, String objectId, String objectType) {
     try {
       Map<String, String> gam = new HashMap<>();
-      gam.put("ruleTitle", ruleTitle);
       gam.put("senderId", senderId);
       gam.put("receiverId", receiverId);
-      gam.put("object", object);
-      listenerService.broadcast("exo.github.event", gam, "");
+      gam.put("objectId", objectId);
+      gam.put("objectType", objectType);
+      EventDTO eventDTO = eventService.getEventByTypeAndTitle("github", ruleTitle);
+      if (eventDTO != null) {
+        gam.put("ruleTitle", eventDTO.getTitle());
+        listenerService.broadcast(GITHUB_ACTION_EVENT, gam, "");
+      } else {
+        List<EventDTO> events = eventService.getEvents(new EventFilter("github", null), 0, 0);
+        List<EventDTO> eventsToCancel = events.stream()
+                                              .filter(event -> event.getCancellerEvents() != null
+                                                  && event.getCancellerEvents().contains(ruleTitle))
+                                              .toList();
+        if (CollectionUtils.isNotEmpty(eventsToCancel)) {
+          for (EventDTO eventToCancel : eventsToCancel) {
+            gam.put("ruleTitle", eventToCancel.getTitle());
+            listenerService.broadcast(GITHUB_CANCEL_ACTION_EVENT, gam, "");
+          }
+        }
+      }
       LOG.info("Github action {} broadcasted for user {}", ruleTitle, senderId);
     } catch (Exception e) {
       LOG.error("Cannot broadcast github event", e);

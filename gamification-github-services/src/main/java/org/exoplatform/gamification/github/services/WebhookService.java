@@ -187,14 +187,4 @@ public interface WebhookService {
   int countOrganizationRepos(long organizationRemoteId, String currentUser) throws IllegalAccessException,
                                                                             ObjectNotFoundException;
 
-  /**
-   * create gamification history
-   *
-   * @param ruleTitle Rule title
-   * @param senderId sender username
-   * @param receiverId receiver username
-   * @param object Object link
-   */
-  void createGamificationHistory(String ruleTitle, String senderId, String receiverId, String object);
-
 }

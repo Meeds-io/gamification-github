@@ -31,6 +31,7 @@ public class PushCodeTriggerPlugin extends GithubTriggerPlugin {
     return Collections.singletonList(new Event(PUSH_CODE_EVENT_NAME,
                                                null,
                                                extractSubItem(payload, PUSHER, NAME),
-                                               extractSubItem(payload, HEAD_COMMIT, URL)));
+                                               extractSubItem(payload, HEAD_COMMIT, URL),
+                                               null));
   }
 }

@@ -36,16 +36,19 @@ public class PullRequestReviewTriggerPlugin extends GithubTriggerPlugin {
       return Collections.singletonList(new Event(REVIEW_PULL_REQUEST_EVENT_NAME,
                                                  extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
                                                  extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
-                                                 extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL)));
+                                                 extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL),
+                                                 PR_TYPE));
     } else if (pullState != null && pullState.equals(PULL_REQUEST_VALIDATED)) {
       return Arrays.asList(new Event(PULL_REQUEST_VALIDATED_EVENT_NAME,
-                                     extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
                                      extractSubItem(payload, PULL_REQUEST, USER, LOGIN),
-                                     extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL)),
+                                     extractSubItem(payload, PULL_REQUEST, USER, LOGIN),
+                                     extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL),
+                                     PR_TYPE),
                            new Event(VALIDATE_PULL_REQUEST_EVENT_NAME,
                                      extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
                                      extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
-                                     extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL)));
+                                     extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL),
+                                     PR_TYPE));
     }
     return Collections.emptyList();
   }
