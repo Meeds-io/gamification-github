@@ -29,11 +29,19 @@ public class PullRequestTriggerPlugin extends GithubTriggerPlugin {
   @Override
   public List<Event> getEvents(Map<String, Object> payload) {
     String userId = extractSubItem(payload, SENDER, LOGIN);
-    String object = extractSubItem(payload, PULL_REQUEST, HTML_URL);
+    String objectId = extractSubItem(payload, PULL_REQUEST, HTML_URL);
     if (Objects.equals(extractSubItem(payload, ACTION), OPENED)) {
-      return Collections.singletonList(new Event(CREATE_PULL_REQUEST_EVENT_NAME, null, userId, object));
+      return Collections.singletonList(new Event(CREATE_PULL_REQUEST_EVENT_NAME, null, userId, objectId, PR_TYPE));
+    } else if (Objects.equals(extractSubItem(payload, ACTION), CLOSED)) {
+      return Collections.singletonList(new Event(CLOSE_PULL_REQUEST_EVENT_NAME, null, userId, objectId, PR_TYPE));
     } else if (Objects.equals(extractSubItem(payload, ACTION), REVIEW_REQUESTED)) {
-      return Collections.singletonList(new Event(REQUEST_REVIEW_FOR_PULL_REQUEST_EVENT_NAME, null, userId, object));
+      String requestedReviewer = extractSubItem(payload, REQUESTED_REVIEWER, LOGIN);
+      objectId = objectId + "?requestedReviewer=" + requestedReviewer;
+      return Collections.singletonList(new Event(REQUEST_REVIEW_FOR_PULL_REQUEST_EVENT_NAME, null, userId, objectId, PR_TYPE));
+    } else if (Objects.equals(extractSubItem(payload, ACTION), REVIEW_REQUEST_REMOVED)) {
+      String requestedReviewer = extractSubItem(payload, REQUESTED_REVIEWER, LOGIN);
+      objectId = objectId + "?requestedReviewer=" + requestedReviewer;
+      return Collections.singletonList(new Event(REVIEW_REQUEST_REMOVED_EVENT_NAME, null, userId, objectId, PR_TYPE));
     }
     return Collections.emptyList();
   }

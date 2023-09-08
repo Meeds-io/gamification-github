@@ -30,7 +30,8 @@ public class CommentPullRequestTriggerPlugin extends GithubTriggerPlugin {
     return Collections.singletonList(new Event(PULL_REQUEST_REVIEW_COMMENT_EVENT_NAME,
                                                null,
                                                extractSubItem(payload, COMMENT, USER, LOGIN),
-                                               extractSubItem(payload, COMMENT, LINKS, HTML, HREF)));
+                                               extractSubItem(payload, COMMENT, LINKS, HTML, HREF),
+                                               REVIEW_COMMENT_TYPE));
   }
 
 }
