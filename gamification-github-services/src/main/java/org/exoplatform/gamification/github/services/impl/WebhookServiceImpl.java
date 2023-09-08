@@ -39,23 +39,15 @@ import org.exoplatform.gamification.github.services.WebhookService;
 import org.exoplatform.gamification.github.storage.WebHookStorage;
 import org.json.JSONObject;
 
-import org.exoplatform.services.listener.ListenerService;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-
 import static org.exoplatform.gamification.github.utils.Utils.*;
 
 public class WebhookServiceImpl implements WebhookService {
-
-  private static final Log            LOG                    = ExoLogger.getLogger(WebhookServiceImpl.class);
 
   private static final Context        GITHUB_WEBHOOK_CONTEXT = Context.GLOBAL.id("githubWebhook");
 
   private static final Scope          WATCH_LIMITED_SCOPE    = Scope.APPLICATION.id("watchLimited");
 
   private static final Scope          DISABLED_REPOS_SCOPE   = Scope.APPLICATION.id("disabledRepos");
-
-  private final ListenerService       listenerService;
 
   private final SettingService        settingService;
 
@@ -65,12 +57,10 @@ public class WebhookServiceImpl implements WebhookService {
 
   private final GithubConsumerService githubServiceConsumer;
 
-  public WebhookServiceImpl(ListenerService listenerService,
-                            SettingService settingService,
+  public WebhookServiceImpl(SettingService settingService,
                             GithubTriggerService githubTriggerService,
                             WebHookStorage webHookStorage,
                             GithubConsumerService githubServiceConsumer) {
-    this.listenerService = listenerService;
     this.settingService = settingService;
     this.githubTriggerService = githubTriggerService;
     this.webHookStorage = webHookStorage;
@@ -303,24 +293,6 @@ public class WebhookServiceImpl implements WebhookService {
         webHook.setTriggers(events);
         webHookStorage.updateWebHook(webHook, true);
       }
-    }
-  }
-
-  public void createGamificationHistory(String ruleTitle, String senderId, String receiverId, String object) {
-    try {
-      Map<String, String> gam = new HashMap<>();
-      gam.put("ruleTitle", ruleTitle);
-      gam.put("senderId", senderId);
-      gam.put("receiverId", receiverId);
-      gam.put("object", object);
-      listenerService.broadcast("exo.gamification.generic.action", gam, "");
-      LOG.info("Github action {} gamified for user {} {} {}",
-               ruleTitle,
-               senderId,
-               (ruleTitle.equals("pullRequestValidated")) ? "from" : "to",
-               receiverId);
-    } catch (Exception e) {
-      LOG.error("Cannot broadcast gamification event", e);
     }
   }
 }

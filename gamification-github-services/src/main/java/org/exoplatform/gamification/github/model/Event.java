@@ -32,5 +32,7 @@ public class Event {
 
   String receiver;
 
-  String object;
+  String objectId;
+
+  String objectType;
 }
