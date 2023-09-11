@@ -187,4 +187,18 @@ public interface WebhookService {
   int countOrganizationRepos(long organizationRemoteId, String currentUser) throws IllegalAccessException,
                                                                             ObjectNotFoundException;
 
+  /**
+   * Enables/disables organization event
+   *
+   * @param eventId event Id
+   * @param organizationId organization remote id
+   * @param enabled true to enabled, else false
+   * @param currentUser user name attempting to enables/disables event.
+   * @throws IllegalAccessException when user is not authorized enables/disables
+   *           organization event
+   */
+  void setEventEnabledForOrganization(long eventId, long organizationId, boolean enabled, String currentUser) throws IllegalAccessException,
+          ObjectNotFoundException;
+
+
 }

@@ -24,7 +24,6 @@ import io.meeds.gamification.model.filter.ProgramFilter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.exoplatform.gamification.github.model.WebHook;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,8 +31,6 @@ import org.exoplatform.gamification.github.model.WebHook;
 public class CacheKey implements Serializable {
 
   private static final long serialVersionUID = -8995567724453740730L;
-
-  private transient WebHook webHook;
 
   private ProgramFilter     programFilter;
 
@@ -45,17 +42,11 @@ public class CacheKey implements Serializable {
 
   private String            accessToken;
 
-  private long              programId;
-
   private Integer           context;
 
-  public CacheKey(Integer context, WebHook webHook) {
-    this.webHook = webHook;
-    this.context = context;
-  }
-
-  public CacheKey(Integer context, WebHook webHook, int page, int perPage) {
-    this.webHook = webHook;
+  public CacheKey(Integer context, long organizationId, String accessToken, int page, int perPage) {
+    this.organizationId = organizationId;
+    this.accessToken = accessToken;
     this.page = page;
     this.perPage = perPage;
     this.context = context;

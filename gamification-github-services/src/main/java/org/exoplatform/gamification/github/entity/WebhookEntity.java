@@ -24,7 +24,7 @@ import javax.persistence.*;
 import org.exoplatform.commons.api.persistence.ExoEntity;
 
 import lombok.Data;
-import org.exoplatform.gamification.github.utils.StringListConverter;
+import org.exoplatform.commons.utils.StringListConverter;
 
 @Entity(name = "GitHubWebhooks")
 @ExoEntity
