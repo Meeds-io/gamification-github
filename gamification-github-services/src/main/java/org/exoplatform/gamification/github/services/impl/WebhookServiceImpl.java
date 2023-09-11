@@ -20,6 +20,8 @@ package org.exoplatform.gamification.github.services.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import io.meeds.gamification.model.EventDTO;
+import io.meeds.gamification.service.EventService;
 import io.meeds.gamification.utils.Utils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +51,8 @@ public class WebhookServiceImpl implements WebhookService {
 
   private static final Scope          DISABLED_REPOS_SCOPE   = Scope.APPLICATION.id("disabledRepos");
 
+  public static final String          ENABLED                = ".enabled";
+
   private final SettingService        settingService;
 
   private final WebHookStorage        webHookStorage;
@@ -57,14 +61,18 @@ public class WebhookServiceImpl implements WebhookService {
 
   private final GithubConsumerService githubServiceConsumer;
 
+  private final EventService          eventService;
+
   public WebhookServiceImpl(SettingService settingService,
                             GithubTriggerService githubTriggerService,
                             WebHookStorage webHookStorage,
-                            GithubConsumerService githubServiceConsumer) {
+                            GithubConsumerService githubServiceConsumer,
+                            EventService eventService) {
     this.settingService = settingService;
     this.githubTriggerService = githubTriggerService;
     this.webHookStorage = webHookStorage;
     this.githubServiceConsumer = githubServiceConsumer;
+    this.eventService = eventService;
   }
 
   public List<WebHook> getWebhooks(String currentUser, int offset, int limit, boolean forceUpdate) throws IllegalAccessException {
@@ -275,6 +283,34 @@ public class WebhookServiceImpl implements WebhookService {
       throw new ObjectNotFoundException("webhook with organization id '" + organizationRemoteId + "' doesn't exist");
     }
     return githubServiceConsumer.countOrganizationRepos(webHook);
+  }
+
+  @Override
+  public void setEventEnabledForOrganization(long eventId,
+                                             long organizationId,
+                                             boolean enabled,
+                                             String currentUser) throws IllegalAccessException, ObjectNotFoundException {
+    if (!Utils.isRewardingManager(currentUser)) {
+      throw new IllegalAccessException("The user is not authorized to enable/disable event for organization");
+    }
+    EventDTO eventDTO = eventService.getEvent(eventId);
+    if (eventDTO == null) {
+      throw new ObjectNotFoundException("event not found");
+    }
+    Map<String, String> eventProperties = eventDTO.getProperties();
+    if (eventProperties != null && !eventProperties.isEmpty()) {
+      String eventProjectStatus = eventProperties.get(organizationId + ENABLED);
+      if (StringUtils.isNotBlank(eventProjectStatus)) {
+        eventProperties.remove(organizationId + ENABLED);
+        eventProperties.put(organizationId + ENABLED, String.valueOf(enabled));
+        eventDTO.setProperties(eventProperties);
+      }
+    } else {
+      Map<String, String> properties = new HashMap<>();
+      properties.put(organizationId + ENABLED, String.valueOf(enabled));
+      eventDTO.setProperties(properties);
+    }
+    eventService.updateEvent(eventDTO);
   }
 
   @SuppressWarnings("unchecked")

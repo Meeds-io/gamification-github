@@ -108,6 +108,9 @@
       <column name="ORGANIZATION_ID" type="BIGINT">
         <constraints nullable="false"/>
       </column>
+      <column name="ORGANIZATION_NAME" type="NVARCHAR(250)">
+        <constraints nullable="false"/>
+      </column>
       <column name="TRIGGERS" type="NVARCHAR(2000)">
         <constraints nullable="false"/>
       </column>
@@ -136,11 +139,6 @@
   </changeSet>
   <changeSet author="exo-gamification" id="1.0.0-9" dbms="oracle,postgresql">
     <createSequence sequenceName="SEQ_GITHUB_WEBHOOKS_ID" startValue="1"/>
-  </changeSet>
-  <changeSet author="exo-github-connector" id="1.0.0-10">
-    <addColumn tableName="GITHUB_WEBHOOKS">
-      <column name="ORGANIZATION_NAME" type="NVARCHAR(250)"/>
-    </addColumn>
   </changeSet>
 </databaseChangeLog>
 

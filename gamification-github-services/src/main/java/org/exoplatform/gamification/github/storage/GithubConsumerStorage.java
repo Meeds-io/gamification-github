@@ -88,14 +88,14 @@ public class GithubConsumerStorage {
     }
   }
 
-  public List<RemoteRepository> retrieveOrganizationRepos(WebHook webHook, int page, int perPage) {
+  public List<RemoteRepository> retrieveOrganizationRepos(long organizationId, String accessToken , int page, int perPage) {
 
     List<RemoteRepository> remoteRepositories = new ArrayList<>();
-    String url = GITHUB_API_URL + webHook.getOrganizationId() + "/repos?per_page=" + perPage + "&page=" + page;
+    String url = GITHUB_API_URL + organizationId + "/repos?per_page=" + perPage + "&page=" + page;
 
     URI uri = URI.create(url);
     try {
-      String response = processGet(uri, webHook.getToken());
+      String response = processGet(uri, accessToken);
       if (response != null) {
         Map<String, Object>[] repositoryMaps = fromJsonStringToMapCollection(response);
         for (Map<String, Object> repoMap : repositoryMaps) {
@@ -116,11 +116,11 @@ public class GithubConsumerStorage {
     return remoteRepositories;
   }
 
-  public int countOrganizationRepos(WebHook webHook) {
-    String url = GITHUB_API_URL + webHook.getOrganizationId() + "/repos";
+  public int countOrganizationRepos(long organizationId, String accessToken) {
+    String url = GITHUB_API_URL + organizationId + "/repos";
     URI uri = URI.create(url);
     try {
-      String response = processGet(uri, webHook.getToken());
+      String response = processGet(uri, accessToken);
       if (response != null) {
         Map<String, Object>[] repositoryMaps = fromJsonStringToMapCollection(response);
         return (int) Arrays.stream(repositoryMaps).count();
