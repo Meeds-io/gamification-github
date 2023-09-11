@@ -48,11 +48,12 @@ public class GithubConsumerCachedStorage extends GithubConsumerStorage {
     ExoCache<Serializable, Object> cacheInstance = cacheService.getCacheInstance(GITHUB_CACHE_NAME);
     this.githubFutureCache = new FutureExoCache<>((context, key) -> {
       if (ORG_REPOS_CONTEXT == context.getContext()) {
-        return GithubConsumerCachedStorage.super.retrieveOrganizationRepos(context.getWebHook(),
+        return GithubConsumerCachedStorage.super.retrieveOrganizationRepos(context.getOrganizationId(),
+                                                                           context.getAccessToken(),
                                                                            context.getPage(),
                                                                            context.getPerPage());
       } else if (ORG_REPOS_COUNT_CONTEXT == context.getContext()) {
-        return GithubConsumerCachedStorage.super.countOrganizationRepos(context.getWebHook());
+        return GithubConsumerCachedStorage.super.countOrganizationRepos(context.getOrganizationId(), context.getAccessToken());
       } else if (ORG_BY_ID_CONTEXT == context.getContext()) {
         return GithubConsumerCachedStorage.super.retrieveRemoteOrganization(context.getOrganizationId(),
                                                                             context.getAccessToken());
@@ -74,16 +75,16 @@ public class GithubConsumerCachedStorage extends GithubConsumerStorage {
   }
 
   @Override
-  public List<RemoteRepository> retrieveOrganizationRepos(WebHook webHook, int page, int perPage) {
-    CacheKey cacheKey = new CacheKey(ORG_REPOS_CONTEXT, webHook, page, perPage);
+  public List<RemoteRepository> retrieveOrganizationRepos(long organizationId, String accessToken, int page, int perPage) {
+    CacheKey cacheKey = new CacheKey(ORG_REPOS_CONTEXT, organizationId, accessToken, page, perPage);
     List<RemoteRepository> remoteRepositories =
                                               (List<RemoteRepository>) this.githubFutureCache.get(cacheKey, cacheKey.hashCode());
     return remoteRepositories == null ? Collections.emptyList() : remoteRepositories;
   }
 
   @Override
-  public int countOrganizationRepos(WebHook webHook) {
-    CacheKey cacheKey = new CacheKey(ORG_REPOS_COUNT_CONTEXT, webHook);
+  public int countOrganizationRepos(long organizationId, String accessToken) {
+    CacheKey cacheKey = new CacheKey(ORG_REPOS_COUNT_CONTEXT, organizationId, accessToken);
     return (int) this.githubFutureCache.get(cacheKey, cacheKey.hashCode());
   }
 
@@ -106,7 +107,7 @@ public class GithubConsumerCachedStorage extends GithubConsumerStorage {
 
   @Override
   public void clearCache(WebHook webHook) {
-    this.githubFutureCache.remove(new CacheKey(ORG_REPOS_COUNT_CONTEXT, webHook).hashCode());
+    this.githubFutureCache.remove(new CacheKey(ORG_REPOS_COUNT_CONTEXT, webHook.getOrganizationId(), webHook.getToken()).hashCode());
     this.githubFutureCache.remove(new CacheKey(ORG_BY_ID_CONTEXT, webHook.getOrganizationId(), webHook.getToken()).hashCode());
     this.githubFutureCache.remove(new CacheKey(TOKEN_STATUS_CONTEXT, webHook.getToken()).hashCode());
   }

@@ -274,29 +274,6 @@
         </object-param>
       </init-params>
     </component-plugin>
-    <component-plugin>
-      <name>RequestReviewForPullRequest</name>
-      <set-method>addPlugin</set-method>
-      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
-      <init-params>
-        <value-param>
-          <name>event-title</name>
-          <value>requestReviewForPullRequest</value>
-        </value-param>
-        <value-param>
-          <name>event-type</name>
-          <value>github</value>
-        </value-param>
-        <value-param>
-          <name>event-trigger</name>
-          <value>pull_request</value>
-        </value-param>
-        <value-param>
-          <name>event-can-cancel</name>
-          <value>true</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
   </external-component-plugins>
 
   <external-component-plugins>

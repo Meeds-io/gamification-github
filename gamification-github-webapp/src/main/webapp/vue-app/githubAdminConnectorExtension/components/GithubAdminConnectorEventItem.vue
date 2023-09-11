@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     enableDisableEvent() {
-      this.$gamificationConnectorService.saveEventStatus(this.id, this.organizationId, !this.enabled);
+      this.$githubConnectorService.saveEventStatus(this.id, this.organizationId, !this.enabled);
     },
   }
 };
