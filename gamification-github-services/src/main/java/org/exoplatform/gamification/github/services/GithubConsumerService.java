@@ -77,7 +77,7 @@ public interface GithubConsumerService {
    */
   List<RemoteRepository> retrieveOrganizationRepos(WebHook webHook,
                                                    int page,
-                                                   int perPage) throws IllegalAccessException, ObjectNotFoundException;
+                                                   int perPage);
 
   /**
    * Count github organization repositories.

@@ -47,7 +47,7 @@ public class GithubConsumerServiceImpl implements GithubConsumerService {
 
   @Override
   public int countOrganizationRepos(WebHook webHook) {
-    return githubConsumerStorage.countOrganizationRepos(webHook);
+    return githubConsumerStorage.countOrganizationRepos(webHook.getOrganizationId(), webHook.getToken());
   }
 
   @Override
@@ -62,8 +62,8 @@ public class GithubConsumerServiceImpl implements GithubConsumerService {
   }
 
   @Override
-  public List<RemoteRepository> retrieveOrganizationRepos(WebHook webHook, int page, int perPage) throws IllegalAccessException {
-    return githubConsumerStorage.retrieveOrganizationRepos(webHook, page, perPage);
+  public List<RemoteRepository> retrieveOrganizationRepos(WebHook webHook, int page, int perPage) {
+    return githubConsumerStorage.retrieveOrganizationRepos(webHook.getOrganizationId(), webHook.getToken(), page, perPage);
   }
 
   @Override
