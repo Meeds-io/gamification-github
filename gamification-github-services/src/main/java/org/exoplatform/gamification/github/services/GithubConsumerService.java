@@ -67,11 +67,8 @@ public interface GithubConsumerService {
    * Retrieve available github organization repositories.
    *
    * @param webHook webHook
-   *          repositories
-   * @throws ObjectNotFoundException when the github organization identified by
-   *           its technical name is not found
-   * @throws IllegalAccessException when user is not authorized to access remote
-   *           organization repositories
+   * @param page page
+   * @param perPage perPage
    *
    * @return {@link List} of {@link RemoteRepository}
    */
@@ -83,7 +80,6 @@ public interface GithubConsumerService {
    * Count github organization repositories.
    *
    * @param webHook webHook
-   *          repositories
    *
    * @return repositories count
    */
