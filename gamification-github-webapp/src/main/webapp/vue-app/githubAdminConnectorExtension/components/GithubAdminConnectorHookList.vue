@@ -15,18 +15,35 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <template>
-  <v-card flat>
-    <div
-      class="py-4">
+  <v-card class="pt-5" flat>
+    <div class="d-flex flex-row">
+      <div>
+        <v-card-text class="px-0 py-0 dark-grey-color font-weight-bold">
+          {{ $t('githubConnector.webhook.label.watchProject') }}
+        </v-card-text>
+        <v-card-text class="dark-grey-color px-0 pt-0">
+          {{ $t('githubConnector.webhook.label.watchProject.placeholder') }}
+        </v-card-text>
+      </div>
+      <v-spacer />
       <v-btn
-        class="btn btn-primary"
+        v-if="!emptyHookList"
+        class="ma-auto"
+        icon
+        @click="createGithubWebHook">
+        <v-icon class="mx-2 primary--text" size="20">fas fa-plus</v-icon>
+      </v-btn>
+    </div>
+    <div v-if="emptyHookList" class="d-flex align-center py-5">
+      <v-btn
+        class="btn btn-primary ma-auto"
         small
         @click="createGithubWebHook">
         <v-icon size="14" dark>
           fas fa-plus
         </v-icon>
-        <span class="ms-2 d-none d-lg-inline subtitle-1">
-          {{ $t('githubConnector.webhook.label.watchProject') }}
+        <span class="ms-2 subtitle-2 font-weight-bold">
+          {{ $t('githubConnector.webhook.label.addOrganization') }}
         </span>
       </v-btn>
     </div>
@@ -73,6 +90,9 @@ export default {
     hasMore() {
       return this.hooksCount > this.limit;
     },
+    emptyHookList() {
+      return this.hooks?.length === 0;
+    }
   },
   created() {
     this.$root.$on('github-hooks-updated', this.refreshHooks);
@@ -88,7 +108,10 @@ export default {
         .then(data => {
           this.hooks = data.webhooks;
           this.hooksCount = data.size || 0;
-          return this.$nextTick();
+          return this.$nextTick()
+            .then(() => {
+              this.$emit('updated', this.hooks);
+            });
         }).finally(() => this.loading = false);
     },
     createGithubWebHook() {
