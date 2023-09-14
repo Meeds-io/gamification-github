@@ -31,7 +31,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                   icon>
                   <v-icon size="18" class="icon-default-color mx-2">fa-arrow-left</v-icon>
                 </v-btn>
-                <div class="text-header-title">{{ $t('githubConnector.admin.label.summary') }}</div>
+                <div class="text-header-title">{{ $t('githubConnector.admin.label.configuration') }}</div>
               </v-card>
               <v-spacer />
               <v-btn
@@ -45,116 +45,89 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
           <span>{{ $t('gamification.connectors.settings.BackToDetail') }}</span>
         </v-tooltip>
       </div>
-      <v-card-text class="px-0 pt-0 font-weight-bold">
-        {{ $t('githubConnector.admin.label.connect') }}
-      </v-card-text>
-      <v-card-text class="px-0 pt-0">
-        {{ $t('githubConnector.admin.label.allow.connect') }}
-      </v-card-text>
-      <div class="ps-4 pb-4 d-flex flex-column">
-        <span class="pb-3">
-          {{ $t('githubConnector.admin.label.instructions') }}
-        </span>
-        <span>
-          {{ $t('githubConnector.admin.label.instructions.stepOne') }}
-        </span>
-        <span>
-          {{ $t('githubConnector.admin.label.instructions.stepTwo') }}
-        </span>
-      </div>
-      <div class="d-flex flex-row flex-wrap">
-        <v-card
-          class="d-flex flex-row xs12 sm6"
-          flat>
-          <div>
-            <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left ps-0 pt-0 pb-2">
-              {{ $t('gamification.connectors.settings.apiKey') }}
-            </v-card-text>
-            <v-card-text class="d-flex py-0 ps-0">
-              <input
-                ref="connectorApiKey"
-                v-model="apiKey"
-                :disabled="!editing"
-                :placeholder="$t('gamification.connectors.settings.apiKey.placeholder')"
-                type="text"
-                class="ignore-vuetify-classes width-fit-content"
-                required>
-            </v-card-text>
-          </div>
-          <div>
-            <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left ps-0 pt-0 pb-2">
-              {{ $t('gamification.connectors.settings.secretKey') }}
-            </v-card-text>
-            <v-card-text class="d-flex py-0 ps-0">
-              <input
-                ref="connectorSecretKey"
-                v-model="secretKey"
-                :disabled="!editing"
-                :placeholder="$t('gamification.connectors.settings.secretKey.placeholder')"
-                type="text"
-                class="ignore-vuetify-classes width-fit-content"
-                required>
-            </v-card-text>
-          </div>
-          <div>
-            <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left ps-0 pt-0 pb-2">
-              {{ $t('gamification.connectors.settings.redirectUrl') }}
-            </v-card-text>
-            <v-card-text class="d-flex py-0 ps-0">
-              <input
-                ref="connectorRedirectUrl"
-                v-model="redirectUrl"
-                :disabled="!editing"
-                :placeholder="$t('gamification.connectors.settings.redirectUrl.placeholder')"
-                type="text"
-                class="ignore-vuetify-classes width-fit-content"
-                required>
-            </v-card-text>
-          </div>
-        </v-card>
-        <v-spacer />
-        <v-card-actions class="flex-wrap align-end">
-          <v-switch
-            v-if="canUpdateStatus"
-            v-model="enabled"
-            color="primary"
-            class="px-2"
-            hide-details
-            @change="saveConnectorSetting(enabled)" />
-          <v-btn
-            v-if="editing"
-            :disabled="disabledSave"
-            class="btn btn-primary ms-2 my-6"
-            height="28"
-            width="50"
-            @click="saveConnectorSetting(true)">
-            {{ $t('gamification.connectors.settings.save') }}
-          </v-btn>
-          <v-template v-else>
+      <div class="d-flex flex-row">
+        <div>
+          <v-card-text class="px-0 py-0 dark-grey-color font-weight-bold">
+            {{ $t('githubConnector.admin.label.connect') }}
+          </v-card-text>
+          <v-card-text class="dark-grey-color px-0 pt-0">
+            {{ $t('githubConnector.admin.label.allow.connect') }}
+          </v-card-text>
+        </div>
+        <template v-if="connectionSettingStored">
+          <v-spacer />
+          <v-card-actions class="flex-wrap align-end">
             <v-btn
-              icon
-              outlined
+              class="ma-auto"
               small
-              @click="editing = true">
-              <v-icon class="primary--text" size="18">fas fa-edit</v-icon>
+              icon
+              @click="openConnectionSetting">
+              <v-icon size="20">fas fa-edit</v-icon>
             </v-btn>
             <v-btn
+              class="ma-auto"
               icon
               outlined
               small
               @click="deleteConfirmDialog">
               <v-icon class="error-color" size="18">fas fa-trash-alt</v-icon>
             </v-btn>
-          </v-template>
-        </v-card-actions>
+            <v-switch
+              v-model="enabled"
+              color="primary"
+              class="px-2 ma-auto"
+              hide-details
+              @change="saveConnectorSetting(enabled)" />
+          </v-card-actions>
+        </template>
       </div>
-      <github-admin-connector-hook-list />
+      <template v-if="displayEnableButton">
+        <div class="d-flex flex-column align-center py-5">
+          <span class="subtitle-1 dark-grey-color">
+            {{ $t('githubConnector.admin.label.organizationToWatch') }}
+          </span>
+          <span class="mb-2 subtitle-1 dark-grey-color">
+            {{ $t('githubConnector.admin.label.letEnableConnection') }}
+          </span>
+          <v-btn
+            class="btn btn-primary"
+            small
+            @click="saveConnectorSetting(true)">
+            {{ $t('githubConnector.admin.label.enableConnection') }}
+          </v-btn>
+        </div>
+      </template>
+      <template v-if="!connectionSettingStored">
+        <div class="d-flex flex-column align-center py-5">
+          <template v-if="webhooksLength > 0">
+            <span class="subtitle-1 dark-grey-color">
+              {{ $t('githubConnector.admin.label.organizationToWatch') }}
+            </span>
+            <span class="mb-2 subtitle-1 dark-grey-color">
+              {{ $t('githubConnector.admin.label.letAllowConnection') }}
+            </span>
+          </template>
+          <v-btn
+            class="btn btn-primary ma-auto"
+            small
+            @click="openConnectionSetting">
+            <v-icon size="14" dark>
+              fas fa-cogs
+            </v-icon>
+            <span class="ms-2 subtitle-2 font-weight-bold">
+              {{ $t('githubConnector.admin.label.allowConnection') }}
+            </span>
+          </v-btn>
+        </div>
+      </template>
+      <github-admin-connector-hook-list @updated="webhooksUpdated" />
     </template>
     <github-admin-connector-hook-detail
       v-else
       :hook="selectedHook"
       @close="displayHookDetail = false" />
     <github-admin-hook-form-drawer />
+    <github-admin-connection-setting-drawer ref="connectionSettingDrawer" />
     <exo-confirm-dialog
       ref="deleteConfirmDialog"
       :message="$t('gamification.connectors.message.confirmDeleteConnectorSetting')"
@@ -189,7 +162,8 @@ export default {
     return {
       editing: false,
       displayHookDetail: false,
-      selectedHook: null
+      selectedHook: null,
+      webhooks: []
     };
   },
   computed: {
@@ -198,15 +172,30 @@ export default {
           || !this.secretKey
           || !this.redirectUrl;
     },
-    canUpdateStatus() {
-      return !this.editing && this.apiKey && this.secretKey && this.redirectUrl;
-    }
+    connectionSettingStored() {
+      return this.apiKey && this.secretKey && this.redirectUrl;
+    },
+    webhooksLength() {
+      return this.webhooks?.length;
+    },
+    displayEnableButton() {
+      return this.connectionSettingStored && !this.enabled && this.webhooksLength > 0;
+    },
   },
   created() {
     this.$root.$on('github-hook-detail', this.openHookDetail);
     if (!this.apiKey && !this.secretKey && !this.redirectUrl) {
       this.editing = true;
     }
+    this.$root.$on('connector-settings-updated', (apiKey, secretKey, redirectUrl) => {
+      if (!this.apiKey && !this.secretKey && !this.redirectUrl) {
+        this.enabled = true;
+      }
+      this.apiKey = apiKey;
+      this.secretKey = secretKey;
+      this.redirectUrl = redirectUrl;
+      this.saveConnectorSetting(this.enabled);
+    });
   },
   methods: {
     saveConnectorSetting(status) {
@@ -219,6 +208,9 @@ export default {
       };
       this.editing = false;
       document.dispatchEvent(new CustomEvent('save-connector-settings', {detail: settings}));
+    },
+    openConnectionSetting() {
+      this.$refs.connectionSettingDrawer.open(this.apiKey, this.secretKey, this.redirectUrl);
     },
     backToConnectorDetail() {
       document.dispatchEvent(new CustomEvent('close-connector-settings'));
@@ -241,7 +233,10 @@ export default {
       return this.$githubConnectorService.forceUpdateWebhooks().then(() => {
         this.$root.$emit('github-hooks-updated');
       });
-    }
+    },
+    webhooksUpdated(webhooks){
+      this.webhooks = webhooks;
+    },
   }
 };
 </script>

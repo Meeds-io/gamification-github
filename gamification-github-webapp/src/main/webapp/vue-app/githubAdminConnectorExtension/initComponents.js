@@ -16,6 +16,7 @@
  */
 import GithubAdminConnectorItem from './components/GithubAdminConnectorItem.vue';
 import GithubAdminHookFormDrawer from './components/GithubAdminHookFormDrawer.vue';
+import GithubAdminConnectionSettingDrawer from './components/GithubAdminConnectionSettingDrawer.vue';
 import GithubAdminConnectorHookList from './components/GithubAdminConnectorHookList.vue';
 import GithubAdminConnectorHook from './components/GithubAdminConnectorHook.vue';
 import GithubAdminConnectorHookDetail from './components/GithubAdminConnectorHookDetail.vue';
@@ -27,6 +28,7 @@ import GithubAdminConnectorEventList from './components/GithubAdminConnectorEven
 const components = {
   'github-admin-connector-item': GithubAdminConnectorItem,
   'github-admin-hook-form-drawer': GithubAdminHookFormDrawer,
+  'github-admin-connection-setting-drawer': GithubAdminConnectionSettingDrawer,
   'github-admin-connector-hook-list': GithubAdminConnectorHookList,
   'github-admin-connector-hook': GithubAdminConnectorHook,
   'github-admin-connector-hook-detail': GithubAdminConnectorHookDetail,
