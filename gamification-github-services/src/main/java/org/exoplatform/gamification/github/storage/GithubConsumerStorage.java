@@ -117,7 +117,7 @@ public class GithubConsumerStorage {
   }
 
   public int countOrganizationRepos(long organizationId, String accessToken) {
-    String url = GITHUB_API_URL + organizationId + "/repos";
+    String url = GITHUB_API_URL + organizationId + "/repos?per_page=100";
     URI uri = URI.create(url);
     try {
       String response = processGet(uri, accessToken);
