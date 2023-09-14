@@ -26,15 +26,13 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         </v-card-text>
       </div>
       <v-spacer />
-      <v-card-actions v-if="!emptyHookList" class="flex-wrap align-end">
-        <v-btn
-          class="ma-auto"
-          small
-          icon
-          @click="createGithubWebHook">
-          <v-icon class="primary--text" size="20">fas fa-plus</v-icon>
-        </v-btn>
-      </v-card-actions>
+      <v-btn
+        v-if="!emptyHookList"
+        class="ma-auto"
+        icon
+        @click="createGithubWebHook">
+        <v-icon class="mx-2 primary--text" size="20">fas fa-plus</v-icon>
+      </v-btn>
     </div>
     <div v-if="emptyHookList" class="d-flex align-center py-5">
       <v-btn
