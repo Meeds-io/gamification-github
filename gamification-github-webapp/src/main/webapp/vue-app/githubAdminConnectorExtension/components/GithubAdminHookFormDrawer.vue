@@ -40,18 +40,45 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
             <v-stepper-step
               step="1"
               class="ma-0">
-              <span class="font-weight-bold dark-grey-color text-subtitle-1"><v-icon size="14" class="pe-2">fas fa-key</v-icon>{{ $t('githubConnector.admin.label.accessToken') }}</span>
+              <span class="font-weight-bold dark-grey-color text-subtitle-1">{{ $t('githubConnector.admin.label.addAccessToken') }}</span>
             </v-stepper-step>
             <v-slide-y-transition>
               <div v-show="stepper === 1" class="px-6">
-                <v-card-text class="d-flex py-0">
+                <div class="pb-4 d-flex flex-column dark-grey-color">
+                  <v-card-text class="ps-0 dark-grey-color">
+                    {{ $t('githubConnector.admin.label.accessToken.instructions.stepOne') }}
+                    (<a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic" target="_blank">{{ $t('githubConnector.admin.label.seeMore') }}
+                      <v-icon size="14" class="pb-1 pe-1">fas fa-external-link-alt</v-icon>
+                    </a>)
+                  </v-card-text>
+                  <v-card-text class="pt-0 ps-0 dark-grey-color">
+                    {{ $t('githubConnector.admin.label.accessToken.instructions.stepTwo') }}
+                  </v-card-text>
+                  <v-card-text class="pt-0 pb-1 ps-0 dark-grey-color">
+                    {{ $t('githubConnector.admin.label.accessToken.instructions.stepThree') }} :
+                  </v-card-text>
+                  <span class="pt-0 ps-0 dark-grey-color">
+                    - repo
+                  </span>
+                  <span class="pt-0 ps-0 dark-grey-color">
+                    - admin:org_hook
+                  </span>
+                </div>
+                <div class="d-flex flex-column py-0">
+                  <v-card-text class="pt-0 pb-1 ps-0 dark-grey-color subtitle-1">
+                    {{ $t('githubConnector.admin.label.accessToken') }}
+                  </v-card-text>
                   <v-text-field
                     ref="accessTokenInput"
                     v-model="accessTokenInput"
                     :readonly="!isTokenEditing"
                     :placeholder="$t('githubConnector.admin.label.accessToken.placeholder')"
-                    :class="accessToken ? 'mx-2 pa-0' : 'mx-2 pa-0 me-8' "
-                    dense>
+                    class="pa-0"
+                    type="text"
+                    outlined
+                    required
+                    dense
+                    @keyup.enter="handleToken">
                     <template #append-outer>
                       <v-slide-x-reverse-transition mode="out-in">
                         <v-icon
@@ -64,7 +91,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
                       </v-slide-x-reverse-transition>
                     </template>
                   </v-text-field>
-                </v-card-text>
+                  <span v-if="isTokenEditing && accessTokenInput" class="text-caption dark-grey-color">{{ $t('githubConnector.webhook.message.confirmBeforeProceeding') }} ↵</span>
+                </div>
               </div>
             </v-slide-y-transition>
           </div>
@@ -73,14 +101,14 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
               :complete="stepper > 2"
               step="2"
               class="ma-0">
-              <span class="font-weight-bold dark-grey-color text-subtitle-1"><v-icon size="16" class="pe-2">mdi-webhook</v-icon>{{ $t('githubConnector.admin.label.Webhook') }}</span>
+              <span class="font-weight-bold dark-grey-color text-subtitle-1">{{ $t('githubConnector.admin.label.identifyOrganization') }}</span>
             </v-stepper-step>
             <v-slide-y-transition>
               <div v-show="stepper > 1" class="px-6">
-                <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left dark-grey-color text-subtitle-1 pb-2">
+                <v-card-text class="d-flex flex-grow-1 text-no-wrap text-left dark-grey-color text-subtitle-1 pb-2 ps-0">
                   {{ $t('githubConnector.admin.label.organization') }}
                 </v-card-text>
-                <v-card-text class="d-flex py-0">
+                <v-card-text class="d-flex py-0 ps-0">
                   <input
                     ref="organizationNameInput"
                     v-model="organizationName"
@@ -243,6 +271,14 @@ export default {
       this.organizationName = null;
       this.hook = {};
     },
+    handleToken() {
+      if (this.accessTokenInput) {
+        this.accessToken = this.accessTokenInput;
+        this.accessTokenInput = '*'.repeat(16);
+        this.isTokenEditing = false;
+        this.hookEdited = true;
+      }
+    }
   }
 };
 </script>
