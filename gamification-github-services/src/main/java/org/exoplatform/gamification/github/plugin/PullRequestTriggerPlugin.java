@@ -32,7 +32,8 @@ public class PullRequestTriggerPlugin extends GithubTriggerPlugin {
     String objectId = extractSubItem(payload, PULL_REQUEST, HTML_URL);
     if (Objects.equals(extractSubItem(payload, ACTION), OPENED)) {
       return Collections.singletonList(new Event(CREATE_PULL_REQUEST_EVENT_NAME, null, userId, objectId, PR_TYPE));
-    } else if (Objects.equals(extractSubItem(payload, ACTION), CLOSED)) {
+    } else if (Objects.equals(extractSubItem(payload, ACTION), CLOSED)
+        && !Boolean.parseBoolean(extractSubItem(payload, PULL_REQUEST, MERGED))) {
       return Collections.singletonList(new Event(CLOSE_PULL_REQUEST_EVENT_NAME, null, userId, objectId, PR_TYPE));
     } else if (Objects.equals(extractSubItem(payload, ACTION), REVIEW_REQUESTED)) {
       String requestedReviewer = extractSubItem(payload, REQUESTED_REVIEWER, LOGIN);
