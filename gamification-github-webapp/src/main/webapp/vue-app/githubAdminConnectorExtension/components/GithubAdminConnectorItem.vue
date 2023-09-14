@@ -56,29 +56,29 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         </div>
         <template v-if="connectionSettingStored">
           <v-spacer />
-          <v-card-actions class="flex-wrap align-end">
-            <v-btn
-              class="ma-auto"
-              small
-              icon
-              @click="openConnectionSetting">
-              <v-icon size="20">fas fa-edit</v-icon>
-            </v-btn>
-            <v-btn
-              class="ma-auto"
-              icon
-              outlined
-              small
-              @click="deleteConfirmDialog">
-              <v-icon class="error-color" size="18">fas fa-trash-alt</v-icon>
-            </v-btn>
+          <div class="d-flex flex-row">
             <v-switch
               v-model="enabled"
               color="primary"
-              class="px-2 ma-auto"
+              class="ma-auto"
               hide-details
               @change="saveConnectorSetting(enabled)" />
-          </v-card-actions>
+            <div class="d-flex align-center px-2">
+              <v-btn
+                icon
+                @click="openConnectionSetting">
+                <v-icon size="20">fas fa-edit</v-icon>
+              </v-btn>
+            </div>
+            <div class="d-flex align-center">
+              <v-btn
+                class="ma-auto"
+                icon
+                @click="deleteConfirmDialog">
+                <v-icon class="error-color" size="18">fas fa-trash-alt</v-icon>
+              </v-btn>
+            </div>
+          </div>
         </template>
       </div>
       <template v-if="displayEnableButton">

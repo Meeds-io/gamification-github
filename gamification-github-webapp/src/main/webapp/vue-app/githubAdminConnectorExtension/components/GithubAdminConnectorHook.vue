@@ -34,7 +34,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
           <v-list-item-title class="align-self-start">
             {{ title }}
           </v-list-item-title>
-          <v-list-item-subtitle class="text-truncate d-flex caption mt-1">{{ description }}</v-list-item-subtitle>
+          <v-list-item-subtitle v-if="description" class="text-truncate d-flex caption mt-1">{{ description }}</v-list-item-subtitle>
           <div class="d-flex flex-row">
             <span class="text-truncate d-flex caption d-content pt-2px"> {{ watchedByLabel }} </span>
             <exo-user-avatar
@@ -48,18 +48,16 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
       <v-spacer />
       <div class="d-flex align-center px-2">
         <v-btn
-          small
           icon
           @click="editGithubWebHook">
-          <v-icon class="primary--text" size="18">fas fa-edit</v-icon>
+          <v-icon size="20">fas fa-edit</v-icon>
         </v-btn>
       </div>
-      <div class="d-flex align-center px-2">
+      <div class="d-flex align-center">
         <v-btn
-          small
           icon
           @click="deleteConfirmDialog">
-          <v-icon class="error-color" size="18">fas fa-trash-alt</v-icon>
+          <v-icon class="error-color mx-2" size="20">fas fa-trash-alt</v-icon>
         </v-btn>
       </div>
     </div>
