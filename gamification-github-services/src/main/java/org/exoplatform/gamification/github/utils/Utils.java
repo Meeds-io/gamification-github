@@ -97,6 +97,8 @@ public class Utils {
 
   public static final String  UNLABELED                                  = "unlabeled";
 
+  public static final String  MERGED                                     = "merged";
+
   public static final String  REVIEW_REQUESTED                           = "review_requested";
 
   public static final String  REVIEW_REQUEST_REMOVED                     = "review_request_removed";
