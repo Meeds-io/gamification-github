@@ -88,6 +88,34 @@ public class HooksManagementRest implements ResourceContainer {
     }
   }
 
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("{webHookId}")
+  @RolesAllowed("users")
+  @Operation(summary = "Retrieves a webHook by its technical identifier", method = "GET")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "Request fulfilled"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
+          @ApiResponse(responseCode = "400", description = "Invalid query input"),
+          @ApiResponse(responseCode = "404", description = "Not found"),
+          @ApiResponse(responseCode = "500", description = "Internal server error"), })
+  public Response getWebHookById(@Parameter(description = "WebHook technical identifier", required = true) @PathParam("webHookId") long webHookId) {
+    if (webHookId == 0) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("WebHook Id must be not null").build();
+    }
+    String currentUser = getCurrentUser();
+    try {
+      WebHook webHook = webhookService.getWebhookId(webHookId, currentUser);
+      return Response.ok(WebHookBuilder.toRestEntity(webhookService, githubConsumerService, webHook)).build();
+    } catch (IllegalArgumentException e) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+    } catch (IllegalAccessException e) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
+    } catch (ObjectNotFoundException e) {
+      return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+    }
+  }
+
   @POST
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   @RolesAllowed("users")
