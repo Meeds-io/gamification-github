@@ -207,12 +207,10 @@ export default {
       this.saveConnectorSetting(this.enabled);
     });
     const fragment = document.location.hash.substring(1);
-    const match = fragment.match(/github-(\d+)/);
-    if (match) {
-      const hookId = match[1];
-      if (hookId) {
-        this.openHookDetailById(hookId);
-      }
+    const match = fragment.split('-');
+    const hookId = Number(match[1]);
+    if (hookId) {
+      this.openHookDetailById(hookId);
     }
   },
   methods: {
