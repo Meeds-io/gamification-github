@@ -38,6 +38,25 @@ public interface WebhookService {
   List<WebHook> getWebhooks(String currentUser, int offset, int limit, boolean forceUpdate) throws IllegalAccessException;
 
   /**
+   * Retrieves a webHook identified by its technical identifier.
+   *
+   * @param webhookId WebHook technical identifier
+   * @return found {@link WebHook}
+   */
+  WebHook getWebhookId(long webhookId);
+
+  /**
+   * Retrieves a webHook identified by its technical identifier accessed by a user
+   *
+   * @param webhookId WebHook technical identifier
+   * @param username user name attempting to access connector webhook
+   * @return found {@link WebHook}
+   * @throws IllegalAccessException when user is not authorized to access webhook
+   * @throws ObjectNotFoundException webhook not found
+   */
+  WebHook getWebhookId(long webhookId, String username) throws IllegalAccessException, ObjectNotFoundException;
+
+  /**
    * Get available github hooks using offset and limit.
    *
    * @param offset Offset of result
@@ -197,8 +216,9 @@ public interface WebhookService {
    * @throws IllegalAccessException when user is not authorized enables/disables
    *           organization event
    */
-  void setEventEnabledForOrganization(long eventId, long organizationId, boolean enabled, String currentUser) throws IllegalAccessException,
-          ObjectNotFoundException;
-
+  void setEventEnabledForOrganization(long eventId,
+                                      long organizationId,
+                                      boolean enabled,
+                                      String currentUser) throws IllegalAccessException, ObjectNotFoundException;
 
 }
