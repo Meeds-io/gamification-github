@@ -82,6 +82,25 @@ public class WebhookServiceImpl implements WebhookService {
     return getWebhooks(offset, limit, forceUpdate);
   }
 
+  public WebHook getWebhookId(long webhookId, String username) throws IllegalAccessException, ObjectNotFoundException {
+    if (!Utils.isRewardingManager(username)) {
+      throw new IllegalAccessException(AUTHORIZED_TO_ACCESS_GIT_HUB_HOOKS);
+    }
+    WebHook webHook = getWebhookId(webhookId);
+    if (webHook == null) {
+      throw new ObjectNotFoundException("Webhook doesn't exist");
+    }
+    return webHook;
+  }
+
+  @Override
+  public WebHook getWebhookId(long webhookId) {
+    if (webhookId <= 0) {
+      throw new IllegalArgumentException("Webhook id is mandatory");
+    }
+    return webHookStorage.getWebHookById(webhookId);
+  }
+
   public List<WebHook> getWebhooks(int offset, int limit, boolean forceUpdate) {
     if (forceUpdate) {
       forceUpdateWebhooks();
