@@ -28,6 +28,19 @@ export function getGithubWebHooks(offset, limit) {
   });
 }
 
+export function getGithubWebHookById(hookId) {
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/${hookId}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then((resp) => {
+    if (resp?.ok) {
+      return resp.json();
+    } else {
+      throw new Error('Error when getting github webhook');
+    }
+  });
+}
+
 export function saveGithubWebHook(organizationName, accessToken) {
   const formData = new FormData();
   formData.append('organizationName', organizationName);
