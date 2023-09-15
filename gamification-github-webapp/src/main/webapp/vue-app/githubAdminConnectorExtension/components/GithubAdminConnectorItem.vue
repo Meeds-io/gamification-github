@@ -163,7 +163,8 @@ export default {
       editing: false,
       displayHookDetail: false,
       selectedHook: null,
-      webhooks: []
+      webhooks: [],
+      githubConnectorLinkBasePath: '/portal/g/:platform:rewarding/gamificationConnectorsAdministration#github',
     };
   },
   computed: {
@@ -182,6 +183,15 @@ export default {
       return this.connectionSettingStored && !this.enabled && this.webhooksLength > 0;
     },
   },
+  watch: {
+    displayHookDetail() {
+      if (this.displayHookDetail && this.selectedHook?.id) {
+        window.history.replaceState('gamification connectors', this.$t('gamification.connectors.label.connectors'), `${this.githubConnectorLinkBasePath}-${this.selectedHook?.id}`);
+      } else {
+        window.history.replaceState('gamification connectors', this.$t('gamification.connectors.label.connectors'), `${this.githubConnectorLinkBasePath}-configuration`);
+      }
+    },
+  },
   created() {
     this.$root.$on('github-hook-detail', this.openHookDetail);
     if (!this.apiKey && !this.secretKey && !this.redirectUrl) {
@@ -196,6 +206,12 @@ export default {
       this.redirectUrl = redirectUrl;
       this.saveConnectorSetting(this.enabled);
     });
+    const fragment = document.location.hash.substring(1);
+    const match = fragment.split('-');
+    const hookId = Number(match[1]);
+    if (hookId) {
+      this.openHookDetailById(hookId);
+    }
   },
   methods: {
     saveConnectorSetting(status) {
@@ -236,6 +252,14 @@ export default {
     },
     webhooksUpdated(webhooks){
       this.webhooks = webhooks;
+    },
+    openHookDetailById(id) {
+      this.$githubConnectorService.getGithubWebHookById(id)
+        .then(hook => {
+          if (hook?.id) {
+            this.openHookDetail(hook);
+          }
+        });
     },
   }
 };
