@@ -22,7 +22,6 @@ const config = {
     ]
   },
   entry: {
-    gitHubWebHookManagement: './src/main/webapp/vue-app/webhook-management/main.js',
     engagementCenterExtensions: './src/main/webapp/vue-app/engagementCenterExtensions/extensions.js',
     githubUserConnectorExtension: './src/main/webapp/vue-app/githubUserConnectorExtension/extension.js',
     githubAdminConnectorExtension: './src/main/webapp/vue-app/githubAdminConnectorExtension/extension.js'
