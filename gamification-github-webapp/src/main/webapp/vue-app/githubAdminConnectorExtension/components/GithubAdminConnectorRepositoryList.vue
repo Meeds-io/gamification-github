@@ -1,6 +1,6 @@
 <template>
   <v-card flat class="pb-8">
-    <v-subheader class="ps-0">
+    <v-subheader class="px-0 py-3">
       <v-card-text class="text-color text-subtitle-1 pa-0">{{ $t('githubConnector.admin.label.repositories.placeholder') }}</v-card-text>
       <v-spacer />
       <v-card
