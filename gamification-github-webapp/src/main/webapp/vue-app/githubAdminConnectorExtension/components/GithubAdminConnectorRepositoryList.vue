@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pb-8">
-    <v-subheader class="pb-2 ps-0">
-      <v-card-text class="black--text text-subtitle-1 pa-0">{{ $t('githubConnector.admin.label.repositories.placeholder') }}</v-card-text>
+    <v-subheader class="ps-0">
+      <v-card-text class="text-color text-subtitle-1 pa-0">{{ $t('githubConnector.admin.label.repositories.placeholder') }}</v-card-text>
       <v-spacer />
       <v-card
         width="220"
@@ -24,7 +24,6 @@
       :server-items-length="pageSize"
       :show-rows-border="false"
       :loading="loading"
-      class="pt-5"
       mobile-breakpoint="0"
       hide-default-footer
       disable-sort>

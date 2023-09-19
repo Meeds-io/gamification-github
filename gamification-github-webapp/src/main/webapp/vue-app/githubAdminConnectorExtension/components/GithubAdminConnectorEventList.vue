@@ -1,7 +1,7 @@
 <template>
   <v-card flat>
-    <v-subheader class="pb-2 ps-0">
-      <v-card-text class="black--text text-subtitle-1 pa-0 py-2">{{ $t('gamification.label.events.placeholder') }}</v-card-text>
+    <v-subheader class="ps-0">
+      <v-card-text class="text-color text-subtitle-1 pa-0 py-2">{{ $t('gamification.label.events.placeholder') }}</v-card-text>
       <v-spacer />
       <v-card
         width="220"

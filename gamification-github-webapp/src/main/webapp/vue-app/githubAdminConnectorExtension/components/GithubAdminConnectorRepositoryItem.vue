@@ -1,9 +1,9 @@
 <template>
   <tr>
-    <td class="ps-0 no-border-bottom text-truncate">
+    <td class="ps-0 no-border-bottom text-color text-truncate">
       {{ name }}
     </td>
-    <td class="no-border-bottom text-truncate">
+    <td class="no-border-bottom text-color text-truncate">
       {{ description }}
     </td>
     <td class="no-border-bottom">
