@@ -1,6 +1,6 @@
 <template>
   <v-card flat>
-    <div class="py-2 py-sm-5 d-flex align-center">
+    <div class="py-2 px-4 py-sm-5 d-flex align-center">
       <v-tooltip :disabled="$root.isMobile" bottom>
         <template #activator="{ on }">
           <v-card
@@ -19,8 +19,32 @@
         <span>{{ $t('gamification.connectors.settings.BackToDetail') }}</span>
       </v-tooltip>
     </div>
-    <github-admin-connector-repository-list :hook="hook" />
-    <github-admin-connector-event-list :hook="hook" />
+    <div class="disabled-background">
+      <v-tabs
+        v-model="selectedTab"
+        slider-size="4">
+        <v-tab key="Events" href="#Events">
+          {{ $t('gamification.label.events') }}
+        </v-tab>
+        <v-tab key="Repositories" href="#Repositories">
+          {{ $t('githubConnector.admin.label.repositories') }}
+        </v-tab>
+      </v-tabs>
+      <v-tabs-items v-model="selectedTab" class="px-4 mt-2 ignore-vuetify-classes">
+        <v-tab-item
+          id="Events"
+          value="Events"
+          eager>
+          <github-admin-connector-event-list :hook="hook" />
+        </v-tab-item>
+        <v-tab-item
+          id="Repositories"
+          value="Repositories"
+          eager>
+          <github-admin-connector-repository-list :hook="hook" />
+        </v-tab-item>
+      </v-tabs-items>
+    </div>
   </v-card>
 </template>
 <script>
@@ -31,6 +55,11 @@ export default {
       type: Object,
       default: null
     },
+  },
+  data() {
+    return {
+      selectedTab: 'Events',
+    };
   },
   computed: {
     title() {

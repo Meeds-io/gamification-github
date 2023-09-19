@@ -94,8 +94,8 @@ export function deleteGithubWebHook(organizationId) {
   });
 }
 
-export function getWebHookRepos(organizationId, offset, limit) {
-  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/${organizationId}/repos?offset=${offset || 0}&limit=${limit|| 10}&returnSize=true`, {
+export function getWebHookRepos(organizationId, page, perPage, keyword) {
+  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/${organizationId}/repos?page=${page || 0}&perPage=${perPage|| 10}&keyword=${keyword || ''}`, {
     method: 'GET',
     credentials: 'include',
   }).then((resp) => {

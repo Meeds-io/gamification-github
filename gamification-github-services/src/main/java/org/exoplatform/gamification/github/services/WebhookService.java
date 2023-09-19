@@ -184,6 +184,9 @@ public interface WebhookService {
    * @param organizationRemoteId gitHub organization remote Id
    * @param currentUser user name attempting to access remote organization
    *          repositories
+   * @param page page
+   * @param perPage perPage
+   * @param keyword to search in repositories title
    * @throws IllegalAccessException when user is not authorized to access remote
    *           organization repositories
    * @return {@link List} of {@link RemoteRepository}
@@ -191,20 +194,8 @@ public interface WebhookService {
   List<RemoteRepository> retrieveOrganizationRepos(long organizationRemoteId,
                                                    String currentUser,
                                                    int page,
-                                                   int perPage) throws IllegalAccessException, ObjectNotFoundException;
-
-  /**
-   * Count available github organization repositories.
-   *
-   * @param organizationRemoteId gitHub organization remote Id
-   * @param currentUser user name attempting to access remote organization
-   *          repositories
-   * @throws IllegalAccessException when user is not authorized to access remote
-   *           organization repositories
-   * @return Repositories count
-   */
-  int countOrganizationRepos(long organizationRemoteId, String currentUser) throws IllegalAccessException,
-                                                                            ObjectNotFoundException;
+                                                   int perPage,
+                                                   String keyword) throws IllegalAccessException, ObjectNotFoundException;
 
   /**
    * Enables/disables organization event

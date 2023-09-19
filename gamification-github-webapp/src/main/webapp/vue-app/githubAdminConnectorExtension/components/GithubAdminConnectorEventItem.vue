@@ -1,17 +1,11 @@
 <template>
   <tr>
     <td class="ps-0 no-border-bottom">
-      <div class="d-flex flex-row ma-auto py-2">
-        <div class="d-flex flex-column pa-0 justify-center pe-3">
-          <v-icon size="40" class="text-color">fab fa-github</v-icon>
-        </div>
-        <div class="d-flex flex-column pa-0 text-truncate">
-          <span class="text-caption">{{ titleLabel }} </span>
-          <span class="text-caption text-sub-title">{{ description }} </span>
-        </div>
-      </div>
+      <gamification-admin-connector-event
+        :event="event"
+        class="py-2" />
     </td>
-    <td class="no-border-bottom">
+    <td class="no-border-bottom d-flex justify-center py-2">
       <div class="d-flex flex-column align-center">
         <v-switch
           v-model="enabled"

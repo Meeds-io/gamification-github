@@ -1,7 +1,22 @@
 <template>
   <v-card flat>
-    <v-card-text class="dark-grey-color font-weight-bold text-subtitle-1 pa-0">{{ $t('gamification.label.events') }}</v-card-text>
-    <v-card-text class="dark-grey-color text-subtitle-1 pa-0">{{ $t('gamification.label.events.placeholder') }}</v-card-text>
+    <v-subheader class="pb-2 ps-0">
+      <v-card-text class="black--text text-subtitle-1 pa-0 py-2">{{ $t('gamification.label.events.placeholder') }}</v-card-text>
+      <v-spacer />
+      <v-card
+        width="220"
+        max-width="100%"
+        flat>
+        <v-text-field
+          v-model="keyword"
+          :placeholder="$t('gamification.label.filter.filterEvents')"
+          prepend-inner-icon="fa-filter icon-default-color"
+          clear-icon="fa-times fa-1x"
+          class="pa-0 me-3 my-auto"
+          clearable
+          hide-details />
+      </v-card>
+    </v-subheader>
     <v-data-table
       :headers="eventsHeaders"
       :items="eventToDisplay"
@@ -9,7 +24,6 @@
       :server-items-length="pageSize"
       :show-rows-border="false"
       :loading="loading"
-      class="pt-5"
       mobile-breakpoint="0"
       hide-default-footer
       disable-sort>
@@ -43,12 +57,13 @@ export default {
     return {
       options: {
         page: 1,
-        itemsPerPage: 5,
+        itemsPerPage: 10,
       },
       events: [],
       eventsSize: 0,
-      pageSize: 5,
+      pageSize: 10,
       loading: true,
+      keyword: ''
     };
   },
   computed: {
@@ -60,8 +75,8 @@ export default {
     },
     eventsHeaders() {
       return [
-        {text: this.$t('githubConnector.webhook.details.event'), align: 'start', width: '80%' , class: 'dark-grey-color ps-0'},
-        {text: this.$t('githubConnector.webhook.details.status'), align: 'center', width: '20%', class: 'dark-grey-color'},];
+        {text: this.$t('githubConnector.webhook.details.event'), align: 'start', width: '80%' , class: 'dark-grey-color text-font-size ps-0'},
+        {text: this.$t('githubConnector.webhook.details.status'), align: 'center', width: '20%', class: 'dark-grey-color text-font-size'},];
     },
     hasMoreEvents() {
       return this.keyword ? this.sortedEvent.length > this.pageSize : this.eventsSize > this.pageSize;
