@@ -40,15 +40,20 @@ public class CacheKey implements Serializable {
 
   private long              organizationId;
 
+  private String              organizationName;
+
   private String            accessToken;
+
+  private String            keyword;
 
   private Integer           context;
 
-  public CacheKey(Integer context, long organizationId, String accessToken, int page, int perPage) {
-    this.organizationId = organizationId;
+  public CacheKey(Integer context, String organizationName, String accessToken, int page, int perPage, String keyword) {
+    this.organizationName = organizationName;
     this.accessToken = accessToken;
     this.page = page;
     this.perPage = perPage;
+    this.keyword = keyword;
     this.context = context;
   }
 
