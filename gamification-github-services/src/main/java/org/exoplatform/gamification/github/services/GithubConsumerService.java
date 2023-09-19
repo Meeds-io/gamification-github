@@ -69,27 +69,15 @@ public interface GithubConsumerService {
    * @param webHook webHook
    * @param page page
    * @param perPage perPage
-   *
+   * @param keyword to search in repositories title
    * @return {@link List} of {@link RemoteRepository}
    */
-  List<RemoteRepository> retrieveOrganizationRepos(WebHook webHook,
-                                                   int page,
-                                                   int perPage);
-
-  /**
-   * Count github organization repositories.
-   *
-   * @param webHook webHook
-   *
-   * @return repositories count
-   */
-  int countOrganizationRepos(WebHook webHook);
+  List<RemoteRepository> retrieveOrganizationRepos(WebHook webHook, int page, int perPage, String keyword);
 
   /**
    * Force Update Webhook
    *
    * @param webHook webHook
-   *
    * @return response status
    */
   String forceUpdateWebhook(WebHook webHook);
@@ -103,7 +91,7 @@ public interface GithubConsumerService {
   TokenStatus checkGitHubTokenStatus(String accessToken);
 
   /**
-   * clear remote webhook entittes cache
+   * clear remote webhook entities cache
    */
   void clearCache();
 }

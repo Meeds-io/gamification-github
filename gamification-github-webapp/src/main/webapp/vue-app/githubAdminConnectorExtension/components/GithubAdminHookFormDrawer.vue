@@ -139,7 +139,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
           v-else
           class="btn me-2"
           @click="close">
-          {{ $t('githubWebhookManagement.cancel') }}
+          {{ $t('githubConnector.webhook.form.label.button.cancel') }}
         </v-btn>
         <v-btn
           v-if="stepper === 1"
@@ -154,7 +154,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
           :loading="loading"
           class="btn btn-primary"
           @click="saveHook">
-          {{ $t('githubWebhookManagement.save') }}
+          {{ $t('githubConnector.webhook.form.label.button.save') }}
         </v-btn>
       </div>
     </template>

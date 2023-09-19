@@ -15,7 +15,7 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <template>
-  <v-card class="pt-5" flat>
+  <v-card class="pt-5 px-4" flat>
     <div class="d-flex flex-row">
       <div>
         <v-card-text class="px-0 py-0 dark-grey-color font-weight-bold">
