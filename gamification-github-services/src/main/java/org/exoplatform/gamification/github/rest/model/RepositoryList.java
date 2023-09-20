@@ -31,9 +31,7 @@ public class RepositoryList {
 
   private List<RemoteRepository> remoteRepositories;
 
-  private int                    offset;
+  private int                    page;
 
-  private int                    limit;
-
-  private int                    size;
+  private int                    perPage;
 }

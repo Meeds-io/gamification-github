@@ -31,10 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.exoplatform.gamification.github.utils.Utils.*;
 import static org.exoplatform.gamification.github.utils.Utils.extractSubItem;
@@ -48,7 +45,7 @@ public class GithubConsumerStorage {
     String secret = generateRandomSecret(8);
     JSONObject config = new JSONObject();
     JSONObject hook = new JSONObject();
-    String url = GITHUB_API_URL + organizationName + "/hooks";
+    String url = GITHUB_API_URL + ORGANIZATIONS + organizationName + "/hooks";
     config.put("url", CommonsUtils.getCurrentDomain() + "/portal/rest/gamification/connectors/github/webhooks");
     config.put("content_type", "json");
     config.put("insecure_ssl", "0");
@@ -80,7 +77,7 @@ public class GithubConsumerStorage {
   }
 
   public String deleteWebhookHook(WebHook webHook) {
-    URI uri = URI.create(GITHUB_API_URL + webHook.getOrganizationId() + "/hooks/" + webHook.getWebhookId());
+    URI uri = URI.create(GITHUB_API_URL + ORGANIZATIONS + webHook.getOrganizationId() + "/hooks/" + webHook.getWebhookId());
     try {
       return processDelete(uri, webHook.getToken());
     } catch (GithubConnectionException e) {
@@ -88,21 +85,36 @@ public class GithubConsumerStorage {
     }
   }
 
-  public List<RemoteRepository> retrieveOrganizationRepos(long organizationId, String accessToken , int page, int perPage) {
+  @SuppressWarnings("unchecked")
+  public List<RemoteRepository> retrieveOrganizationRepos(String organization,
+                                                          String accessToken,
+                                                          int page,
+                                                          int perPage,
+                                                          String keyword) {
 
     List<RemoteRepository> remoteRepositories = new ArrayList<>();
-    String url = GITHUB_API_URL + organizationId + "/repos?per_page=" + perPage + "&page=" + page;
-
+    String url = GITHUB_API_URL + ORGANIZATIONS + organization + "/repos?per_page=" + perPage + "&page=" + page;
+    if (StringUtils.isNotBlank(keyword)) {
+      url = GITHUB_API_URL + "/search/repositories?q=" + keyword + "+org:" + organization + "&per_page=" + perPage + "&page="
+          + page;
+    }
     URI uri = URI.create(url);
     try {
       String response = processGet(uri, accessToken);
       if (response != null) {
-        Map<String, Object>[] repositoryMaps = fromJsonStringToMapCollection(response);
-        for (Map<String, Object> repoMap : repositoryMaps) {
+        List<Map<String, Object>> repoList;
+        if (StringUtils.isNotBlank(keyword)) {
+          Map<String, Object> responseMap = fromJsonStringToMap(response);
+          repoList = (List<Map<String, Object>>) responseMap.get("items");
+        } else {
+          Map<String, Object>[] repositoryMaps = fromJsonStringToMapCollection(response);
+          repoList = Arrays.asList(repositoryMaps);
+        }
+        for (Map<String, Object> repo : repoList) {
           RemoteRepository remoteRepository = new RemoteRepository();
-          long repoId = Long.parseLong(repoMap.get("id").toString());
-          String name = (String) repoMap.get("name");
-          String description = (String) repoMap.get("description");
+          long repoId = Long.parseLong(repo.get("id").toString());
+          String name = (String) repo.get("name");
+          String description = (String) repo.get("description");
           remoteRepository.setId(repoId);
           remoteRepository.setName(name);
           remoteRepository.setDescription(description);
@@ -116,24 +128,9 @@ public class GithubConsumerStorage {
     return remoteRepositories;
   }
 
-  public int countOrganizationRepos(long organizationId, String accessToken) {
-    String url = GITHUB_API_URL + organizationId + "/repos?per_page=100";
-    URI uri = URI.create(url);
-    try {
-      String response = processGet(uri, accessToken);
-      if (response != null) {
-        Map<String, Object>[] repositoryMaps = fromJsonStringToMapCollection(response);
-        return (int) Arrays.stream(repositoryMaps).count();
-      }
-    } catch (GithubConnectionException e) {
-      throw new IllegalStateException("Unable to retrieve GitHub organization repos.");
-    }
-    return 0;
-  }
-
   public RemoteOrganization retrieveRemoteOrganization(String organizationName,
                                                        String accessToken) throws ObjectNotFoundException {
-    URI uri = URI.create(GITHUB_API_URL + organizationName);
+    URI uri = URI.create(GITHUB_API_URL + ORGANIZATIONS + organizationName);
     String response;
     try {
       response = processGet(uri, accessToken);
@@ -154,7 +151,7 @@ public class GithubConsumerStorage {
   }
 
   public RemoteOrganization retrieveRemoteOrganization(long organizationId, String accessToken) {
-    URI uri = URI.create(GITHUB_API_URL + organizationId);
+    URI uri = URI.create(GITHUB_API_URL + ORGANIZATIONS + organizationId);
     String response;
     try {
       response = processGet(uri, accessToken);
@@ -208,7 +205,7 @@ public class GithubConsumerStorage {
 
   public String forceUpdateWebhook(WebHook webHook) {
     long organizationId = webHook.getOrganizationId();
-    URI uri = URI.create(GITHUB_API_URL + organizationId + "/hooks/" + webHook.getWebhookId());
+    URI uri = URI.create(GITHUB_API_URL + ORGANIZATIONS + organizationId + "/hooks/" + webHook.getWebhookId());
     try {
       return processGet(uri, webHook.getToken());
     } catch (GithubConnectionException e) {

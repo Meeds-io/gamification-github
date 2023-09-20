@@ -153,7 +153,9 @@ public class Utils {
 
   public static final String  COMMENT_ISSUE_TYPE                         = "githubCommentIssue";
 
-  public static final String  GITHUB_API_URL                             = "https://api.github.com/orgs/";
+  public static final String  GITHUB_API_URL                             = "https://api.github.com";
+
+  public static final String  ORGANIZATIONS                              = "/orgs/";
 
   public static final String  AUTHORIZED_TO_ACCESS_GIT_HUB_HOOKS         = "The user is not authorized to access gitHub Hooks";
 
