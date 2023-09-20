@@ -209,22 +209,18 @@ public class HooksManagementRest implements ResourceContainer {
           @ApiResponse(responseCode = "200", description = "Request fulfilled"),
          @ApiResponse(responseCode = "401", description = "Unauthorized operation"), })
   public Response getWebHookRepos(@Parameter(description = "GitHub organization id", required = true) @PathParam("organizationId") long organizationId,
-                                  @QueryParam("offset") int offset,
-                                  @Parameter(description = "Query results limit", required = true) @QueryParam("limit") int limit,
-                                  @Parameter(description = "Repositories total size") @Schema(defaultValue = "false") @QueryParam("returnSize") boolean returnSize) {
+                                  @Parameter(description = "Query page number", required = true) @QueryParam("page") int page,
+                                  @Parameter(description = "Query item per page", required = true) @QueryParam("perPage") int perPage,
+                                  @Parameter(description = "Keyword to search in repositories title", required = true) @QueryParam("keyword") String keyword) {
 
     String currentUser = getCurrentUser();
     List<RemoteRepository> remoteRepositories;
     try {
       RepositoryList repositoryList = new RepositoryList();
-      remoteRepositories = webhookService.retrieveOrganizationRepos(organizationId, currentUser, offset, limit);
-      if (returnSize) {
-        int size = webhookService.countOrganizationRepos(organizationId, currentUser);
-        repositoryList.setSize(size);
-      }
+      remoteRepositories = webhookService.retrieveOrganizationRepos(organizationId, currentUser, page, perPage, keyword);
       repositoryList.setRemoteRepositories(remoteRepositories);
-      repositoryList.setOffset(offset);
-      repositoryList.setLimit(limit);
+      repositoryList.setPage(page);
+      repositoryList.setPerPage(perPage);
       return Response.ok(repositoryList).build();
     } catch (IllegalAccessException e) {
       return Response.status(Response.Status.UNAUTHORIZED).build();

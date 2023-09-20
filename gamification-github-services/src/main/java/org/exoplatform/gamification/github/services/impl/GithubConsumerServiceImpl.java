@@ -46,11 +46,6 @@ public class GithubConsumerServiceImpl implements GithubConsumerService {
   }
 
   @Override
-  public int countOrganizationRepos(WebHook webHook) {
-    return githubConsumerStorage.countOrganizationRepos(webHook.getOrganizationId(), webHook.getToken());
-  }
-
-  @Override
   public String forceUpdateWebhook(WebHook webHook) {
     return githubConsumerStorage.forceUpdateWebhook(webHook);
   }
@@ -62,8 +57,12 @@ public class GithubConsumerServiceImpl implements GithubConsumerService {
   }
 
   @Override
-  public List<RemoteRepository> retrieveOrganizationRepos(WebHook webHook, int page, int perPage) {
-    return githubConsumerStorage.retrieveOrganizationRepos(webHook.getOrganizationId(), webHook.getToken(), page, perPage);
+  public List<RemoteRepository> retrieveOrganizationRepos(WebHook webHook, int page, int perPage, String keyword) {
+    return githubConsumerStorage.retrieveOrganizationRepos(webHook.getOrganizationName(),
+                                                           webHook.getToken(),
+                                                           page,
+                                                           perPage,
+                                                           keyword);
   }
 
   @Override

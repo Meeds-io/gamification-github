@@ -278,7 +278,8 @@ public class WebhookServiceImpl implements WebhookService {
   public List<RemoteRepository> retrieveOrganizationRepos(long organizationRemoteId,
                                                           String currentUser,
                                                           int page,
-                                                          int perPage) throws IllegalAccessException, ObjectNotFoundException {
+                                                          int perPage,
+                                                          String keyword) throws IllegalAccessException, ObjectNotFoundException {
     if (!Utils.isRewardingManager(currentUser)) {
       throw new IllegalAccessException("The user is not authorized to access organization repositories");
     }
@@ -286,22 +287,10 @@ public class WebhookServiceImpl implements WebhookService {
     if (webHook == null) {
       throw new ObjectNotFoundException("webhook with organization id '" + organizationRemoteId + "' doesn't exist");
     }
-    List<RemoteRepository> remoteRepositories = githubServiceConsumer.retrieveOrganizationRepos(webHook, page, perPage);
+    List<RemoteRepository> remoteRepositories = githubServiceConsumer.retrieveOrganizationRepos(webHook, page, perPage, keyword);
     remoteRepositories.forEach(remoteRepository -> remoteRepository.setEnabled(isWebHookRepositoryEnabled(webHook.getOrganizationId(),
                                                                                                           remoteRepository.getId())));
     return remoteRepositories;
-  }
-
-  public int countOrganizationRepos(long organizationRemoteId, String currentUser) throws IllegalAccessException,
-                                                                                   ObjectNotFoundException {
-    if (!Utils.isRewardingManager(currentUser)) {
-      throw new IllegalAccessException("The user is not authorized to access organization repositories");
-    }
-    WebHook webHook = webHookStorage.getWebhookByOrganizationId(organizationRemoteId);
-    if (webHook == null) {
-      throw new ObjectNotFoundException("webhook with organization id '" + organizationRemoteId + "' doesn't exist");
-    }
-    return githubServiceConsumer.countOrganizationRepos(webHook);
   }
 
   @Override
