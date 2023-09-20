@@ -15,9 +15,9 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <template>
-  <v-app class="px-4">
+  <v-app>
     <template v-if="!displayHookDetail">
-      <div class="py-2 py-sm-5 d-flex align-center">
+      <div class="px-4 py-2 py-sm-5 d-flex align-center">
         <v-tooltip :disabled="$root.isMobile" bottom>
           <template #activator="{ on }">
             <div class="d-flex flex-row flex-wrap full-width">
@@ -45,7 +45,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
           <span>{{ $t('gamification.connectors.settings.BackToDetail') }}</span>
         </v-tooltip>
       </div>
-      <div class="d-flex flex-row">
+      <div class="d-flex flex-row px-4">
         <div>
           <v-card-text class="px-0 py-0 dark-grey-color font-weight-bold">
             {{ $t('githubConnector.admin.label.connect') }}
@@ -82,7 +82,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         </template>
       </div>
       <template v-if="displayEnableButton">
-        <div class="d-flex flex-column align-center py-5">
+        <div class="d-flex flex-column align-center py-5 px-4">
           <span class="subtitle-1 dark-grey-color">
             {{ $t('githubConnector.admin.label.organizationToWatch') }}
           </span>
@@ -98,7 +98,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         </div>
       </template>
       <template v-if="!connectionSettingStored">
-        <div class="d-flex flex-column align-center py-5">
+        <div class="d-flex flex-column align-center py-5 px-4">
           <template v-if="webhooksLength > 0">
             <span class="subtitle-1 dark-grey-color">
               {{ $t('githubConnector.admin.label.organizationToWatch') }}
