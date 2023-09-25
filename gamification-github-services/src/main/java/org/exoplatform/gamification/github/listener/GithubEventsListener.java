@@ -15,26 +15,45 @@
  */
 package org.exoplatform.gamification.github.listener;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import org.exoplatform.gamification.github.services.GithubHooksManagement;
 import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
+import org.exoplatform.services.listener.ListenerService;
+
+import static org.exoplatform.gamification.github.utils.Utils.GITHUB_ACTION_EVENT;
+import static org.exoplatform.gamification.github.utils.Utils.GITHUB_CANCEL_ACTION_EVENT;
 
 public class GithubEventsListener extends Listener<Map<String, String>, String> {
 
-  private GithubHooksManagement githubHooksManagement;
+  public static final String    GAMIFICATION_GENERIC_EVENT = "exo.gamification.generic.action";
 
-  public GithubEventsListener(GithubHooksManagement githubHooksManagement) {
-    this.githubHooksManagement = githubHooksManagement;
+  public static final String    GAMIFICATION_CANCEL_EVENT  = "gamification.cancel.event.action";
+
+  private final ListenerService listenerService;
+
+  public GithubEventsListener(ListenerService listenerService) {
+    this.listenerService = listenerService;
   }
 
   @Override
   public void onEvent(Event<Map<String, String>, String> event) throws Exception {
-    String ruleTitle = event.getSource().get("ruleTitle");
-    String senderId = event.getSource().get("senderId");
-    String receiverId = event.getSource().get("receiverId");
-    String object = event.getSource().get("object");
-    githubHooksManagement.createGamificationHistory(ruleTitle, senderId, receiverId, object);
+    Map<String, String> gam = new HashMap<>();
+    gam.put("objectId", event.getSource().get("objectId"));
+    gam.put("objectType", event.getSource().get("objectType"));
+    gam.put("ruleTitle", event.getSource().get("ruleTitle"));
+    gam.put("senderId", event.getSource().get("senderId"));
+    gam.put("receiverId", event.getSource().get("receiverId"));
+
+    listenerService.broadcast(getGamificationEventName(event.getEventName()), gam, "");
+  }
+
+  private String getGamificationEventName(String eventName) {
+    return switch (eventName) {
+    case GITHUB_ACTION_EVENT -> GAMIFICATION_GENERIC_EVENT;
+    case GITHUB_CANCEL_ACTION_EVENT -> GAMIFICATION_CANCEL_EVENT;
+    default -> throw new IllegalArgumentException("Unexpected listener event name: " + eventName);
+    };
   }
 }

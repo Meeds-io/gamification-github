@@ -20,43 +20,51 @@
                   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/gatein_resources_1_4 http://www.exoplatform.org/xml/ns/gatein_resources_1_4"
                   xmlns="http://www.exoplatform.org/xml/ns/gatein_resources_1_4">
 
-  <portlet-skin>
-    <application-name>gamification-github</application-name>
-    <portlet-name>GitHubWebHookManagement</portlet-name>
-    <skin-name>Enterprise</skin-name>
-    <css-path>/skin/css/gitHubWebHookManagement.css</css-path>
-  </portlet-skin>
-
-  <portlet>
-    <name>GitHubWebHookManagement</name>
-    <module>
-      <script>
-        <path>/js/gitHubWebHookManagement.bundle.js</path>
-      </script>
-      <depends>
-        <module>extensionRegistry</module>
-      </depends>
-      <depends>
-        <module>vue</module>
-      </depends>
-      <depends>
-        <module>vuetify</module>
-      </depends>
-      <depends>
-        <module>eXoVueI18n</module>
-      </depends>
-      <depends>
-        <module>jquery</module>
-        <as>$</as>
-      </depends>
-    </module>
-  </portlet>
-
   <module>
     <name>engagementCenterActionsGitHubExtensions</name>
     <load-group>engagement-center-user-actions</load-group>
     <script>
       <path>/js/engagementCenterExtensions.bundle.js</path>
+    </script>
+    <depends>
+      <module>vue</module>
+    </depends>
+    <depends>
+      <module>vuetify</module>
+    </depends>
+    <depends>
+      <module>eXoVueI18n</module>
+    </depends>
+    <depends>
+      <module>extensionRegistry</module>
+    </depends>
+  </module>
+
+  <module>
+    <name>gamificationUserConnectorsExtensionsGitHub</name>
+    <load-group>gamification-user-connectors</load-group>
+    <script>
+      <path>/js/githubUserConnectorExtension.bundle.js</path>
+    </script>
+    <depends>
+      <module>vue</module>
+    </depends>
+    <depends>
+      <module>vuetify</module>
+    </depends>
+    <depends>
+      <module>eXoVueI18n</module>
+    </depends>
+    <depends>
+      <module>extensionRegistry</module>
+    </depends>
+  </module>
+
+  <module>
+    <name>gamificationAdminConnectorsExtensionsGitHub</name>
+    <load-group>gamification-admin-connectors</load-group>
+    <script>
+      <path>/js/githubAdminConnectorExtension.bundle.js</path>
     </script>
     <depends>
       <module>vue</module>

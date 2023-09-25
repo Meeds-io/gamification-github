@@ -21,11 +21,40 @@
                xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
-    <type>org.exoplatform.gamification.github.dao.GitHubAccountDAO</type>
+    <type>org.exoplatform.gamification.github.dao.WebHookDAO</type>
   </component>
 
   <component>
-    <type>org.exoplatform.gamification.github.dao.GitHubHookDAO</type>
+    <type>org.exoplatform.gamification.github.storage.WebHookStorage</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.gamification.github.storage.GithubConsumerStorage</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.gamification.github.storage.GithubConsumerStorage</key>
+    <type>org.exoplatform.gamification.github.storage.cached.GithubConsumerCachedStorage</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.gamification.github.services.WebhookService</key>
+    <type>org.exoplatform.gamification.github.services.impl.WebhookServiceImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.gamification.github.services.WebhookService</key>
+    <type>org.exoplatform.gamification.github.services.impl.WebhookServiceImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.gamification.github.services.GithubTriggerService</key>
+    <type>org.exoplatform.gamification.github.services.impl.GithubTriggerServiceImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.gamification.github.services.GithubConsumerService</key>
+    <type>org.exoplatform.gamification.github.services.impl.GithubConsumerServiceImpl</type>
   </component>
 
   <external-component-plugins>

@@ -21,124 +21,260 @@
                xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <external-component-plugins>
-    <target-component>io.meeds.gamification.service.RuleRegistry</target-component>
+    <target-component>io.meeds.gamification.service.EventRegistry</target-component>
     <component-plugin>
-      <name>rule.PushCode</name>
+      <name>PushCode</name>
       <set-method>addPlugin</set-method>
-      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>rule-title</name>
-          <value>pushCode</value>
-        </value-param>
-        <value-param>
-          <name>rule-description</name>
-          <value>You pushed a code</value>
-        </value-param>
-        <value-param>
-          <name>rule-score</name>
-          <value>15</value>
-        </value-param>
-        <value-param>
-          <name>rule-enable</name>
-          <value>false</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>pushCode</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>push</string>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
-      <name>rule.CreatPullRequest</name>
+      <name>CreatPullRequest</name>
       <set-method>addPlugin</set-method>
-      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>rule-title</name>
-          <value>creatPullRequest</value>
-        </value-param>
-        <value-param>
-          <name>rule-description</name>
-          <value>You created Pull Request</value>
-        </value-param>
-        <value-param>
-          <name>rule-score</name>
-          <value>5</value>
-        </value-param>
-        <value-param>
-          <name>rule-enable</name>
-          <value>false</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>creatPullRequest</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>pull_request</string>
+            </field>
+            <field name="cancellerEvents">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>closePullRequest</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
-      <name>rule.ReviewPullRequest</name>
+      <name>RequestReviewForPullRequest</name>
       <set-method>addPlugin</set-method>
-      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>rule-title</name>
-          <value>reviewPullRequest</value>
-        </value-param>
-        <value-param>
-          <name>rule-description</name>
-          <value>You Reviewed a Pull Request</value>
-        </value-param>
-        <value-param>
-          <name>rule-score</name>
-          <value>20</value>
-        </value-param>
-        <value-param>
-          <name>rule-enable</name>
-          <value>false</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>requestReviewForPullRequest</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>pull_request</string>
+            </field>
+            <field name="cancellerEvents">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>reviewRequestRemoved</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
-      <name>rule.CommentPullRequest</name>
+      <name>ReviewPullRequest</name>
       <set-method>addPlugin</set-method>
-      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>rule-title</name>
-          <value>commentPullRequest</value>
-        </value-param>
-        <value-param>
-          <name>rule-description</name>
-          <value>You Commented a Pull Request</value>
-        </value-param>
-        <value-param>
-          <name>rule-score</name>
-          <value>5</value>
-        </value-param>
-        <value-param>
-          <name>rule-enable</name>
-          <value>false</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>reviewPullRequest</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>pull_request_review</string>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
     <component-plugin>
-      <name>rule.PullRequestValidated</name>
+      <name>PullRequestValidated</name>
       <set-method>addPlugin</set-method>
-      <type>io.meeds.gamification.plugin.RuleConfigPlugin</type>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <value-param>
-          <name>rule-title</name>
-          <value>pullRequestValidated</value>
-        </value-param>
-        <value-param>
-          <name>rule-description</name>
-          <value>Your Pull Request is validated</value>
-        </value-param>
-        <value-param>
-          <name>rule-score</name>
-          <value>30</value>
-        </value-param>
-        <value-param>
-          <name>rule-enable</name>
-          <value>false</value>
-        </value-param>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>pullRequestValidated</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>pull_request_review</string>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>CommentPullRequest</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>commentPullRequest</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>issue_comment</string>
+            </field>
+            <field name="cancellerEvents">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>deletePullRequestComment</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>AddIssueLabel</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>addIssueLabel</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>issues</string>
+            </field>
+            <field name="cancellerEvents">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>deleteIssueLabel</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>ValidatePullRequest</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>validatePullRequest</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>pull_request_review</string>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>CommentIssue</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>commentIssue</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>issue_comment</string>
+            </field>
+            <field name="cancellerEvents">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>deleteIssueComment</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>CreateIssue</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>createIssue</string>
+            </field>
+            <field name="type">
+              <string>github</string>
+            </field>
+            <field name="trigger">
+              <string>issues</string>
+            </field>
+            <field name="cancellerEvents">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>closeIssue</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
   </external-component-plugins>
-
 
   <external-component-plugins>
     <target-component>io.meeds.gamification.service.BadgeRegistry</target-component>
