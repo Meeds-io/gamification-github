@@ -35,8 +35,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class GithubConnectorPlugin extends ConnectorPlugin {
 
@@ -66,11 +64,9 @@ public class GithubConnectorPlugin extends ConnectorPlugin {
       LOG.warn("Missing '{}' connector settings", CONNECTOR_NAME);
       return null;
     }
-    Pattern pattern = Pattern.compile("code=(\\w+)");
-    Matcher matcher = pattern.matcher(accessToken);
-    if (matcher.find()) {
+    if (StringUtils.isNotBlank(accessToken)) {
       try {
-        OAuth2AccessToken oAuth2AccessToken = getOAuthService(remoteConnectorSettings).getAccessToken(matcher.group(1));
+        OAuth2AccessToken oAuth2AccessToken = getOAuthService(remoteConnectorSettings).getAccessToken(accessToken);
         GithubAccessTokenContext accessTokenContext = new GithubAccessTokenContext(oAuth2AccessToken);
         String githubIdentifier = fetchUsernameFromAccessToken(accessTokenContext);
         if (StringUtils.isBlank(githubIdentifier)) {
