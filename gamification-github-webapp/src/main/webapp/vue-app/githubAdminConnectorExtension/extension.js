@@ -25,6 +25,7 @@ export function init() {
     iconColorClass: 'text-color',
     title: 'Github',
     description: 'githubConnector.admin.label.description',
+    rank: 20,
     init: () => {
       const lang = window.eXo?.env?.portal?.language || 'en';
       const url = `${eXo.env.portal.context}/${eXo.env.portal.rest}/i18n/bundle/locale.portlet.GitHubWebHookManagement-${lang}.json`;
