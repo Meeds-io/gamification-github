@@ -20,18 +20,14 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
       <div class="px-4 py-2 py-sm-5 d-flex align-center">
         <v-tooltip :disabled="$root.isMobile" bottom>
           <template #activator="{ on }">
-            <v-card
-              class="d-flex align-center"
-              flat
+            <v-btn
+              class="ps-0"
+              outlined
               v-on="on"
               @click="backToConnectorDetail">
-              <v-btn
-                class="width-auto ms-n3"
-                icon>
-                <v-icon size="18" class="icon-default-color mx-2">fa-arrow-left</v-icon>
-              </v-btn>
-              <div class="text-header-title">{{ $t('githubConnector.admin.label.configuration') }}</div>
-            </v-card>
+              <v-icon size="18" class="icon-default-color mx-2">fa-arrow-left</v-icon>
+              <span class="text-header-title">{{ $t('githubConnector.admin.label.configuration') }}</span>
+            </v-btn>
           </template>
           <span>{{ $t('gamification.connectors.settings.BackToDetail') }}</span>
         </v-tooltip>
