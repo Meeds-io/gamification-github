@@ -17,7 +17,11 @@ export function init() {
         'createIssue',
         'requestReviewForPullRequest'
       ].includes(actionLabel),
-      getLabel: () => ''
+      getLabel: () => '',
+      getLink: (realization) => {
+        realization.link = realization.objectId;
+        return realization.link;
+      },
     },
   });
 }
