@@ -54,8 +54,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
       indeterminate />
     <div
       v-for="hook in hooks"
-      :key="hook.name"
-      class="py-4 d-flex flex-column">
+      :key="hook.name">
       <github-admin-connector-hook
         class="full-height"
         :hook="hook" />
