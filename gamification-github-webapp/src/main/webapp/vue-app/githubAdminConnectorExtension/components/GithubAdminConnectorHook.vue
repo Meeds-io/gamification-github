@@ -19,47 +19,42 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <v-card
     flat
     v-on="isValidToken && !rateLimitReached ? { click: openHookDetail } : {}">
-    <div class="d-flex flex-row" :class="!isValidToken && 'filter-blur-3'">
-      <div class="d-flex">
-        <div class="d-flex align-center">
+    <div :class="!isValidToken && 'filter-blur-3'">
+      <v-list-item class="px-0" three-line>
+        <v-list-item-avatar size="58" tile>
           <v-img
             :src="avatarUrl"
             :key="avatarUrl"
-            :alt="title"
-            height="60"
-            width="60"
-            class="rounded" />
-        </div>
-        <v-list class="d-flex flex-column ms-3 py-0">
+            :alt="title" />
+        </v-list-item-avatar>
+        <v-list-item-content>
           <v-list-item-title class="align-self-start">
             {{ title }}
           </v-list-item-title>
-          <v-list-item-subtitle v-if="description" class="text-truncate d-flex caption mt-1">{{ description }}</v-list-item-subtitle>
-          <div class="d-flex flex-row">
-            <span class="text-truncate d-flex caption d-content pt-2px"> {{ watchedByLabel }} </span>
+          <v-list-item-subtitle v-if="description" class="text-truncate-2 caption mt-1 text-color">{{ description }}</v-list-item-subtitle>
+          <v-list-item-subtitle class="d-flex flex-row">
+            <span class="text-truncate caption d-content pt-2px text-color"> {{ watchedByLabel }} </span>
             <exo-user-avatar
               :profile-id="watchedBy"
               extra-class="ms-1"
               fullname
               popover />
-          </div>
-        </v-list>
-      </div>
-      <v-spacer />
-      <div class="d-flex align-center px-2">
-        <v-btn
-          icon
-          @click="editGithubWebHook">
-          <v-icon size="20">fas fa-edit</v-icon>
-        </v-btn>
-      </div>
-      <div class="d-flex align-center">
-        <v-btn
-          icon
-          @click="deleteConfirmDialog">
-          <v-icon class="error-color mx-2" size="20">fas fa-trash-alt</v-icon>
-        </v-btn>
-      </div>
+          </v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action class="d-flex flex-row align-center">
+          <v-btn
+            icon
+            class="mx-2"
+            @click="editGithubWebHook">
+            <v-icon size="20">fas fa-edit</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            @click="deleteConfirmDialog">
+            <v-icon class="error-color mx-2" size="20">fas fa-trash-alt</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
     </div>
     <v-overlay
       :value="!isValidToken"
