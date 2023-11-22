@@ -21,6 +21,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     ref="githubConnectionSettingDrawer"
     v-model="drawer"
     right
+    @opened="stepper = 1"
     @closed="clear">
     <template #title>
       {{ $t('githubConnector.admin.label.connectProfile') }}
@@ -30,78 +31,181 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         ref="ConnectionSettingForm"
         v-model="isValidForm"
         class="form-horizontal pt-0 pb-4"
-        flat />
-      <div class="d-flex flex-column">
-        <div class="ps-4 pb-4 d-flex flex-column dark-grey-color">
-          <v-card-text class="pb-3 ps-0">
-            {{ $t('githubConnector.admin.label.instructions') }}
-          </v-card-text>
-          <v-card-text class="pb-0 ps-0 dark-grey-color">
-            {{ $t('githubConnector.admin.label.instructions.stepOne') }} (<a href="https://github.com/settings/applications/new" target="_blank">
-              {{ $t('githubConnector.admin.label.seeMore') }}
-              <v-icon size="14" class="pb-1 pe-1">fas fa-external-link-alt</v-icon>
-            </a>)
-          </v-card-text>
-          <v-card-text class="pt-0 ps-0 dark-grey-color">
-            {{ $t('githubConnector.admin.label.instructions.stepTwo') }}
-          </v-card-text>
-        </div>
-        <v-card-text class="text-left py-0 dark-grey-color">
-          {{ $t('gamification.connectors.settings.apiKey') }}
-        </v-card-text>
-        <v-card-text>
-          <input
-            ref="connectorApiKey"
-            v-model="apiKey"
-            :placeholder="$t('gamification.connectors.settings.apiKey.placeholder')"
-            type="text"
-            class="ignore-vuetify-classes full-width"
-            required
-            @input="disabled = false"
-            @change="disabled = false">
-        </v-card-text>
-        <v-card-text class="text-left py-0 dark-grey-color">
-          {{ $t('gamification.connectors.settings.secretKey') }}
-        </v-card-text>
-        <v-card-text>
-          <input
-            ref="connectorSecretKey"
-            v-model="secretKey"
-            :placeholder="$t('gamification.connectors.settings.secretKey.placeholder')"
-            type="text"
-            class="ignore-vuetify-classes full-width"
-            required
-            @input="disabled = false"
-            @change="disabled = false">
-        </v-card-text>
-        <v-card-text class="text-left py-0 dark-grey-color">
-          {{ $t('gamification.connectors.settings.redirectUrl') }}
-        </v-card-text>
-        <v-card-text>
-          <input
-            ref="connectorRedirectUrl"
-            v-model="redirectUrl"
-            :placeholder="$t('gamification.connectors.settings.redirectUrl.placeholder')"
-            type="text"
-            class="ignore-vuetify-classes full-width"
-            required
-            @input="disabled = false"
-            @change="disabled = false">
-        </v-card-text>
-      </div>
+        flat
+        @submit="saveConnectorSetting">
+        <v-stepper
+          v-model="stepper"
+          class="ma-0 pa-4 d-flex flex-column"
+          vertical
+          flat>
+          <div class="flex-grow-1 flex-shrink-0">
+            <v-stepper-step
+              :step="1"
+              class="ma-0 pa-0"
+              editable>
+              <span class="font-weight-bold dark-grey-color text-subtitle-1">{{ $t('githubConnector.admin.label.stepOne') }}</span>
+            </v-stepper-step>
+            <v-stepper-items>
+              <v-stepper-content step="1" class="mx-0 px-0">
+                <v-slide-y-transition>
+                  <div class="pb-4 d-flex flex-column dark-grey-color">
+                    <v-card-text class="ps-0 py-0 dark-grey-color">
+                      {{ $t('githubConnector.admin.label.stepOne.noteOne') }}
+                    </v-card-text>
+                    <v-card-text class="ps-0 pb-0 dark-grey-color">
+                      {{ $t('githubConnector.admin.label.stepOne.instructionsOne') }}
+                    </v-card-text>
+                    <v-card-text class="ps-0 py-0 dark-grey-color">
+                      {{ $t('githubConnector.admin.label.stepOne.instructionsTwo') }}
+                      <a href="https://github.com/settings/apps" target="_blank">{{ $t('githubConnector.admin.label.developerSettings') }}
+                        <v-icon size="14" class="pb-1 pe-1">fas fa-external-link-alt</v-icon>
+                      </a>
+                    </v-card-text>
+                  </div>
+                </v-slide-y-transition>
+              </v-stepper-content>
+            </v-stepper-items>
+          </div>
+          <div class="flex-grow-1 flex-shrink-0">
+            <v-stepper-step
+              :step="2"
+              class="ma-0 pa-0"
+              editable>
+              <span class="font-weight-bold dark-grey-color text-subtitle-1">{{ $t('githubConnector.admin.label.stepTwo') }}</span>
+            </v-stepper-step>
+            <v-stepper-items>
+              <v-stepper-content step="2" class="mx-0 px-0">
+                <v-slide-y-transition>
+                  <div class="pb-4 d-flex flex-column dark-grey-color">
+                    <v-card-text class="ps-0 py-0 dark-grey-color">
+                      {{ $t('githubConnector.admin.label.stepTwo.instructionsOne') }}
+                      <a href="https://github.com/settings/developers" target="_blank">{{ $t('githubConnector.admin.label.oAuthApps') }} </a>
+                    </v-card-text>
+                    <v-card-text class="ps-0 pt-0 py-0 dark-grey-color">
+                      {{ $t('githubConnector.admin.label.stepTwo.instructionsTwo') }}
+                    </v-card-text>
+                    <v-card-text class="ps-0 py-0 dark-grey-color">
+                      {{ $t('githubConnector.admin.label.stepTwo.instructionsThree') }}
+                    </v-card-text>
+                    <v-card-text class="dark-grey-color pb-1">
+                      {{ $t('githubConnector.admin.label.homepageURL') }}:
+                    </v-card-text>
+                    <div class="d-flex flex-row">
+                      <v-text-field
+                        :value="currentUrl"
+                        class="px-4 pt-0"
+                        type="text"
+                        outlined
+                        disabled
+                        dense />
+                      <v-btn icon @click="copyText(currentUrl)">
+                        <v-icon>fas fa-copy</v-icon>
+                      </v-btn>
+                    </div>
+                    <v-card-text class="dark-grey-color pb-1">
+                      {{ $t('githubConnector.admin.label.authorizationCallbackURL') }}:
+                    </v-card-text>
+                    <div class="d-flex flex-row">
+                      <v-text-field
+                        :value="redirectUrl"
+                        class="px-4 pt-0"
+                        type="text"
+                        outlined
+                        disabled
+                        dense />
+                      <v-btn icon @click="copyText(redirectUrl)">
+                        <v-icon>fas fa-copy</v-icon>
+                      </v-btn>
+                    </div>
+                  </div>
+                </v-slide-y-transition>
+              </v-stepper-content>
+            </v-stepper-items>
+          </div>
+          <div class="flex-grow-1 flex-shrink-0">
+            <v-stepper-step
+              :step="3"
+              class="ma-0 pa-0"
+              editable>
+              <span class="font-weight-bold dark-grey-color text-subtitle-1">{{ $t('githubConnector.admin.label.stepThree') }}</span>
+            </v-stepper-step>
+            <v-stepper-items>
+              <v-stepper-content step="3" class="mx-0 px-0">
+                <v-slide-y-transition>
+                  <div class="pb-4 d-flex flex-column dark-grey-color">
+                    <v-card-text class="ps-0 py-0 pb-4 dark-grey-color">
+                      {{ $t('githubConnector.admin.label.stepThree.instructionsOne') }}
+                    </v-card-text>
+                    <img
+                      class="align-self-center"
+                      src="/gamification-github/skin/images/github-oauth-creation.png"
+                      alt="SignUpAgreement"
+                      width="300">
+                    <v-card-text class="ps-0 pb-4 dark-grey-color">
+                      {{ $t('githubConnector.admin.label.stepThree.instructionsTwo') }}
+                    </v-card-text>
+                    <v-card-text class="text-left ps-0 py-0 dark-grey-color">
+                      {{ $t('githubConnector.admin.label.clientId') }}
+                    </v-card-text>
+                    <v-card-text class="ps-0 pt-2">
+                      <input
+                        ref="connectorApiKey"
+                        v-model="apiKey"
+                        :placeholder="$t('githubConnector.admin.label.clientId.placeholder')"
+                        type="text"
+                        class="ignore-vuetify-classes full-width"
+                        required
+                        @input="disabled = false"
+                        @change="disabled = false">
+                    </v-card-text>
+                    <v-card-text class="text-left ps-0 py-0 dark-grey-color">
+                      {{ $t('githubConnector.admin.label.clientSecret') }}
+                    </v-card-text>
+                    <v-card-text class="ps-0 pt-2">
+                      <input
+                        ref="connectorSecretKey"
+                        v-model="secretKey"
+                        :placeholder="$t('githubConnector.admin.label.clientSecret.placeholder')"
+                        type="text"
+                        class="ignore-vuetify-classes full-width"
+                        required
+                        @input="disabled = false"
+                        @change="disabled = false">
+                    </v-card-text>
+                  </div>
+                </v-slide-y-transition>
+              </v-stepper-content>
+            </v-stepper-items>
+          </div>
+        </v-stepper>
+      </v-form>
     </template>
     <template #footer>
       <div class="d-flex">
         <v-spacer />
         <v-btn
+          v-if="stepper === 2 || stepper === 3"
+          class="btn me-2"
+          @click="previousStep">
+          {{ $t('githubConnector.webhook.form.label.button.back') }}
+        </v-btn>
+        <v-btn
+          v-else
           class="btn me-2"
           @click="close">
           {{ $t('githubConnector.webhook.form.label.button.cancel') }}
         </v-btn>
         <v-btn
-          :disabled="disabledSave"
+          v-if="stepper === 1 || stepper === 2"
           class="btn btn-primary"
-          @click="saveConnectorSetting">
+          @click="nextStep">
+          {{ $t('githubConnector.webhook.form.label.button.next') }}
+        </v-btn>
+        <v-btn
+          v-else
+          :disabled="disabledSave"
+          @click="saveConnectorSetting"
+          class="btn btn-primary">
           {{ $t('githubConnector.webhook.form.label.button.save') }}
         </v-btn>
       </div>
@@ -114,10 +218,11 @@ export default {
   data: () => ({
     apiKey: null,
     secretKey: null,
-    redirectUrl: null,
     isValidForm: false,
     drawer: false,
     disabled: true,
+    stepper: 0,
+    currentUrl: window.location.origin,
   }),
   created() {
     this.$root.$on('github-connection-setting-drawer', this.open);
@@ -126,6 +231,9 @@ export default {
     disabledSave() {
       return this.disabled || !this.secretKey || !this.apiKey || !this.redirectUrl;
     },
+    redirectUrl() {
+      return `${window.location.origin}/portal/rest/gamification/connectors/oauthCallback/github`;
+    }
   },
   methods: {
     open(apiKey, secretKey, redirectUrl) {
@@ -148,8 +256,28 @@ export default {
     clear() {
       this.apiKey = null;
       this.secretKey = null;
-      this.redirectUrl = null;
       this.disabled = true;
+      this.stepper = 0;
+    },
+    previousStep() {
+      this.stepper--;
+      this.$forceUpdate();
+    },
+    nextStep(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      this.stepper++;
+    },
+    copyText(textToCopy) {
+      const textArea = document.createElement('textarea');
+      textArea.value = textToCopy;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      this.$root.$emit('alert-message', this.$t('rules.menu.linkCopied'), 'info');
     },
   }
 };
