@@ -251,30 +251,6 @@ public class HooksManagementRest implements ResourceContainer {
     }
   }
 
-  @Path("events/status")
-  @POST
-  @RolesAllowed("users")
-  @Operation(summary = "enables/disables event for gitHub organization.", description = "enables/disables event for gitHub organization", method = "POST")
-  @ApiResponses(value = {
-          @ApiResponse(responseCode = "204", description = "Request fulfilled"),
-          @ApiResponse(responseCode = "400", description = "Bad request"),
-          @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
-          @ApiResponse(responseCode = "500", description = "Internal server error"), })
-  public Response updateWebHookEventStatus(@Parameter(description = "Event Id", required = true) @FormParam("eventId") long eventId,
-                                    @Parameter(description = "Organization remote Id", required = true) @FormParam("organizationId") long organizationId,
-                                    @Parameter(description = "Event status enabled/disabled. possible values: true for enabled, else false", required = true) @FormParam("enabled") boolean enabled) {
-
-    String currentUser = getCurrentUser();
-    try {
-      webhookService.setEventEnabledForOrganization(eventId, organizationId, enabled, currentUser);
-      return Response.noContent().build();
-    } catch (IllegalAccessException e) {
-      return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();
-    } catch (ObjectNotFoundException e) {
-      return Response.status(Response.Status.NOT_FOUND).entity("Event not found").build();
-    }
-  }
-
   @Path("watchScope/status")
   @POST
   @RolesAllowed("users")
