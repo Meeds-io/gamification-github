@@ -158,7 +158,7 @@ export default {
       displayHookDetail: false,
       selectedHook: null,
       webhooks: [],
-      githubConnectorLinkBasePath: '/portal/g/:platform:rewarding/gamificationConnectorsAdministration#github',
+      githubConnectorLinkBasePath: '/portal/administration/home/recognition/connectors#github',
     };
   },
   computed: {
