@@ -1,8 +1,8 @@
 <template>
   <tr>
     <td class="ps-0 no-border-bottom">
-      <gamification-admin-connector-event
-        :event="event"
+      <gamification-admin-connector-trigger
+        :trigger="trigger"
         class="py-2" />
     </td>
     <td class="no-border-bottom d-flex justify-center py-2">
@@ -11,8 +11,8 @@
           v-model="enabled"
           :ripple="false"
           color="primary"
-          class="connectorSwitcher my-auto"
-          @change="enableDisableEvent" />
+          class="my-auto"
+          @change="enableDisableTrigger" />
       </div>
     </td>
   </tr>
@@ -21,7 +21,7 @@
 <script>
 export default {
   props: {
-    event: {
+    trigger: {
       type: Object,
       default: null
     },
@@ -31,29 +31,19 @@ export default {
     },
   },
   computed: {
-    id() {
-      return this.event?.id;
-    },
     title() {
-      return this.event?.title;
+      return this.trigger?.title;
+    },
+    disabledAccounts() {
+      return this.trigger?.disabledAccounts;
     },
     enabled() {
-      const eventProperties = this.event?.properties;
-      if (eventProperties && eventProperties[`${this.organizationId}.enabled`]) {
-        return eventProperties[`${this.organizationId}.enabled`].toLowerCase() === 'true';
-      }
-      return true;
-    },
-    titleLabel() {
-      return this.$t(`gamification.event.title.${this.title}`);
-    },
-    description() {
-      return this.$t(`gamification.event.description.${this.title}`);
+      return !this.disabledAccounts.includes(this.organizationId);
     },
   },
   methods: {
-    enableDisableEvent() {
-      this.$githubConnectorService.saveEventStatus(this.id, this.organizationId, !this.enabled);
+    enableDisableTrigger() {
+      this.$gamificationConnectorService.saveTriggerStatus(this.title, this.organizationId, !this.enabled);
     },
   }
 };
