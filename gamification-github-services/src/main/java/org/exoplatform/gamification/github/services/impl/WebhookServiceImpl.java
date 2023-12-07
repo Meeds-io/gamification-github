@@ -36,7 +36,6 @@ import org.exoplatform.gamification.github.model.TokenStatus;
 import org.exoplatform.gamification.github.model.WebHook;
 import org.exoplatform.gamification.github.model.RemoteOrganization;
 import org.exoplatform.gamification.github.services.GithubConsumerService;
-import org.exoplatform.gamification.github.services.GithubTriggerService;
 import org.exoplatform.gamification.github.services.WebhookService;
 import org.exoplatform.gamification.github.storage.WebHookStorage;
 import org.json.JSONObject;
@@ -51,28 +50,21 @@ public class WebhookServiceImpl implements WebhookService {
 
   private static final Scope          DISABLED_REPOS_SCOPE   = Scope.APPLICATION.id("disabledRepos");
 
-  public static final String          ENABLED                = ".enabled";
+  private static final String[]       GITHUB_TRIGGERS        = new String[] { "pull_request", "issue_comment",
+      "pull_request_review_comment", "pull_request_review", "issues", "push" };
 
   private final SettingService        settingService;
 
   private final WebHookStorage        webHookStorage;
 
-  private final GithubTriggerService  githubTriggerService;
-
   private final GithubConsumerService githubServiceConsumer;
 
-  private final EventService          eventService;
-
   public WebhookServiceImpl(SettingService settingService,
-                            GithubTriggerService githubTriggerService,
                             WebHookStorage webHookStorage,
-                            GithubConsumerService githubServiceConsumer,
-                            EventService eventService) {
+                            GithubConsumerService githubServiceConsumer) {
     this.settingService = settingService;
-    this.githubTriggerService = githubTriggerService;
     this.webHookStorage = webHookStorage;
     this.githubServiceConsumer = githubServiceConsumer;
-    this.eventService = eventService;
   }
 
   public List<WebHook> getWebhooks(String currentUser, int offset, int limit, boolean forceUpdate) throws IllegalAccessException {
@@ -142,7 +134,7 @@ public class WebhookServiceImpl implements WebhookService {
     if (existsWebHook != null) {
       throw new ObjectAlreadyExistsException(existsWebHook);
     }
-    WebHook webHook = githubServiceConsumer.createWebhook(organizationName, githubTriggerService.getTriggers(), accessToken);
+    WebHook webHook = githubServiceConsumer.createWebhook(organizationName, GITHUB_TRIGGERS, accessToken);
 
     if (webHook != null) {
       webHook.setOrganizationId(remoteOrganization.getId());
@@ -291,34 +283,6 @@ public class WebhookServiceImpl implements WebhookService {
     remoteRepositories.forEach(remoteRepository -> remoteRepository.setEnabled(isWebHookRepositoryEnabled(webHook.getOrganizationId(),
                                                                                                           remoteRepository.getId())));
     return remoteRepositories;
-  }
-
-  @Override
-  public void setEventEnabledForOrganization(long eventId,
-                                             long organizationId,
-                                             boolean enabled,
-                                             String currentUser) throws IllegalAccessException, ObjectNotFoundException {
-    if (!Utils.isRewardingManager(currentUser)) {
-      throw new IllegalAccessException("The user is not authorized to enable/disable event for organization");
-    }
-    EventDTO eventDTO = eventService.getEvent(eventId);
-    if (eventDTO == null) {
-      throw new ObjectNotFoundException("event not found");
-    }
-    Map<String, String> eventProperties = eventDTO.getProperties();
-    if (eventProperties != null && !eventProperties.isEmpty()) {
-      String eventProjectStatus = eventProperties.get(organizationId + ENABLED);
-      if (StringUtils.isNotBlank(eventProjectStatus)) {
-        eventProperties.remove(organizationId + ENABLED);
-        eventProperties.put(organizationId + ENABLED, String.valueOf(enabled));
-        eventDTO.setProperties(eventProperties);
-      }
-    } else {
-      Map<String, String> properties = new HashMap<>();
-      properties.put(organizationId + ENABLED, String.valueOf(enabled));
-      eventDTO.setProperties(properties);
-    }
-    eventService.updateEvent(eventDTO);
   }
 
   @SuppressWarnings("unchecked")
