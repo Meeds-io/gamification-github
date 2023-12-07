@@ -18,8 +18,8 @@
       </v-card>
     </v-subheader>
     <v-data-table
-      :headers="eventsHeaders"
-      :items="eventToDisplay"
+      :headers="triggersHeaders"
+      :items="triggersToDisplay"
       :options.sync="options"
       :server-items-length="pageSize"
       :show-rows-border="false"
@@ -28,10 +28,10 @@
       hide-default-footer
       disable-sort>
       <template slot="item" slot-scope="props">
-        <github-admin-connector-event-item :event="props.item" :organization-id="organizationId" />
+        <github-admin-connector-event-item :trigger="props.item" :organization-id="organizationId" />
       </template>
     </v-data-table>
-    <div v-if="hasMoreEvents" class="d-flex justify-center py-4">
+    <div v-if="hasMoreTriggers" class="d-flex justify-center py-4">
       <v-btn
         :loading="loading"
         min-width="95%"
@@ -59,8 +59,7 @@ export default {
         page: 1,
         itemsPerPage: 10,
       },
-      events: [],
-      eventsSize: 0,
+      triggers: [],
       pageSize: 10,
       loading: true,
       keyword: ''
@@ -70,48 +69,46 @@ export default {
     organizationId() {
       return this.hook?.organizationId;
     },
-    triggers() {
-      return this.hook?.triggers || [];
-    },
-    eventsHeaders() {
+    triggersHeaders() {
       return [
         {text: this.$t('githubConnector.webhook.details.event'), align: 'start', width: '80%' , class: 'dark-grey-color text-font-size ps-0'},
         {text: this.$t('githubConnector.webhook.details.status'), align: 'center', width: '20%', class: 'dark-grey-color text-font-size'},];
     },
-    hasMoreEvents() {
-      return this.keyword ? this.sortedEvent.length > this.pageSize : this.eventsSize > this.pageSize;
+    hasMoreTriggers() {
+      return this.keyword ? this.sortedTriggers.length > this.pageSize : this.triggersSize > this.pageSize;
     },
-    sortedEvent() {
-      let filteredEvent = this.events;
+    sortedTriggers() {
+      let filteredTriggers = this.triggers;
       if (this.keyword) {
-        filteredEvent = this.events.filter(item =>
-          this.getEventLabel(item).toLowerCase().includes(this.keyword.toLowerCase())
+        filteredTriggers = this.triggers.filter(item =>
+          this.getTriggerLabel(item).toLowerCase().includes(this.keyword.toLowerCase())
         );
       }
-      return filteredEvent.sort((a, b) => this.getEventLabel(a).localeCompare(b.title));
+      return filteredTriggers.sort((a, b) => this.getTriggerLabel(a).localeCompare(this.getTriggerLabel(b)));
     },
-    eventToDisplay() {
-      return this.sortedEvent.slice(0, this.pageSize);
+    triggersToDisplay() {
+      return this.sortedTriggers.slice(0, this.pageSize);
+    },
+    triggersSize() {
+      return this.triggers?.length;
     },
   },
   created() {
-    this.retrieveWebHookEvents();
+    this.retrieveWebHookTriggers();
   },
   methods: {
-    retrieveWebHookEvents() {
-      this.$gamificationConnectorService.getEvents('github', this.triggers)
+    retrieveWebHookTriggers() {
+      this.$gamificationConnectorService.getTriggers('github', 'disabledAccounts')
         .then(data => {
-          this.events = data.entities;
-          this.eventsSize = data.size;
+          this.triggers = data;
         })
         .finally(() => this.loading = false);
     },
     loadMore() {
       this.pageSize += this.pageSize;
-      this.retrieveWebHookEvents();
     },
-    getEventLabel(event) {
-      return this.$t(`gamification.event.title.${event.title}`);
+    getTriggerLabel(trigger) {
+      return this.$t(`gamification.event.title.${trigger?.title}`);
     }
   }
 };
