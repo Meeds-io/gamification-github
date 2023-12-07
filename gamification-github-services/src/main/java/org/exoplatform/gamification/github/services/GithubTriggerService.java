@@ -52,11 +52,4 @@ public interface GithubTriggerService {
    * @param payload payload The raw payload of the webhook request.
    */
   void handleTrigger(String trigger, String signature, String payload);
-
-  /**
-   * Gets list of configured github triggers
-   *
-   * @return list of configured github triggers
-   */
-  String[] getTriggers();
 }
