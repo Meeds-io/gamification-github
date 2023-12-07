@@ -21,6 +21,7 @@ import io.meeds.gamification.model.EventDTO;
 import io.meeds.gamification.model.filter.EventFilter;
 import io.meeds.gamification.service.ConnectorService;
 import io.meeds.gamification.service.EventService;
+import io.meeds.gamification.service.TriggerService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
@@ -40,7 +41,6 @@ import org.picocontainer.Startable;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 import static org.exoplatform.gamification.github.utils.Utils.*;
 
@@ -54,6 +54,8 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
 
   private final EventService                     eventService;
 
+  private final TriggerService                   triggerService;
+
   private WebhookService                         webhookService;
 
   private final IdentityManager                  identityManager;
@@ -65,11 +67,13 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
   public GithubTriggerServiceImpl(ListenerService listenerService,
                                   ConnectorService connectorService,
                                   IdentityManager identityManager,
-                                  EventService eventService) {
+                                  EventService eventService,
+                                  TriggerService triggerService) {
     this.listenerService = listenerService;
     this.connectorService = connectorService;
     this.identityManager = identityManager;
     this.eventService = eventService;
+    this.triggerService = triggerService;
   }
 
   @Override
@@ -118,28 +122,15 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
     if (triggerPlugin != null) {
       events = triggerPlugin.getEvents(payloadMap);
     }
-    processEvents(events, trigger, organizationId);
+    processEvents(events, organizationId);
   }
 
-  private void processEvents(List<Event> events, String trigger, String organizationId) {
-    events.stream().filter(event -> isEventEnabled(event.getName(), trigger, organizationId)).forEach(this::processEvent);
+  private void processEvents(List<Event> events, String organizationId) {
+    events.stream().filter(event -> isTriggerEnabled(event.getName(), organizationId)).forEach(this::processEvent);
   }
 
-  private boolean isEventEnabled(String eventName, String trigger, String organizationId) {
-    EventDTO eventDTO = eventService.getEventByTitleAndTrigger(eventName, trigger);
-    if (eventDTO != null) {
-      return isOrganizationEventEnabled(eventDTO, organizationId);
-    }
-    return true;
-  }
-
-  private boolean isOrganizationEventEnabled(EventDTO eventDTO, String organizationId) {
-    String organizationPropertyKey = organizationId + ".enabled";
-    Map<String, String> properties = eventDTO.getProperties();
-    if (properties != null && !properties.isEmpty()) {
-      return Boolean.parseBoolean(properties.get(organizationPropertyKey));
-    }
-    return true;
+  private boolean isTriggerEnabled(String trigger, String organizationId) {
+    return triggerService.isTriggerEnabledForAccount(trigger, Long.parseLong(organizationId));
   }
 
   private void processEvent(Event event) {
@@ -156,10 +147,6 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
         broadcastGithubEvent(event.getName(), senderId, receiverId, event.getObjectId(), event.getObjectType());
       }
     }
-  }
-
-  public String[] getTriggers() {
-    return triggerPlugins.values().stream().map(GithubTriggerPlugin::getName).toArray(String[]::new);
   }
 
   private void broadcastGithubEvent(String ruleTitle, String senderId, String receiverId, String objectId, String objectType) {
