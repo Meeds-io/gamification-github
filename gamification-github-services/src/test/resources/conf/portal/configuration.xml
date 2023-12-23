@@ -25,21 +25,6 @@
       <type>org.exoplatform.gamification.github.services.impl.WebhookServiceImpl</type>
     </component>
 
-    <component>
-        <key>org.exoplatform.commons.api.persistence.DataInitializer</key>
-        <type>org.exoplatform.commons.persistence.impl.LiquibaseDataInitializer</type>
-        <init-params>
-            <value-param>
-                <name>liquibase.datasource</name>
-                <value>java:/comp/env/exo-jpa_portal</value>
-            </value-param>
-            <value-param>
-                <name>liquibase.contexts</name>
-                <value>${exo.liquibase.contexts}</value>
-            </value-param>
-        </init-params>
-    </component>
-
     <remove-configuration>org.exoplatform.commons.search.index.IndexingOperationProcessor</remove-configuration>
     <remove-configuration>org.exoplatform.commons.search.rest.IndexingManagementRestServiceV1</remove-configuration>
 
