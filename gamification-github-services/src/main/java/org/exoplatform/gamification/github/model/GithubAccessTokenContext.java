@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import io.meeds.oauth.spi.AccessTokenContext;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class GithubAccessTokenContext extends AccessTokenContext implements Serializable {
 
