@@ -18,7 +18,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <v-card class="pt-5 px-4" flat>
     <div class="d-flex flex-row">
       <div>
-        <v-card-text class="px-0 py-0 dark-grey-color font-weight-bold">
+        <v-card-text class="px-0 py-0 text-color font-weight-bold">
           {{ $t('githubConnector.webhook.label.watchProject') }}
         </v-card-text>
         <v-card-text class="dark-grey-color px-0 pt-0">
