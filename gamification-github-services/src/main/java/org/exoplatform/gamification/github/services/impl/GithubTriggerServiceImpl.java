@@ -156,9 +156,9 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
       gam.put("receiverId", receiverId);
       gam.put("objectId", objectId);
       gam.put("objectType", objectType);
-      EventDTO eventDTO = eventService.getEventByTypeAndTitle("github", ruleTitle);
-      if (eventDTO != null) {
-        gam.put("ruleTitle", eventDTO.getTitle());
+      List<EventDTO> eventDTOList = eventService.getEventsByTitle(ruleTitle, 0, -1);
+      if (CollectionUtils.isNotEmpty(eventDTOList)) {
+        gam.put("ruleTitle", ruleTitle);
         listenerService.broadcast(GITHUB_ACTION_EVENT, gam, "");
       } else {
         List<EventDTO> events = eventService.getEvents(new EventFilter("github", null), 0, 0);
