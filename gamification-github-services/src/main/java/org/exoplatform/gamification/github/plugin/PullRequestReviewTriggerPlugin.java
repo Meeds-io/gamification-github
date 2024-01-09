@@ -47,14 +47,14 @@ public class PullRequestReviewTriggerPlugin extends GithubTriggerPlugin {
                                      extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL),
                                      PR_TYPE,
                                      extractSubItem(payload, ORGANIZATION, ID),
+                                     extractSubItem(payload, REPOSITORY, ID)),
+                           new Event(VALIDATE_PULL_REQUEST_EVENT_NAME,
+                                     extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
+                                     extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
+                                     extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL),
+                                     PR_TYPE,
+                                     extractSubItem(payload, ORGANIZATION, ID),
                                      extractSubItem(payload, REPOSITORY, ID)));
-      new Event(VALIDATE_PULL_REQUEST_EVENT_NAME,
-                extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
-                extractSubItem(payload, PULL_REQUEST_REVIEW, USER, LOGIN),
-                extractSubItem(payload, PULL_REQUEST_REVIEW, HTML_URL),
-                PR_TYPE,
-                extractSubItem(payload, ORGANIZATION, ID),
-                extractSubItem(payload, REPOSITORY, ID));
     }
     return Collections.emptyList();
   }
