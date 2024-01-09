@@ -31,7 +31,9 @@ public class CommentPullRequestTriggerPlugin extends GithubTriggerPlugin {
                                                null,
                                                extractSubItem(payload, COMMENT, USER, LOGIN),
                                                extractSubItem(payload, COMMENT, LINKS, HTML, HREF),
-                                               REVIEW_COMMENT_TYPE));
+                                               REVIEW_COMMENT_TYPE,
+                                               extractSubItem(payload, ORGANIZATION, ID),
+                                               extractSubItem(payload, REPOSITORY, ID)));
   }
 
 }

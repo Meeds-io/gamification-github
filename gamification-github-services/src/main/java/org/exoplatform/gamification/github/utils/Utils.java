@@ -36,7 +36,11 @@ public class Utils {
   public static final String  CONNECTOR_NAME                             = "github";
 
   public static final String  HMAC_SHA1_ALGORITHM                        = "HmacSHA1";
+  
+  public static final String  ORGANIZATION                               = "organization";
 
+  public static final String  REPOSITORY                                 = "repository";
+  
   public static final String  ID                                         = "id";
 
   public static final String  LOGIN                                      = "login";
