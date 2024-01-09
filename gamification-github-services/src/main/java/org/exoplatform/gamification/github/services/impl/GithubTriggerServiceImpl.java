@@ -144,27 +144,30 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
     if (StringUtils.isNotBlank(senderId)) {
       Identity socialIdentity = identityManager.getOrCreateUserIdentity(senderId);
       if (socialIdentity != null) {
-        broadcastGithubEvent(event.getName(), senderId, receiverId, event.getObjectId(), event.getObjectType());
+        broadcastGithubEvent(event, senderId, receiverId);
       }
     }
   }
 
-  private void broadcastGithubEvent(String ruleTitle, String senderId, String receiverId, String objectId, String objectType) {
+  private void broadcastGithubEvent(Event event, String senderId, String receiverId) {
     try {
+      String eventDetails = "{" + "organizationId" + ": " + event.getOrganizationId() + ", " + "repositoryId" + ": "
+          + event.getRepositoryId() + "}";
       Map<String, String> gam = new HashMap<>();
       gam.put("senderId", senderId);
       gam.put("receiverId", receiverId);
-      gam.put("objectId", objectId);
-      gam.put("objectType", objectType);
-      List<EventDTO> eventDTOList = eventService.getEventsByTitle(ruleTitle, 0, -1);
+      gam.put("objectId", event.getObjectId());
+      gam.put("objectType", event.getObjectType());
+      gam.put("eventDetails", eventDetails);
+      List<EventDTO> eventDTOList = eventService.getEventsByTitle(event.getName(), 0, -1);
       if (CollectionUtils.isNotEmpty(eventDTOList)) {
-        gam.put("ruleTitle", ruleTitle);
+        gam.put("ruleTitle", event.getName());
         listenerService.broadcast(GITHUB_ACTION_EVENT, gam, "");
       } else {
         List<EventDTO> events = eventService.getEvents(new EventFilter("github", null), 0, 0);
         List<EventDTO> eventsToCancel = events.stream()
-                                              .filter(event -> event.getCancellerEvents() != null
-                                                  && event.getCancellerEvents().contains(ruleTitle))
+                                              .filter(e -> e.getCancellerEvents() != null
+                                                  && e.getCancellerEvents().contains(event.getName()))
                                               .toList();
         if (CollectionUtils.isNotEmpty(eventsToCancel)) {
           for (EventDTO eventToCancel : eventsToCancel) {
@@ -173,7 +176,7 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
           }
         }
       }
-      LOG.info("Github action {} broadcasted for user {}", ruleTitle, senderId);
+      LOG.info("Github action {} broadcasted for user {}", event.getName(), senderId);
     } catch (Exception e) {
       LOG.error("Cannot broadcast github event", e);
     }
