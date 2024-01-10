@@ -34,7 +34,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
       <github-connector-organization-item
         v-for="organization in organizations"
         :key="organization.id"
-        :organization="organization" />
+        :organization="organization"
+        @handle="selectOrganization(organization)" />
     </v-chip-group>
     <template v-if="selected">
       <div class="d-flex flex-row">
@@ -48,7 +49,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
             class="mt-0 pt-0 align-center"
             color="primary"
             dense
-            hide-details />
+            hide-details
+            @click="changeSelection" />
         </div>
       </div>
       <v-select
@@ -109,24 +111,6 @@ export default {
     value() {
       this.selected = this.organizations[this.value];
     },
-    selected() {
-      this.repositories = [];
-      this.repository = null;
-      if (!this.properties) {
-        this.anyRepo = true;
-      } else {
-        this.retrieveRepositories();
-      }
-    },
-    anyRepo() {
-      this.repository = null;
-      if (this.anyRepo) {
-        this.repoSelected('any');
-      } else {
-        this.retrieveRepositories();
-        document.dispatchEvent(new CustomEvent('event-form-unfilled'));
-      }
-    }
   },
   methods: {
     retrieveOrganizations() {
@@ -153,7 +137,9 @@ export default {
       return this.$githubConnectorService.getWebHookRepos(this.selected?.organizationId, page, itemsPerPage, null)
         .then(data => {
           this.repositories.push(...data.remoteRepositories);
-          this.selected = this.organizations.find(r => Number(r.organizationId) === Number(this.properties.organizationId));
+          if (this.properties?.organizationId) {
+            this.selected = this.organizations.find(r => Number(r.organizationId) === Number(this.properties.organizationId));
+          }
           if (data.remoteRepositories.length <= itemsPerPage) {
             return this.$githubConnectorService.getWebHookRepos(this.selected?.organizationId, page + 1, itemsPerPage, null)
               .then(nextData => {
@@ -170,13 +156,29 @@ export default {
       this.page += 1;
       this.retrieveRepositories();
     },
-    repoSelected(repository) {
+    repoSelected(repository, organizationId) {
       const eventProperties = {
-        organizationId: this.selected?.organizationId.toString(),
-        repositoryId: repository ? repository : this.repository
+        organizationId: organizationId ? organizationId.toString() : this.selected?.organizationId.toString(),
+        repositoryId: repository ? repository.toString() : this.repository.toString()
       };
       document.dispatchEvent(new CustomEvent('event-form-filled', {detail: eventProperties}));
     },
+    changeSelection() {
+      this.repository = null;
+      if (this.anyRepo) {
+        this.repoSelected('any');
+      } else {
+        this.retrieveRepositories();
+        document.dispatchEvent(new CustomEvent('event-form-unfilled'));
+      }
+    },
+    selectOrganization(organization) {
+      this.repositories = [];
+      this.repository = null;
+      this.anyRepo = true;
+      this.repoSelected('any', organization?.organizationId);
+
+    }
   }
 };
 </script>
