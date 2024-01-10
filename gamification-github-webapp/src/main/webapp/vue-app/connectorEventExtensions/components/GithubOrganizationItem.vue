@@ -17,7 +17,10 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <template>
-  <v-chip dark class="width-fit-content">
+  <v-chip
+    @click="$emit('handle') "
+    dark
+    class="width-fit-content">
     <v-avatar left>
       <v-img :src="avatarUrl" />
     </v-avatar>
