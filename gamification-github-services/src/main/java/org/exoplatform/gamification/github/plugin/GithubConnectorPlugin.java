@@ -24,7 +24,7 @@ import io.meeds.gamification.plugin.ConnectorPlugin;
 import io.meeds.gamification.service.ConnectorSettingService;
 import io.meeds.oauth.exception.OAuthException;
 import io.meeds.oauth.exception.OAuthExceptionCode;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.gamification.github.model.GithubAccessTokenContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
