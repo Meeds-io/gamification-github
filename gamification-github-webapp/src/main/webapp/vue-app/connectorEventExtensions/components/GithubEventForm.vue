@@ -53,30 +53,26 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
             @click="changeSelection" />
         </div>
       </div>
-      <v-select
+      <v-autocomplete
+        id="repositoryAutoComplete"
+        ref="repositoryAutoComplete"
         v-model="repository"
         :items="repositories"
         :disabled="anyRepo"
-        :label="$t('gamification.event.form.repository.placeholder')"
-        class="py-0"
-        outlined
+        :placeholder="$t('gamification.event.form.repository.placeholder')"
+        class="pa-0"
+        background-color="white"
         item-value="id"
         item-text="name"
-        hide-details
         dense
+        flat
+        solo
+        outlined
         @change="repoSelected">
-        <template v-if="hasMore" #append-item>
-          <v-divider class="mb-2" />
-          <v-btn
-            :loading="loadingRepositories"
-            class="btn ma-auto"
-            text
-            block
-            @click="loadMore">
-            {{ $t('rules.loadMore') }}
-          </v-btn>
+        <template #append-item>
+          <div v-intersect="onIntersect"></div>
         </template>
-      </v-select>
+      </v-autocomplete>
     </template>
   </v-app>
 </template>
@@ -110,6 +106,9 @@ export default {
   watch: {
     value() {
       this.selected = this.organizations[this.value];
+      if (this.selected) {
+        this.retrieveRepositories();
+      }
     },
   },
   methods: {
@@ -131,9 +130,25 @@ export default {
         });
     },
     retrieveRepositories() {
-      this.loadingRepositories = true;
       const page = this.page || 0;
       const itemsPerPage = this.itemsPerPage || 10;
+      const findRepositoryById = () => {
+        if (this.properties?.repositoryId === 'any') {
+          this.repository = null;
+          return Promise.resolve();
+        }
+        this.repository = this.repositories.find(r => Number(r.id) === Number(this.properties?.repositoryId));
+        if (!this.repository && this.hasMore) {
+          const nextPage = this.page ? this.page + 1 : 1;
+          return this.$githubConnectorService.getWebHookRepos(this.selected?.organizationId, nextPage, itemsPerPage, null)
+            .then(nextData => {
+              this.repositories.push(...nextData.remoteRepositories);
+              this.hasMore = nextData.remoteRepositories.length > 0;
+              return findRepositoryById();
+            });
+        }
+        return Promise.resolve();
+      };
       return this.$githubConnectorService.getWebHookRepos(this.selected?.organizationId, page, itemsPerPage, null)
         .then(data => {
           this.repositories.push(...data.remoteRepositories);
@@ -144,17 +159,20 @@ export default {
             return this.$githubConnectorService.getWebHookRepos(this.selected?.organizationId, page + 1, itemsPerPage, null)
               .then(nextData => {
                 this.hasMore = nextData.remoteRepositories.length > 0;
+                return findRepositoryById();
               });
           }
-          return this.$nextTick();
-        }).finally(() => {
-          this.repository = this.properties?.repositoryId !== 'any' ?  this.repositories.find(r => Number(r.id) === Number(this.properties?.repositoryId)) : null;
-          this.loadingRepositories = false;
         });
     },
     loadMore() {
       this.page += 1;
       this.retrieveRepositories();
+    },
+    onIntersect () {
+      if (this.hasMore) {
+        this.page += 1;
+        this.retrieveRepositories();
+      }
     },
     repoSelected(repository, organizationId) {
       const eventProperties = {
@@ -175,6 +193,7 @@ export default {
     selectOrganization(organization) {
       this.repositories = [];
       this.repository = null;
+      this.page = 0;
       this.anyRepo = true;
       this.repoSelected('any', organization?.organizationId);
 
