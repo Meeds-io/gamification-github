@@ -20,8 +20,9 @@ package org.exoplatform.gamification.github.services.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import io.meeds.gamification.model.EventDTO;
-import io.meeds.gamification.service.EventService;
+import io.meeds.gamification.model.RuleDTO;
+import io.meeds.gamification.model.filter.RuleFilter;
+import io.meeds.gamification.service.RuleService;
 import io.meeds.gamification.utils.Utils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,13 +59,17 @@ public class WebhookServiceImpl implements WebhookService {
   private final WebHookStorage        webHookStorage;
 
   private final GithubConsumerService githubServiceConsumer;
+  
+  private final RuleService           ruleService;
 
   public WebhookServiceImpl(SettingService settingService,
                             WebHookStorage webHookStorage,
-                            GithubConsumerService githubServiceConsumer) {
+                            GithubConsumerService githubServiceConsumer,
+                            RuleService ruleService) {
     this.settingService = settingService;
     this.webHookStorage = webHookStorage;
     this.githubServiceConsumer = githubServiceConsumer;
+    this.ruleService = ruleService;
   }
 
   public List<WebHook> getWebhooks(String currentUser, int offset, int limit, boolean forceUpdate) throws IllegalAccessException {
@@ -174,6 +179,15 @@ public class WebhookServiceImpl implements WebhookService {
 
   public void deleteWebhook(long organizationId) {
     webHookStorage.deleteWebHook(organizationId);
+    RuleFilter ruleFilter = new RuleFilter(true);
+    ruleFilter.setEventType(CONNECTOR_NAME);
+    ruleFilter.setIncludeDeleted(true);
+    List<RuleDTO> rules = ruleService.getRules(ruleFilter, 0, -1);
+    rules.stream()
+         .filter(r -> !r.getEvent().getProperties().isEmpty()
+             && r.getEvent().getProperties().get(ORGANIZATION_ID).equals(String.valueOf(organizationId)))
+         .map(RuleDTO::getId)
+         .forEach(ruleService::deleteRuleById);
   }
 
   @Override

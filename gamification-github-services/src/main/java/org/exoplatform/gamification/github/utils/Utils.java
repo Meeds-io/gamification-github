@@ -38,6 +38,8 @@ public class Utils {
   public static final String  HMAC_SHA1_ALGORITHM                        = "HmacSHA1";
   
   public static final String  ORGANIZATION                               = "organization";
+  
+  public static final String  ORGANIZATION_ID                            = "organizationId";
 
   public static final String  REPOSITORY                                 = "repository";
   
