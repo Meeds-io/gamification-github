@@ -49,7 +49,13 @@ public class CommentTriggerPlugin extends GithubTriggerPlugin {
       default:
         return Collections.emptyList();
       }
-      return Collections.singletonList(new Event(eventName, null, userId, comment, eventType));
+      return Collections.singletonList(new Event(eventName,
+                                                 null,
+                                                 userId,
+                                                 comment,
+                                                 eventType,
+                                                 extractSubItem(payload, ORGANIZATION, ID),
+                                                 extractSubItem(payload, REPOSITORY, ID)));
     }
     return Collections.emptyList();
   }
