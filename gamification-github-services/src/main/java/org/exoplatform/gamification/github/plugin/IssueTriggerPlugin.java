@@ -35,18 +35,42 @@ public class IssueTriggerPlugin extends GithubTriggerPlugin {
     String objectId = extractSubItem(payload, ISSUE, HTML_URL);
     String userId = extractSubItem(payload, SENDER, LOGIN);
     if (Objects.equals(issueState, OPENED)) {
-      return Collections.singletonList(new Event(CREATE_ISSUE_EVENT_NAME, userId, userId, objectId, ISSUE_TYPE));
+      return Collections.singletonList(new Event(CREATE_ISSUE_EVENT_NAME,
+                                                 userId,
+                                                 userId,
+                                                 objectId,
+                                                 ISSUE_TYPE,
+                                                 extractSubItem(payload, "organization", "id"),
+                                                 extractSubItem(payload, "repository", "id")));
     } else if (Objects.equals(issueState, CLOSED)) {
       if (Objects.equals(extractSubItem(payload, ISSUE, STATE_REASON), NOT_PLANNED)) {
-        return Collections.singletonList(new Event(CLOSE_ISSUE_EVENT_NAME, userId, userId, objectId, ISSUE_TYPE));
+        return Collections.singletonList(new Event(CLOSE_ISSUE_EVENT_NAME,
+                                                   userId,
+                                                   userId,
+                                                   objectId,
+                                                   ISSUE_TYPE,
+                                                   extractSubItem(payload, "organization", "id"),
+                                                   extractSubItem(payload, "repository", "id")));
       }
       return Collections.emptyList();
     } else if (Objects.equals(issueState, LABELED)) {
       objectId = objectId + "?label=" + extractSubItem(payload, LABEL, NAME);
-      return Collections.singletonList(new Event(ADD_ISSUE_LABEL_EVENT_NAME, userId, userId, objectId, ISSUE_TYPE));
+      return Collections.singletonList(new Event(ADD_ISSUE_LABEL_EVENT_NAME,
+                                                 userId,
+                                                 userId,
+                                                 objectId,
+                                                 ISSUE_TYPE,
+                                                 extractSubItem(payload, ORGANIZATION, ID),
+                                                 extractSubItem(payload, REPOSITORY, ID)));
     } else if (Objects.equals(issueState, UNLABELED)) {
       objectId = objectId + "?label=" + extractSubItem(payload, LABEL, NAME);
-      return Collections.singletonList(new Event(DELETE_ISSUE_LABEL_EVENT_NAME, userId, userId, objectId, ISSUE_TYPE));
+      return Collections.singletonList(new Event(DELETE_ISSUE_LABEL_EVENT_NAME,
+                                                 userId,
+                                                 userId,
+                                                 objectId,
+                                                 ISSUE_TYPE,
+                                                 extractSubItem(payload, ORGANIZATION, ID),
+                                                 extractSubItem(payload, REPOSITORY, ID)));
     }
     return Collections.emptyList();
   }

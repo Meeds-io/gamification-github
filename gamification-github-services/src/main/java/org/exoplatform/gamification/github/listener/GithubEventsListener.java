@@ -45,6 +45,7 @@ public class GithubEventsListener extends Listener<Map<String, String>, String> 
     gam.put("ruleTitle", event.getSource().get("ruleTitle"));
     gam.put("senderId", event.getSource().get("senderId"));
     gam.put("receiverId", event.getSource().get("receiverId"));
+    gam.put("eventDetails", event.getSource().get("eventDetails"));
 
     listenerService.broadcast(getGamificationEventName(event.getEventName()), gam, "");
   }
