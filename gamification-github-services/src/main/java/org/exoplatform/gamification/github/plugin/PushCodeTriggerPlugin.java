@@ -32,6 +32,8 @@ public class PushCodeTriggerPlugin extends GithubTriggerPlugin {
                                                null,
                                                extractSubItem(payload, PUSHER, NAME),
                                                extractSubItem(payload, HEAD_COMMIT, URL),
-                                               null));
+                                               null,
+                                               extractSubItem(payload, ORGANIZATION, ID),
+                                               extractSubItem(payload, REPOSITORY, ID)));
   }
 }
