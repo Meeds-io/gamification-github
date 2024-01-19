@@ -133,14 +133,14 @@ export default {
       const page = this.page || 0;
       const itemsPerPage = this.itemsPerPage || 10;
       const findRepositoryById = () => {
-        if (this.properties?.repositoryId === 'any') {
+        if (!this.properties?.repositoryId || this.properties?.repositoryId === 'any') {
           this.repository = null;
           return Promise.resolve();
         }
         this.repository = this.repositories.find(r => Number(r.id) === Number(this.properties?.repositoryId));
         if (!this.repository && this.hasMore) {
-          const nextPage = this.page ? this.page + 1 : 1;
-          return this.$githubConnectorService.getWebHookRepos(this.selected?.organizationId, nextPage, itemsPerPage, null)
+          this.page = this.page ? this.page + 1 : 1;
+          return this.$githubConnectorService.getWebHookRepos(this.selected?.organizationId, this.page, itemsPerPage, null)
             .then(nextData => {
               this.repositories.push(...nextData.remoteRepositories);
               this.hasMore = nextData.remoteRepositories.length > 0;
@@ -196,7 +196,6 @@ export default {
       this.page = 0;
       this.anyRepo = true;
       this.repoSelected('any', organization?.organizationId);
-
     }
   }
 };
