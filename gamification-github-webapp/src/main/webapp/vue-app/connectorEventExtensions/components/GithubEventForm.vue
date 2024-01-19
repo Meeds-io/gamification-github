@@ -54,6 +54,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         </div>
       </div>
       <v-autocomplete
+        v-if="!anyRepo"
         id="repositoryAutoComplete"
         ref="repositoryAutoComplete"
         v-model="repository"
@@ -125,6 +126,8 @@ export default {
           } else if (this.organizations.length === 1) {
             this.selected = this.organizations[0];
             this.value = this.organizations.indexOf(this.selected);
+            this.anyRepo = true;
+            this.repoSelected('any');
           }
           this.loadingOrganizations = false;
         });
