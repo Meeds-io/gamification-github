@@ -17,11 +17,11 @@ export function init() {
         'createIssue',
         'requestReviewForPullRequest'
       ].includes(actionLabel),
-      getLabel: () => '',
       getLink: (realization) => {
         realization.link = realization.objectId;
         return realization.link;
       },
+      isExtensible: true
     },
   });
 }
