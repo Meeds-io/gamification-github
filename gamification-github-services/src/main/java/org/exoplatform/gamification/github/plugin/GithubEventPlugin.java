@@ -18,7 +18,6 @@
  */
 package org.exoplatform.gamification.github.plugin;
 
-import io.meeds.gamification.model.EventDTO;
 import io.meeds.gamification.plugin.EventPlugin;
 
 import java.util.HashMap;
@@ -55,17 +54,12 @@ public class GithubEventPlugin extends EventPlugin {
   }
 
   @Override
-  public boolean isValidEvent(EventDTO eventDTO, String triggerDetails) {
-    Map<String, String> properties = eventDTO.getProperties();
-    if (properties.isEmpty()) {
-      return true;
-    } else {
-      String desiredOrganizationId = eventDTO.getProperties().get("organizationId");
-      String desiredRepositoryId = eventDTO.getProperties().get("repositoryId");
-      Map<String, String> triggerDetailsMop = stringToMap(triggerDetails);
-      return desiredOrganizationId.equals(triggerDetailsMop.get("organizationId"))
-          && (desiredRepositoryId.equals("any") || desiredRepositoryId.equals(triggerDetailsMop.get("repositoryId")));
-    }
+  public boolean isValidEvent(Map<String, String> eventProperties, String triggerDetails) {
+    String desiredOrganizationId = eventProperties.get("organizationId");
+    String desiredRepositoryId = eventProperties.get("repositoryId");
+    Map<String, String> triggerDetailsMop = stringToMap(triggerDetails);
+    return desiredOrganizationId.equals(triggerDetailsMop.get("organizationId"))
+        && (desiredRepositoryId.equals("any") || desiredRepositoryId.equals(triggerDetailsMop.get("repositoryId")));
   }
 
   private static Map<String, String> stringToMap(String mapAsString) {
