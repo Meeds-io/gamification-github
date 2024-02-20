@@ -57,7 +57,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         v-if="!anyRepo"
         id="repositoryAutoComplete"
         ref="repositoryAutoComplete"
-        v-model="repository"
+        v-model="selectedRepositories"
         :items="repositories"
         :disabled="anyRepo"
         :placeholder="$t('gamification.event.form.repository.placeholder')"
@@ -67,8 +67,10 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         item-text="name"
         dense
         flat
-        solo
         outlined
+        multiple
+        chips
+        deletable-chips
         @change="repoSelected">
         <template #append-item>
           <div v-intersect="onIntersect"></div>
@@ -96,7 +98,7 @@ export default {
       itemsPerPage: 10,
       organizations: [],
       selected: null,
-      repository: null,
+      selectedRepositories: [],
       repositories: [],
       value: null,
       loadingOrganizations: true,
@@ -115,6 +117,11 @@ export default {
         this.retrieveRepositories();
       }
     },
+    selectedRepositories() {
+      if (this.selectedRepositories.length === 0 && !this.anyRepo) {
+        document.dispatchEvent(new CustomEvent('event-form-unfilled'));
+      }
+    }
   },
   methods: {
     retrieveOrganizations() {
@@ -126,12 +133,12 @@ export default {
           if (this.properties) {
             this.selected = this.organizations.find(r => Number(r.organizationId) === Number(this.properties.organizationId));
             this.value = this.organizations.indexOf(this.selected);
-            this.anyRepo = this.properties?.repositoryId === 'any';
+            this.anyRepo = !this.properties?.repositoryIds;
           } else if (this.organizations.length === 1) {
             this.selected = this.organizations[0];
             this.value = this.organizations.indexOf(this.selected);
             this.anyRepo = true;
-            this.repoSelected('any');
+            this.repoSelected();
           }
           this.loadingOrganizations = false;
         });
@@ -140,12 +147,19 @@ export default {
       const page = this.page || 0;
       const itemsPerPage = this.itemsPerPage || 10;
       const findRepositoryById = () => {
-        if (!this.properties?.repositoryId || this.properties?.repositoryId === 'any') {
-          this.repository = null;
+        if (!this.properties?.repositoryIds) {
+          this.selectedRepositories = [];
           return Promise.resolve();
         }
-        this.repository = this.repositories.find(r => Number(r.id) === Number(this.properties?.repositoryId));
-        if (!this.repository && this.hasMore) {
+        const selectedReposArray = this.properties?.repositoryIds?.split(',');
+        this.repositories.forEach(rep => {
+          if (selectedReposArray.map(str => Number(str)).includes(Number(rep.id))) {
+            if (!this.selectedRepositories.some(c => (c?.id === rep.id) || (c === rep.id))) {
+              this.selectedRepositories.push(rep);
+            }
+          }
+        });
+        if (!this.selectedRepositories.length !== this.properties?.repositoryIds?.split(',').length  && this.hasMore) {
           this.page = this.page ? this.page + 1 : 1;
           return this.$githubConnectorService.getWebHookRepos(this.selected?.organizationId, this.page, itemsPerPage, null)
             .then(nextData => {
@@ -181,17 +195,24 @@ export default {
         this.retrieveRepositories();
       }
     },
-    repoSelected(repository, organizationId) {
-      const eventProperties = {
-        organizationId: organizationId ? organizationId.toString() : this.selected?.organizationId.toString(),
-        repositoryId: repository ? repository.toString() : this.repository.toString()
-      };
+    repoSelected(repositories) {
+      let eventProperties;
+      if (repositories?.length) {
+        eventProperties = {
+          organizationId: this.selected?.organizationId.toString(),
+          repositoryIds: repositories.toString(),
+        };
+      } else {
+        eventProperties = {
+          organizationId: this.selected?.organizationId.toString(),
+        };
+      }
       document.dispatchEvent(new CustomEvent('event-form-filled', {detail: eventProperties}));
     },
     changeSelection() {
-      this.repository = null;
+      this.selectedRepositories = [];
       if (this.anyRepo) {
-        this.repoSelected('any');
+        this.repoSelected();
       } else {
         this.retrieveRepositories();
         document.dispatchEvent(new CustomEvent('event-form-unfilled'));
@@ -199,10 +220,11 @@ export default {
     },
     selectOrganization(organization) {
       this.repositories = [];
-      this.repository = null;
+      this.selectedRepositories = [];
       this.page = 0;
       this.anyRepo = true;
-      this.repoSelected('any', organization?.organizationId);
+      this.selected = organization;
+      this.repoSelected();
     }
   }
 };
