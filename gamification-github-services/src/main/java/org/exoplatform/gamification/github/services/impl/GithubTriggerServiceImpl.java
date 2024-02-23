@@ -164,11 +164,7 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
         gam.put("ruleTitle", event.getName());
         listenerService.broadcast(GITHUB_ACTION_EVENT, gam, "");
       } else {
-        List<EventDTO> events = eventService.getEvents(new EventFilter("github", null), 0, 0);
-        List<EventDTO> eventsToCancel = events.stream()
-                                              .filter(e -> e.getCancellerEvents() != null
-                                                  && e.getCancellerEvents().contains(event.getName()))
-                                              .toList();
+        List<EventDTO> eventsToCancel = eventService.getEventsByCancellerTrigger("github", event.getName(), 0, -1);
         if (CollectionUtils.isNotEmpty(eventsToCancel)) {
           for (EventDTO eventToCancel : eventsToCancel) {
             gam.put("ruleTitle", eventToCancel.getTitle());
