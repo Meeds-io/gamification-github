@@ -21,11 +21,11 @@
                xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
-    <type>org.exoplatform.gamification.github.rest.GithubWebHookRest</type>
+    <type>io.meeds.gamification.github.rest.GithubWebHookRest</type>
   </component>
 
   <component>
-    <type>org.exoplatform.gamification.github.rest.HooksManagementRest</type>
+    <type>io.meeds.gamification.github.rest.HooksManagementRest</type>
   </component>
 
   <external-component-plugins>
@@ -33,12 +33,12 @@
     <component-plugin>
       <name>github.action.event</name>
       <set-method>addListener</set-method>
-      <type>org.exoplatform.gamification.github.listener.GithubEventsListener</type>
+      <type>io.meeds.gamification.github.listener.GithubEventsListener</type>
     </component-plugin>
     <component-plugin>
       <name>github.cancel.action.event</name>
       <set-method>addListener</set-method>
-      <type>org.exoplatform.gamification.github.listener.GithubEventsListener</type>
+      <type>io.meeds.gamification.github.listener.GithubEventsListener</type>
     </component-plugin>
   </external-component-plugins>
 
@@ -47,7 +47,7 @@
     <component-plugin>
       <name>github</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.gamification.github.plugin.GithubConnectorPlugin</type>
+      <type>io.meeds.gamification.github.plugin.GithubConnectorPlugin</type>
     </component-plugin>
   </external-component-plugins>
 
@@ -56,7 +56,7 @@
   <component-plugin>
     <name>github</name>
     <set-method>addPlugin</set-method>
-    <type>org.exoplatform.gamification.github.plugin.GithubEventPlugin</type>
+    <type>io.meeds.gamification.github.plugin.GithubEventPlugin</type>
   </component-plugin>
   </external-component-plugins>
 
@@ -73,7 +73,7 @@
           <description>Configuration to manage the periodic updating of github webhooks, ensuring that webhooks data remains current with external sources</description>
           <property name="jobName" value="GitHubWebHookForceUpdate"/>
           <property name="groupName" value="Gamification"/>
-          <property name="job" value="org.exoplatform.gamification.github.scheduled.GitHubWebHookForceUpdate"/>
+          <property name="job" value="io.meeds.gamification.github.scheduled.GitHubWebHookForceUpdate"/>
           <property name="expression" value="${io.meeds.gamification.GitHubWebHookForceUpdate.expression:0 0 * ? * * *}"/><!-- Every hour -->
         </properties-param>
       </init-params>
@@ -81,36 +81,36 @@
   </external-component-plugins>
 
   <external-component-plugins>
-    <target-component>org.exoplatform.gamification.github.services.GithubTriggerService</target-component>
+    <target-component>io.meeds.gamification.github.services.GithubTriggerService</target-component>
     <component-plugin>
       <name>push</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.gamification.github.plugin.PushCodeTriggerPlugin</type>
+      <type>io.meeds.gamification.github.plugin.PushCodeTriggerPlugin</type>
     </component-plugin>
     <component-plugin>
       <name>pull_request</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.gamification.github.plugin.PullRequestTriggerPlugin</type>
+      <type>io.meeds.gamification.github.plugin.PullRequestTriggerPlugin</type>
     </component-plugin>
     <component-plugin>
       <name>pull_request_review_comment</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.gamification.github.plugin.CommentPullRequestTriggerPlugin</type>
+      <type>io.meeds.gamification.github.plugin.CommentPullRequestTriggerPlugin</type>
     </component-plugin>
     <component-plugin>
       <name>pull_request_review</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.gamification.github.plugin.PullRequestReviewTriggerPlugin</type>
+      <type>io.meeds.gamification.github.plugin.PullRequestReviewTriggerPlugin</type>
     </component-plugin>
     <component-plugin>
       <name>issues</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.gamification.github.plugin.IssueTriggerPlugin</type>
+      <type>io.meeds.gamification.github.plugin.IssueTriggerPlugin</type>
     </component-plugin>
     <component-plugin>
       <name>issue_comment</name>
       <set-method>addPlugin</set-method>
-      <type>org.exoplatform.gamification.github.plugin.CommentTriggerPlugin</type>
+      <type>io.meeds.gamification.github.plugin.CommentTriggerPlugin</type>
     </component-plugin>
   </external-component-plugins>
 
