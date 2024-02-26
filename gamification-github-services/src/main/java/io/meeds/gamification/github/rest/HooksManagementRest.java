@@ -191,7 +191,7 @@ public class HooksManagementRest implements ResourceContainer {
     }
     String currentUser = ConversationState.getCurrent().getIdentity().getUserId();
     try {
-      webhookService.deleteWebhookHook(organizationId, currentUser);
+      webhookService.deleteWebhook(organizationId, currentUser);
       return Response.noContent().build();
     } catch (IllegalAccessException e) {
       return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).type(MediaType.TEXT_PLAIN).build();

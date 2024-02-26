@@ -33,156 +33,159 @@ import org.exoplatform.web.security.security.TokenServiceInitializationException
 
 public class Utils {
 
-  public static final String  CONNECTOR_NAME                             = "github";
+  public static final String   CONNECTOR_NAME                             = "github";
 
-  public static final String  HMAC_SHA1_ALGORITHM                        = "HmacSHA1";
+  public static final String   HMAC_SHA1_ALGORITHM                        = "HmacSHA1";
 
-  public static final String  ORGANIZATION                               = "organization";
+  public static final String   ORGANIZATION                               = "organization";
 
-  public static final String  ORGANIZATION_ID                            = "organizationId";
+  public static final String   ORGANIZATION_ID                            = "organizationId";
 
-  public static final String  REPOSITORY_ID                              = "repositoryId";
+  public static final String   REPOSITORY_ID                              = "repositoryId";
 
-  public static final String  REPOSITORY_IDS                             = "repositoryIds";
+  public static final String   REPOSITORY_IDS                             = "repositoryIds";
 
-  public static final String  REPOSITORY                                 = "repository";
+  public static final String   REPOSITORY                                 = "repository";
 
-  public static final String  ID                                         = "id";
+  public static final String   ID                                         = "id";
 
-  public static final String  LOGIN                                      = "login";
+  public static final String   LOGIN                                      = "login";
 
-  public static final String  NAME                                       = "name";
+  public static final String   NAME                                       = "name";
 
-  public static final String  EVENTS                                     = "events";
+  public static final String   EVENTS                                     = "events";
 
-  public static final String  PULL_REQUEST                               = "pull_request";
+  public static final String   PULL_REQUEST                               = "pull_request";
 
-  public static final String  ISSUE                                      = "issue";
+  public static final String   ISSUE                                      = "issue";
 
-  public static final String  URL                                        = "url";
+  public static final String   URL                                        = "url";
 
-  public static final String  HTML                                       = "html";
+  public static final String   HTML                                       = "html";
 
-  public static final String  HTML_URL                                   = "html_url";
+  public static final String   HTML_URL                                   = "html_url";
 
-  public static final String  LINKS                                      = "_links";
+  public static final String   LINKS                                      = "_links";
 
-  public static final String  HREF                                       = "href";
+  public static final String   HREF                                       = "href";
 
-  public static final String  HEAD_COMMIT                                = "head_commit";
+  public static final String   HEAD_COMMIT                                = "head_commit";
 
-  public static final String  COMMENT                                    = "comment";
+  public static final String   COMMENT                                    = "comment";
 
-  public static final String  USER                                       = "user";
+  public static final String   USER                                       = "user";
 
-  public static final String  SENDER                                     = "sender";
+  public static final String   SENDER                                     = "sender";
 
-  public static final String  PUSHER                                     = "pusher";
+  public static final String   PUSHER                                     = "pusher";
 
-  public static final String  ACTION                                     = "action";
+  public static final String   ACTION                                     = "action";
 
-  public static final String  STATE                                      = "state";
+  public static final String   STATE                                      = "state";
 
-  public static final String  NOT_PLANNED                                = "not_planned";
+  public static final String   NOT_PLANNED                                = "not_planned";
 
-  public static final String  STATE_REASON                               = "state_reason";
+  public static final String   STATE_REASON                               = "state_reason";
 
-  public static final String  LABEL                                      = "label";
+  public static final String   LABEL                                      = "label";
 
-  public static final String  PULL_REQUEST_REVIEW                        = "review";
+  public static final String   PULL_REQUEST_REVIEW                        = "review";
 
-  public static final String  PULL_REQUEST_COMMENTED                     = "commented";
+  public static final String   PULL_REQUEST_COMMENTED                     = "commented";
 
-  public static final String  PULL_REQUEST_VALIDATED                     = "approved";
+  public static final String   PULL_REQUEST_VALIDATED                     = "approved";
 
-  public static final String  OPENED                                     = "opened";
+  public static final String   OPENED                                     = "opened";
 
-  public static final String  CREATED                                    = "created";
+  public static final String   CREATED                                    = "created";
 
-  public static final String  CLOSED                                     = "closed";
+  public static final String   CLOSED                                     = "closed";
 
-  public static final String  DELETED                                    = "deleted";
+  public static final String   DELETED                                    = "deleted";
 
-  public static final String  LABELED                                    = "labeled";
+  public static final String   LABELED                                    = "labeled";
 
-  public static final String  UNLABELED                                  = "unlabeled";
+  public static final String   UNLABELED                                  = "unlabeled";
 
-  public static final String  MERGED                                     = "merged";
+  public static final String   MERGED                                     = "merged";
 
-  public static final String  REVIEW_REQUESTED                           = "review_requested";
+  public static final String   REVIEW_REQUESTED                           = "review_requested";
 
-  public static final String  REVIEW_REQUEST_REMOVED                     = "review_request_removed";
+  public static final String   REVIEW_REQUEST_REMOVED                     = "review_request_removed";
 
-  public static final String  REQUESTED_REVIEWER                         = "requested_reviewer";
+  public static final String   REQUESTED_REVIEWER                         = "requested_reviewer";
 
-  public static final String  REVIEW_PULL_REQUEST_EVENT_NAME             = "reviewPullRequest";
+  public static final String   REVIEW_PULL_REQUEST_EVENT_NAME             = "reviewPullRequest";
 
-  public static final String  PULL_REQUEST_VALIDATED_EVENT_NAME          = "pullRequestValidated";
+  public static final String   PULL_REQUEST_VALIDATED_EVENT_NAME          = "pullRequestValidated";
 
-  public static final String  VALIDATE_PULL_REQUEST_EVENT_NAME           = "validatePullRequest";
+  public static final String   VALIDATE_PULL_REQUEST_EVENT_NAME           = "validatePullRequest";
 
-  public static final String  CREATE_PULL_REQUEST_EVENT_NAME             = "creatPullRequest";
+  public static final String   CREATE_PULL_REQUEST_EVENT_NAME             = "creatPullRequest";
 
-  public static final String  PULL_REQUEST_REVIEW_COMMENT_EVENT_NAME     = "pullRequestReviewComment";
+  public static final String   PULL_REQUEST_REVIEW_COMMENT_EVENT_NAME     = "pullRequestReviewComment";
 
-  public static final String  COMMENT_PULL_REQUEST_EVENT_NAME            = "commentPullRequest";
+  public static final String   COMMENT_PULL_REQUEST_EVENT_NAME            = "commentPullRequest";
 
-  public static final String  DELETE_PULL_REQUEST_COMMENT_EVENT_NAME     = "deletePullRequestComment";
+  public static final String   DELETE_PULL_REQUEST_COMMENT_EVENT_NAME     = "deletePullRequestComment";
 
-  public static final String  CREATE_ISSUE_EVENT_NAME                    = "createIssue";
+  public static final String   CREATE_ISSUE_EVENT_NAME                    = "createIssue";
 
-  public static final String  ADD_ISSUE_LABEL_EVENT_NAME                 = "addIssueLabel";
+  public static final String   ADD_ISSUE_LABEL_EVENT_NAME                 = "addIssueLabel";
 
-  public static final String  REQUEST_REVIEW_FOR_PULL_REQUEST_EVENT_NAME = "requestReviewForPullRequest";
+  public static final String   REQUEST_REVIEW_FOR_PULL_REQUEST_EVENT_NAME = "requestReviewForPullRequest";
 
-  public static final String  COMMENT_ISSUE_EVENT_NAME                   = "commentIssue";
+  public static final String   COMMENT_ISSUE_EVENT_NAME                   = "commentIssue";
 
-  public static final String  DELETE_ISSUE_COMMENT_EVENT_NAME            = "deleteIssueComment";
+  public static final String   DELETE_ISSUE_COMMENT_EVENT_NAME            = "deleteIssueComment";
 
-  public static final String  CLOSE_PULL_REQUEST_EVENT_NAME              = "closePullRequest";
+  public static final String   CLOSE_PULL_REQUEST_EVENT_NAME              = "closePullRequest";
 
-  public static final String  REVIEW_REQUEST_REMOVED_EVENT_NAME          = "reviewRequestRemoved";
+  public static final String   REVIEW_REQUEST_REMOVED_EVENT_NAME          = "reviewRequestRemoved";
 
-  public static final String  CLOSE_ISSUE_EVENT_NAME                     = "closeIssue";
+  public static final String   CLOSE_ISSUE_EVENT_NAME                     = "closeIssue";
 
-  public static final String  DELETE_ISSUE_LABEL_EVENT_NAME              = "deleteIssueLabel";
+  public static final String   DELETE_ISSUE_LABEL_EVENT_NAME              = "deleteIssueLabel";
 
-  public static final String  PUSH_CODE_EVENT_NAME                       = "pushCode";
+  public static final String   PUSH_CODE_EVENT_NAME                       = "pushCode";
 
-  public static final String  GITHUB_ACTION_EVENT                        = "github.action.event";
+  public static final String   GITHUB_ACTION_EVENT                        = "github.action.event";
 
-  public static final String  GITHUB_CANCEL_ACTION_EVENT                 = "github.cancel.action.event";
+  public static final String   GITHUB_CANCEL_ACTION_EVENT                 = "github.cancel.action.event";
 
-  public static final String  ISSUE_TYPE                                 = "githubIssue";
+  public static final String   ISSUE_TYPE                                 = "githubIssue";
 
-  public static final String  PR_TYPE                                    = "githubPR";
+  public static final String   PR_TYPE                                    = "githubPR";
 
-  public static final String  REVIEW_COMMENT_TYPE                        = "githubReviewComment";
+  public static final String   REVIEW_COMMENT_TYPE                        = "githubReviewComment";
 
-  public static final String  COMMENT_PR_TYPE                            = "githubCommentPR";
+  public static final String   COMMENT_PR_TYPE                            = "githubCommentPR";
 
-  public static final String  COMMENT_ISSUE_TYPE                         = "githubCommentIssue";
+  public static final String   COMMENT_ISSUE_TYPE                         = "githubCommentIssue";
 
-  public static final String  GITHUB_API_URL                             = "https://api.github.com";
+  public static final String   GITHUB_API_URL                             = "https://api.github.com";
 
-  public static final String  ORGANIZATIONS                              = "/orgs/";
+  public static final String   ORGANIZATIONS                              = "/orgs/";
 
-  public static final String  AUTHORIZED_TO_ACCESS_GIT_HUB_HOOKS         = "The user is not authorized to access gitHub Hooks";
+  public static final String   AUTHORIZED_TO_ACCESS_GIT_HUB_HOOKS         = "The user is not authorized to access gitHub Hooks";
 
-  public static final String  TOKEN                                      = "token ";
+  public static final String   TOKEN                                      = "token ";
 
-  public static final String  AUTHORIZATION                              = "Authorization";
+  public static final String   AUTHORIZATION                              = "Authorization";
 
-  public static final String  GITHUB_CONNECTION_ERROR                    = "github.connectionError";
+  public static final String   GITHUB_CONNECTION_ERROR                    = "github.connectionError";
 
-  public static final String  DESCRIPTION                                = "description";
+  public static final String   DESCRIPTION                                = "description";
 
-  public static final String  AVATAR_URL                                 = "avatar_url";
+  public static final String   AVATAR_URL                                 = "avatar_url";
 
-  private static final char[] HEX                                        =
-                                  { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+  public static final String[] GITHUB_TRIGGERS                            = new String[] { "pull_request", "issue_comment",           // NOSONAR
+      "pull_request_review_comment", "pull_request_review", "issues", "push" };
 
-  private static final Log    LOG                                        = ExoLogger.getLogger(Utils.class);
+  private static final char[]  HEX                                        =
+                                   { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+
+  private static final Log     LOG                                        = ExoLogger.getLogger(Utils.class);
 
   private Utils() {
     // Private constructor for Utils class

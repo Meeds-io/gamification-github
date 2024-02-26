@@ -29,9 +29,6 @@ public class GithubEventPlugin extends EventPlugin {
 
   public static final String EVENT_TYPE = "github";
 
-  public GithubEventPlugin() {
-  }
-
   @Override
   public String getEventType() {
     return EVENT_TYPE;

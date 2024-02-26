@@ -88,8 +88,9 @@ public interface WebhookService {
    *           webhook
    * @throws ObjectNotFoundException when the github organization identified by
    *           its technical name is not found
+   * @return {@link WebHook}
    */
-  void createWebhook(String organizationName, String accessToken, String currentUser) throws ObjectAlreadyExistsException,
+  WebHook createWebhook(String organizationName, String accessToken, String currentUser) throws ObjectAlreadyExistsException,
                                                                                       IllegalAccessException,
                                                                                       ObjectNotFoundException;
 
@@ -111,7 +112,7 @@ public interface WebhookService {
    * @throws IllegalAccessException when user is not authorized to delete the
    *           gitHub hook
    */
-  void deleteWebhookHook(long organizationId, String currentUser) throws IllegalAccessException, ObjectNotFoundException;
+  void deleteWebhook(long organizationId, String currentUser) throws IllegalAccessException, ObjectNotFoundException;
 
   /**
    * Force update the stored github organization webhooks if there is a change to

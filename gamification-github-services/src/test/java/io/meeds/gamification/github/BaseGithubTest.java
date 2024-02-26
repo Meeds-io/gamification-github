@@ -60,7 +60,6 @@ public abstract class BaseGithubTest extends BaseExoTestCase { // NOSONAR
 
   protected GithubTriggerService  githubTriggerService;
 
-
   protected SettingService        settingService;
 
   protected WebHookStorage        webHookStorage;
@@ -85,7 +84,7 @@ public abstract class BaseGithubTest extends BaseExoTestCase { // NOSONAR
 
   protected CodecInitializer      codecInitializer;
 
-  protected WebHookDAO webHookDAO;
+  protected WebHookDAO            webHookDAO;
 
   protected IdentityManager       identityManager;
 
@@ -101,6 +100,7 @@ public abstract class BaseGithubTest extends BaseExoTestCase { // NOSONAR
     codecInitializer = ExoContainerContext.getService(CodecInitializer.class);
     identityRegistry = ExoContainerContext.getService(IdentityRegistry.class);
     identityManager = ExoContainerContext.getService(IdentityManager.class);
+    webHookStorage = ExoContainerContext.getService(WebHookStorage.class);
     githubTriggerService = new GithubTriggerServiceImpl(listenerService,
                                                         connectorService,
                                                         identityManager,

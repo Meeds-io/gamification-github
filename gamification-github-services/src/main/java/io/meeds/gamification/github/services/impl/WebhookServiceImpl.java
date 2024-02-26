@@ -51,9 +51,6 @@ public class WebhookServiceImpl implements WebhookService {
 
   private static final Scope          DISABLED_REPOS_SCOPE   = Scope.APPLICATION.id("disabledRepos");
 
-  private static final String[]       GITHUB_TRIGGERS        = new String[] { "pull_request", "issue_comment",
-      "pull_request_review_comment", "pull_request_review", "issues", "push" };
-
   private final SettingService        settingService;
 
   private final WebHookStorage        webHookStorage;
@@ -120,7 +117,7 @@ public class WebhookServiceImpl implements WebhookService {
     return webHookStorage.countWebhooks();
   }
 
-  public void createWebhook(String organizationName, String accessToken, String currentUser) throws ObjectAlreadyExistsException,
+  public WebHook createWebhook(String organizationName, String accessToken, String currentUser) throws ObjectAlreadyExistsException,
                                                                                              IllegalAccessException,
                                                                                              ObjectNotFoundException {
     if (!Utils.isRewardingManager(currentUser)) {
@@ -144,8 +141,9 @@ public class WebhookServiceImpl implements WebhookService {
     if (webHook != null) {
       webHook.setOrganizationId(remoteOrganization.getId());
       webHook.setWatchedBy(currentUser);
-      webHookStorage.saveWebHook(webHook);
+      return webHookStorage.saveWebHook(webHook);
     }
+    return null;
   }
 
   public void updateWebHookAccessToken(long webHookId, String accessToken, String currentUser) throws IllegalAccessException,
@@ -163,7 +161,7 @@ public class WebhookServiceImpl implements WebhookService {
     webHookStorage.updateWebHookAccessToken(webHookId, encode(accessToken));
   }
 
-  public void deleteWebhookHook(long organizationId, String currentUser) throws IllegalAccessException, ObjectNotFoundException {
+  public void deleteWebhook(long organizationId, String currentUser) throws IllegalAccessException, ObjectNotFoundException {
     if (!Utils.isRewardingManager(currentUser)) {
       throw new IllegalAccessException("The user is not authorized to delete GitHub hook");
     }
