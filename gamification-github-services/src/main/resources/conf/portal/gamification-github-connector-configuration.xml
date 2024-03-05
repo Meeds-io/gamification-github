@@ -37,7 +37,7 @@
               <string>github</string>
             </field>
             <field name="trigger">
-              <string>push</string>
+              <string>pushCode</string>
             </field>
           </object>
         </object-param>
@@ -58,7 +58,7 @@
               <string>github</string>
             </field>
             <field name="trigger">
-              <string>pull_request</string>
+              <string>creatPullRequest</string>
             </field>
             <field name="cancellerEvents">
               <collection type="java.util.ArrayList" item-type="java.lang.String">
@@ -86,7 +86,7 @@
               <string>github</string>
             </field>
             <field name="trigger">
-              <string>pull_request</string>
+              <string>requestReviewForPullRequest</string>
             </field>
             <field name="cancellerEvents">
               <collection type="java.util.ArrayList" item-type="java.lang.String">
@@ -114,7 +114,7 @@
               <string>github</string>
             </field>
             <field name="trigger">
-              <string>pull_request_review</string>
+              <string>reviewPullRequest</string>
             </field>
           </object>
         </object-param>
@@ -135,7 +135,7 @@
               <string>github</string>
             </field>
             <field name="trigger">
-              <string>pull_request_review</string>
+              <string>pullRequestValidated</string>
             </field>
           </object>
         </object-param>
@@ -156,7 +156,7 @@
               <string>github</string>
             </field>
             <field name="trigger">
-              <string>issue_comment</string>
+              <string>commentPullRequest</string>
             </field>
             <field name="cancellerEvents">
               <collection type="java.util.ArrayList" item-type="java.lang.String">
@@ -184,7 +184,7 @@
               <string>github</string>
             </field>
             <field name="trigger">
-              <string>issues</string>
+              <string>addIssueLabel</string>
             </field>
             <field name="cancellerEvents">
               <collection type="java.util.ArrayList" item-type="java.lang.String">
@@ -212,7 +212,7 @@
               <string>github</string>
             </field>
             <field name="trigger">
-              <string>pull_request_review</string>
+              <string>validatePullRequest</string>
             </field>
           </object>
         </object-param>
@@ -233,7 +233,7 @@
               <string>github</string>
             </field>
             <field name="trigger">
-              <string>issue_comment</string>
+              <string>commentIssue</string>
             </field>
             <field name="cancellerEvents">
               <collection type="java.util.ArrayList" item-type="java.lang.String">
@@ -261,7 +261,7 @@
               <string>github</string>
             </field>
             <field name="trigger">
-              <string>issues</string>
+              <string>createIssue</string>
             </field>
             <field name="cancellerEvents">
               <collection type="java.util.ArrayList" item-type="java.lang.String">
@@ -269,6 +269,27 @@
                   <string>closeIssue</string>
                 </value>
               </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>ConnectorConnectGithub</name>
+      <set-method>addPlugin</set-method>
+      <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
+      <init-params>
+        <object-param>
+          <name>event</name>
+          <object type="io.meeds.gamification.model.EventDTO">
+            <field name="title">
+              <string>connectorConnectGithub</string>
+            </field>
+            <field name="type">
+              <string>meeds</string>
+            </field>
+            <field name="trigger">
+              <string>connectorConnectGithub</string>
             </field>
           </object>
         </object-param>

@@ -24,6 +24,7 @@ const config = {
   entry: {
     engagementCenterExtensions: './src/main/webapp/vue-app/engagementCenterExtensions/extensions.js',
     connectorExtensions: './src/main/webapp/vue-app/connectorExtensions/extensions.js',
+    connectorEventExtensions: './src/main/webapp/vue-app/connectorEventExtensions/extensions.js',
     githubUserConnectorExtension: './src/main/webapp/vue-app/githubUserConnectorExtension/extension.js',
     githubAdminConnectorExtension: './src/main/webapp/vue-app/githubAdminConnectorExtension/extension.js'
   },
