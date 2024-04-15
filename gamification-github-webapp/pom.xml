@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.exoplatform.addons.gamification-github</groupId>
     <artifactId>gamification-github</artifactId>
-    <version>1.3.x-meed-SNAPSHOT</version>
+    <version>1.3.0-meed-20240415</version>
   </parent>
   <artifactId>gamification-github-webapp</artifactId>
   <packaging>war</packaging>
