@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.exoplatform.addons.gamification-github</groupId>
     <artifactId>gamification-github</artifactId>
-    <version>7.0.x-meed-SNAPSHOT</version>
+    <version>7.0.0-meed-20240428</version>
   </parent>
   <artifactId>gamification-github-packaging</artifactId>
   <packaging>pom</packaging>
