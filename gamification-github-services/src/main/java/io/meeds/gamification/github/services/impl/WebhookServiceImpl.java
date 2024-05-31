@@ -39,11 +39,15 @@ import io.meeds.gamification.github.model.RemoteRepository;
 import io.meeds.gamification.github.model.TokenStatus;
 import io.meeds.gamification.github.services.GithubConsumerService;
 import io.meeds.gamification.github.services.WebhookService;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.json.JSONObject;
 
 import static io.meeds.gamification.github.utils.Utils.*;
 
 public class WebhookServiceImpl implements WebhookService {
+
+  private static final Log            LOG                    = ExoLogger.getLogger(WebhookServiceImpl.class);
 
   private static final Context        GITHUB_WEBHOOK_CONTEXT = Context.GLOBAL.id("githubWebhook");
 
@@ -117,9 +121,11 @@ public class WebhookServiceImpl implements WebhookService {
     return webHookStorage.countWebhooks();
   }
 
-  public WebHook createWebhook(String organizationName, String accessToken, String currentUser) throws ObjectAlreadyExistsException,
-                                                                                             IllegalAccessException,
-                                                                                             ObjectNotFoundException {
+  public WebHook createWebhook(String organizationName,
+                               String accessToken,
+                               String currentUser) throws ObjectAlreadyExistsException,
+                                                   IllegalAccessException,
+                                                   ObjectNotFoundException {
     if (!Utils.isRewardingManager(currentUser)) {
       throw new IllegalAccessException("The user is not authorized to create GitHub hook");
     }
@@ -184,8 +190,14 @@ public class WebhookServiceImpl implements WebhookService {
     rules.stream()
          .filter(r -> !r.getEvent().getProperties().isEmpty()
              && r.getEvent().getProperties().get(ORGANIZATION_ID).equals(String.valueOf(organizationId)))
-         .map(RuleDTO::getId)
-         .forEach(ruleService::deleteRuleById);
+         .forEach(rule -> {
+           try {
+             rule.setEnabled(false);
+             ruleService.updateRule(rule);
+           } catch (ObjectNotFoundException e) {
+             LOG.warn("Error while automatically switching rule status. Rule = {} ", rule, e);
+           }
+         });
   }
 
   @Override
