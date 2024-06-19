@@ -20,7 +20,7 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.exoplatform.addons.gamification-github</groupId>
+        <groupId>io.meeds.addons.gamification-github</groupId>
         <artifactId>gamification-github</artifactId>
         <version>7.0.x-SNAPSHOT</version>
     </parent>
@@ -33,18 +33,18 @@
     </properties>
     <dependencies>
         <dependency>
-          <groupId>org.exoplatform.social</groupId>
+          <groupId>io.meeds.social</groupId>
           <artifactId>social-component-oauth-auth</artifactId>
           <scope>provided</scope>
         </dependency>
         <dependency>
-          <groupId>org.exoplatform.addons.gamification</groupId>
+          <groupId>io.meeds.addons.gamification</groupId>
           <artifactId>gamification-services</artifactId>
           <scope>provided</scope>
         </dependency>
         <!-- Test dependencies -->
         <dependency>
-            <groupId>org.exoplatform.addons.gamification</groupId>
+            <groupId>io.meeds.addons.gamification</groupId>
             <artifactId>gamification-services</artifactId>
             <scope>test</scope>
             <type>test-jar</type>
