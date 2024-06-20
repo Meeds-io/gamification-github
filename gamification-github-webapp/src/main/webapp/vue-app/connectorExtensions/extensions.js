@@ -24,6 +24,7 @@ export function init() {
     iconColorClass: 'text-color',
     title: 'Github',
     description: 'githubConnector.admin.label.description',
+    actionLabel: 'githubConnector.action.form.label',
     rank: 20,
     init: () => {
       const lang = window.eXo?.env?.portal?.language || 'en';
