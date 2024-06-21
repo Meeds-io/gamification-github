@@ -20,7 +20,7 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>io.meeds.addons.gamification-github</groupId>
+        <groupId>io.meeds.gamification-github</groupId>
         <artifactId>gamification-github</artifactId>
         <version>7.0.x-SNAPSHOT</version>
     </parent>
@@ -38,13 +38,13 @@
           <scope>provided</scope>
         </dependency>
         <dependency>
-          <groupId>io.meeds.addons.gamification</groupId>
+          <groupId>io.meeds.gamification</groupId>
           <artifactId>gamification-services</artifactId>
           <scope>provided</scope>
         </dependency>
         <!-- Test dependencies -->
         <dependency>
-            <groupId>io.meeds.addons.gamification</groupId>
+            <groupId>io.meeds.gamification</groupId>
             <artifactId>gamification-services</artifactId>
             <scope>test</scope>
             <type>test-jar</type>

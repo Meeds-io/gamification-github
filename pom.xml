@@ -24,7 +24,7 @@
     <version>18-M03</version>
     <relativePath/>
   </parent>
-  <groupId>io.meeds.addons.gamification-github</groupId>
+  <groupId>io.meeds.gamification-github</groupId>
   <artifactId>gamification-github</artifactId>
   <version>7.0.x-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -69,7 +69,7 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>io.meeds.addons.gamification</groupId>
+        <groupId>io.meeds.gamification</groupId>
         <artifactId>gamification</artifactId>
         <version>${addon.meeds.gamification.version}</version>
         <type>pom</type>
