@@ -17,7 +17,7 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <template>
-  <v-app v-if="isEditing">
+  <div v-if="isEditing">
     <v-card-text class="px-0 dark-grey-color font-weight-bold">
       {{ $t('gamification.event.form.organization') }}
     </v-card-text>
@@ -77,7 +77,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         </template>
       </v-autocomplete>
     </template>
-  </v-app>
+  </div>
 </template>
 
 <script>
