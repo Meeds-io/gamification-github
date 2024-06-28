@@ -18,7 +18,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <template>
   <div v-if="isEditing">
-    <v-card-text class="px-0 dark-grey-color font-weight-bold">
+    <v-card-text class="px-0">
       {{ $t('gamification.event.form.organization') }}
     </v-card-text>
     <v-progress-circular
@@ -39,7 +39,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     </v-chip-group>
     <template v-if="selected">
       <div class="d-flex flex-row">
-        <v-card-text class="px-0 dark-grey-color font-weight-bold">
+        <v-card-text class="px-0">
           {{ $t('gamification.event.form.repository') }}
         </v-card-text>
         <div class="d-flex flex-row">
