@@ -19,7 +19,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.exoplatform.addons.gamification-github</groupId>
+    <groupId>io.meeds.gamification-github</groupId>
     <artifactId>gamification-github</artifactId>
     <version>7.0.x-exo-SNAPSHOT</version>
   </parent>
@@ -28,7 +28,7 @@
   <name>Gamification - Github Connector - Webapp</name>
   <dependencies>
     <dependency>
-      <groupId>org.exoplatform.platform-ui</groupId>
+      <groupId>io.meeds.platform-ui</groupId>
       <artifactId>platform-ui-skin</artifactId>
       <classifier>sources</classifier>
       <scope>provided</scope>
