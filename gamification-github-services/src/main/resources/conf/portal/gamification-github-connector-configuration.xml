@@ -279,10 +279,6 @@
       <set-method>addPlugin</set-method>
       <type>io.meeds.gamification.plugin.EventConfigPlugin</type>
       <init-params>
-        <values-param>
-          <name>isVerificationRequired</name>
-          <value>true</value>
-        </values-param>
         <object-param>
           <name>event</name>
           <object type="io.meeds.gamification.model.EventDTO">
