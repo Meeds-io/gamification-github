@@ -15,7 +15,7 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <template>
-  <v-app>
+  <div>
     <template v-if="!displayHookDetail">
       <div class="px-4 py-2 py-sm-5 d-flex align-center">
         <v-tooltip :disabled="$root.isMobile" bottom>
@@ -129,7 +129,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
       :ok-label="$t('confirm.yes')"
       :cancel-label="$t('confirm.no')"
       @ok="deleteSettings" />
-  </v-app>
+  </div>
 </template>
 
 <script>
