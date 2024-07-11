@@ -105,10 +105,13 @@ export default {
   methods: {
     refreshHooks() {
       this.loading = true;
-      return this.$githubConnectorService.getGithubWebHooks(this.offset, this.limit)
+      return this.$githubConnectorService.getGithubWebHooks({
+        page: 0,
+        size: 5,
+      })
         .then(data => {
-          this.hooks = data.webhooks;
-          this.hooksCount = data.size || 0;
+          this.hooks = data?._embedded?.webHookRestEntityList;
+          this.hooksCount = data?.page?.totalElements || 0;
           return this.$nextTick()
             .then(() => {
               this.$emit('updated', this.hooks);

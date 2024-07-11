@@ -32,13 +32,17 @@
     <packaging>jar</packaging>
     <name>Gamification - Github Connector - Services</name>
     <properties>
-      <exo.test.coverage.ratio>0.24</exo.test.coverage.ratio>
+      <exo.test.coverage.ratio>0.30</exo.test.coverage.ratio>
     </properties>
     <dependencies>
         <dependency>
+            <groupId>io.meeds.social</groupId>
+            <artifactId>social-component-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
           <groupId>io.meeds.social</groupId>
           <artifactId>social-component-oauth-auth</artifactId>
-          <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>io.meeds.gamification</groupId>

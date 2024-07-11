@@ -31,6 +31,11 @@
   <name>Gamification - Github Connector - Webapp</name>
   <dependencies>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gamification-github-services</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>io.meeds.platform-ui</groupId>
       <artifactId>platform-ui-skin</artifactId>
       <classifier>sources</classifier>
