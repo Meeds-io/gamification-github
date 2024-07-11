@@ -28,7 +28,7 @@ export function init() {
     rank: 20,
     init: () => {
       const lang = window.eXo?.env?.portal?.language || 'en';
-      const url = `${eXo.env.portal.context}/${eXo.env.portal.rest}/i18n/bundle/locale.portlet.GitHubWebHookManagement-${lang}.json`;
+      const url = `/gamification-github/i18n/locale.portlet.GitHubWebHookManagement?lang=${lang}`;
       return exoi18n.loadLanguageAsync(lang, url);
     }
   });
