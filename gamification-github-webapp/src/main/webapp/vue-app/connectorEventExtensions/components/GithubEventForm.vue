@@ -126,9 +126,12 @@ export default {
   methods: {
     retrieveOrganizations() {
       this.loadingOrganizations = true;
-      return this.$githubConnectorService.getGithubWebHooks()
+      return this.$githubConnectorService.getGithubWebHooks({
+        page: 0,
+        size: 5,
+      })
         .then(data => {
-          this.organizations = data.webhooks;
+          this.organizations = data?._embedded?.webHookRestEntityList;
         }).finally(() => {
           if (this.properties) {
             this.selected = this.organizations.find(r => Number(r.organizationId) === Number(this.properties.organizationId));
