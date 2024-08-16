@@ -17,8 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-export function getGithubWebHooks(offset, limit) {
-  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks?offset=${offset || 0}&limit=${limit|| 10}&returnSize=true`, {
+export function getGithubWebHooks(paramsObj) {
+  const formData = new FormData();
+  if (paramsObj) {
+    Object.keys(paramsObj).forEach(key => {
+      const value = paramsObj[key];
+      if (window.Array && Array.isArray && Array.isArray(value)) {
+        value.forEach(val => formData.append(key, val));
+      } else {
+        formData.append(key, value);
+      }
+    });
+  }
+  const params = new URLSearchParams(formData).toString();
+  return fetch(`/gamification-github/rest/hooks?${params}`, {
     method: 'GET',
     credentials: 'include',
   }).then((resp) => {
@@ -31,7 +43,7 @@ export function getGithubWebHooks(offset, limit) {
 }
 
 export function getGithubWebHookById(hookId) {
-  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/${hookId}`, {
+  return fetch(`/gamification-github/rest/hooks/${hookId}`, {
     method: 'GET',
     credentials: 'include',
   }).then((resp) => {
@@ -47,7 +59,7 @@ export function saveGithubWebHook(organizationName, accessToken) {
   const formData = new FormData();
   formData.append('organizationName', organizationName);
   formData.append('accessToken', accessToken);
-  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks`, {
+  return fetch('/gamification-github/rest/hooks', {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -69,9 +81,8 @@ export function saveGithubWebHook(organizationName, accessToken) {
 
 export function updateWebHookAccessToken(webHookId, accessToken) {
   const formData = new FormData();
-  formData.append('webHookId', webHookId);
   formData.append('accessToken', accessToken);
-  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks`, {
+  return fetch(`/gamification-github/rest/hooks/${webHookId}`, {
     method: 'PATCH',
     credentials: 'include',
     headers: {
@@ -86,7 +97,7 @@ export function updateWebHookAccessToken(webHookId, accessToken) {
 }
 
 export function deleteGithubWebHook(organizationId) {
-  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/${organizationId}`, {
+  return fetch(`/gamification-github/rest/hooks/${organizationId}`, {
     method: 'DELETE',
     credentials: 'include',
   }).then(resp => {
@@ -97,7 +108,7 @@ export function deleteGithubWebHook(organizationId) {
 }
 
 export function getWebHookRepos(organizationId, page, perPage, keyword) {
-  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/${organizationId}/repos?page=${page || 0}&perPage=${perPage|| 10}&keyword=${keyword || ''}`, {
+  return fetch(`/gamification-github/rest/hooks/${organizationId}/repos?page=${page || 0}&perPage=${perPage|| 10}&keyword=${keyword || ''}`, {
     method: 'GET',
     credentials: 'include',
   }).then((resp) => {
@@ -115,25 +126,7 @@ export function saveRepositoryStatus(repositoryId, organizationId, enabled) {
   formData.append('organizationId', organizationId);
   formData.append('enabled', enabled);
 
-  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/repo/status`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams(formData).toString(),
-  }).then(resp => {
-    if (!resp?.ok) {
-      throw new Error('Response code indicates a server error', resp);
-    }
-  });
-}
-
-export function enableDisableWatchScope(organizationId, enabled) {
-  const formData = new FormData();
-  formData.append('organizationId', organizationId);
-  formData.append('enabled', enabled);
-  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/watchScope/status`, {
+  return fetch('/gamification-github/rest/hooks/repo/status', {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -148,7 +141,7 @@ export function enableDisableWatchScope(organizationId, enabled) {
 }
 
 export function forceUpdateWebhooks() {
-  return fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/gamification/connectors/github/hooks/forceUpdate`, {
+  return fetch('/gamification-github/rest/hooks/forceUpdate', {
     method: 'PATCH',
     credentials: 'include',
     headers: {
