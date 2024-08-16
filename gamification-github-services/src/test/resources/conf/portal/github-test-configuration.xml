@@ -25,32 +25,32 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
   <component>
     <key>org.exoplatform.social.core.manager.IdentityManager</key>
-    <type>io.meeds.gamification.github.mock.IdentityManagerMock</type>
+    <type>io.meeds.github.gamification.mock.IdentityManagerMock</type>
   </component>
 
   <component>
     <key>io.meeds.gamification.service.RuleService</key>
-    <type>io.meeds.gamification.github.mock.RuleServiceMock</type>
+    <type>io.meeds.github.gamification.mock.RuleServiceMock</type>
   </component>
 
   <component>
     <key>io.meeds.gamification.service.ConnectorService</key>
-    <type>io.meeds.gamification.github.mock.ConnectorServiceMock</type>
+    <type>io.meeds.github.gamification.mock.ConnectorServiceMock</type>
   </component>
 
   <component>
     <key>io.meeds.gamification.service.ConnectorSettingService</key>
-    <type>io.meeds.gamification.github.mock.ConnectorSettingServiceMock</type>
+    <type>io.meeds.github.gamification.mock.ConnectorSettingServiceMock</type>
   </component>
 
   <component>
     <key>io.meeds.gamification.service.EventService</key>
-    <type>io.meeds.gamification.github.mock.EventServiceMock</type>
+    <type>io.meeds.github.gamification.mock.EventServiceMock</type>
   </component>
 
   <component>
     <key>io.meeds.gamification.service.TriggerService</key>
-    <type>io.meeds.gamification.github.mock.TriggerServiceMock</type>
+    <type>io.meeds.github.gamification.mock.TriggerServiceMock</type>
   </component>
 
   <component>
