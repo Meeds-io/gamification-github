@@ -160,7 +160,7 @@ export default {
       displayHookDetail: false,
       selectedHook: null,
       webhooks: [],
-      githubConnectorLinkBasePath: '/portal/administration/home/recognition/connectors#github',
+      githubConnectorLinkBasePath: '/portal/administration/home/gamification/connectors#github',
     };
   },
   computed: {
