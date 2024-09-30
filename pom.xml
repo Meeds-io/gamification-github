@@ -25,11 +25,11 @@
     <artifactId>addons-parent-pom</artifactId>
     <groupId>io.meeds.addons</groupId>
     <version>18-M06</version>
-    <relativePath/>
+    <relativePath />
   </parent>
   <groupId>io.meeds.gamification-github</groupId>
   <artifactId>gamification-github</artifactId>
-  <version>7.0.x-meed-SNAPSHOT</version>
+  <version>7.0.0-meed-20240930</version>
   <packaging>pom</packaging>
   <name>Gamification - Github Connector - Parent POM</name>
   <description>Meeds Add-on for github gamification add-on connector</description>
@@ -41,7 +41,7 @@
   <scm>
     <connection>scm:git:git://github.com/meeds-io/gamification-github.git</connection>
     <developerConnection>scm:git:git@github.com:meeds-io/gamification-github.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>7.0.0-meed-20240930</tag>
     <url>https://github.com/meeds-io/gamification-github</url>
   </scm>
   <properties>
