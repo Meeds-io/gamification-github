@@ -43,14 +43,12 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import static io.meeds.github.gamification.utils.Utils.*;
 
-@Primary
 @Service
 public class WebhookServiceImpl implements WebhookService {
 
