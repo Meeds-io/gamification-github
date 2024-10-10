@@ -25,12 +25,10 @@ import io.meeds.github.gamification.model.TokenStatus;
 import io.meeds.github.gamification.services.GithubConsumerService;
 import io.meeds.github.gamification.storage.GithubConsumerStorage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Primary
 @Service
 public class GithubConsumerServiceImpl implements GithubConsumerService {
 

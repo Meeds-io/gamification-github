@@ -19,14 +19,12 @@ package io.meeds.github.gamification.services;
 
 import io.meeds.github.gamification.model.RemoteOrganization;
 import io.meeds.github.gamification.model.WebHook;
-import org.cometd.annotation.Service;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
 import io.meeds.github.gamification.model.RemoteRepository;
 import io.meeds.github.gamification.model.TokenStatus;
 
 import java.util.List;
 
-@Service
 public interface GithubConsumerService {
 
   /**
