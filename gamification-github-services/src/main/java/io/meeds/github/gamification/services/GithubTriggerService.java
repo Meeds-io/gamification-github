@@ -18,9 +18,7 @@
 package io.meeds.github.gamification.services;
 
 import io.meeds.github.gamification.plugin.GithubTriggerPlugin;
-import org.cometd.annotation.Service;
 
-@Service
 public interface GithubTriggerService {
 
   /**

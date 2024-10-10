@@ -19,7 +19,6 @@
 package io.meeds.github.gamification.services;
 
 import io.meeds.github.gamification.model.WebHook;
-import org.cometd.annotation.Service;
 import org.exoplatform.commons.ObjectAlreadyExistsException;
 import org.exoplatform.commons.exception.ObjectNotFoundException;
 import io.meeds.github.gamification.model.RemoteRepository;
@@ -28,7 +27,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-@Service
 public interface WebhookService {
 
   /**
