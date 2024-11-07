@@ -29,16 +29,18 @@
 
     <!-- Definition of GITHUB_ACCOUNT table -->
     <changeSet author="exo-github-connector" id="1.0.0-1">
+        <validCheckSum>9:fbe4d23ce487bcf754582f74de242123</validCheckSum>
+        <validCheckSum>9:44ee7c3890be1546fc0d95f3a66dc7f6</validCheckSum>
         <createTable tableName="GAM_GITHUB_ACCOUNTS">
 
             <column name="ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GAM_GITHUB_ACCOUNTS"/>
             </column>
 
-            <column name="GITHUB_ID" type="NVARCHAR(250)">
+            <column name="GITHUB_ID" type="VARCHAR(250)">
                 <constraints nullable="false"/>
             </column>
-            <column name="USER_NAME" type="NVARCHAR(250)">
+            <column name="USER_NAME" type="VARCHAR(250)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -53,16 +55,16 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="HOOK_URL" type="NVARCHAR(250)">
+            <column name="HOOK_URL" type="VARCHAR(250)">
                 <constraints nullable="false"/>
             </column>
-            <column name="ORGANIZATION" type="NVARCHAR(250)">
+            <column name="ORGANIZATION" type="VARCHAR(250)">
                 <constraints nullable="false"/>
             </column>
-            <column name="REPO" type="NVARCHAR(250)">
+            <column name="REPO" type="VARCHAR(250)">
                 <constraints nullable="false"/>
             </column>
-            <column name="EVENTS" type="NVARCHAR(250)">
+            <column name="EVENTS" type="VARCHAR(250)">
                 <constraints nullable="false"/>
             </column>
             <column name="ENABLED" type="BOOLEAN">
@@ -72,13 +74,14 @@
             <column name="UPDATED_DATE" type="TIMESTAMP"/>
         </createTable>
         <modifySql dbms="mysql">
-            <append value=" ENGINE=INNODB CHARSET=UTF8 COLLATE utf8_general_ci"/>
+            <append value=" ENGINE=INNODB CHARSET=UTF8MB4 COLLATE utf8mb4_0900_ai_ci"/>
         </modifySql>
     </changeSet>
 
     <changeSet author="exo-github-connector" id="1.0.0-2">
+      <validCheckSum>9:7d700f82ea08740065a3d95afb52ad91</validCheckSum>
         <addColumn tableName="GAM_GITHUB_HOOKS">
-            <column name="EXO_ENVIRONMENT" type="NVARCHAR(250)">
+            <column name="EXO_ENVIRONMENT" type="VARCHAR(250)">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
@@ -101,6 +104,7 @@
     <dropSequence sequenceName="SEQ_GAM_GITHUB_HOOKS_ID"/>
   </changeSet>
   <changeSet id="1.0.0-8" author="exo-github-connector">
+    <validCheckSum>9:f5574db97bc33275125b5a6999c7d966</validCheckSum>
     <createTable tableName="GITHUB_WEBHOOKS">
       <column name="ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GITHUB_WEBHOOKS"/>
@@ -111,10 +115,10 @@
       <column name="ORGANIZATION_ID" type="BIGINT">
         <constraints nullable="false"/>
       </column>
-      <column name="ORGANIZATION_NAME" type="NVARCHAR(250)">
+      <column name="ORGANIZATION_NAME" type="VARCHAR(250)">
         <constraints nullable="false"/>
       </column>
-      <column name="TRIGGERS" type="NVARCHAR(2000)">
+      <column name="TRIGGERS" type="VARCHAR(2000)">
         <constraints nullable="false"/>
       </column>
       <column name="ENABLED" type="BOOLEAN">
@@ -132,10 +136,10 @@
       <column name="REFRESH_DATE" type="DATE">
         <constraints nullable="false"/>
       </column>
-      <column name="SECRET" type="NVARCHAR(250)">
+      <column name="SECRET" type="VARCHAR(250)">
         <constraints nullable="false"/>
       </column>
-      <column name="TOKEN" type="NVARCHAR(250)">
+      <column name="TOKEN" type="VARCHAR(250)">
         <constraints nullable="false"/>
       </column>
     </createTable>
