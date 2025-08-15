@@ -1,14 +1,36 @@
 package io.meeds.github.gamification.storage;
 
-import io.meeds.github.gamification.exception.GithubConnectionException;
-import io.meeds.github.gamification.model.RemoteOrganization;
-import io.meeds.github.gamification.model.RemoteRepository;
-import io.meeds.github.gamification.model.TokenStatus;
-import io.meeds.github.gamification.model.WebHook;
-import org.apache.commons.httpclient.HttpStatus;
+import static io.meeds.github.gamification.utils.Utils.AUTHORIZATION;
+import static io.meeds.github.gamification.utils.Utils.AVATAR_URL;
+import static io.meeds.github.gamification.utils.Utils.DESCRIPTION;
+import static io.meeds.github.gamification.utils.Utils.EVENTS;
+import static io.meeds.github.gamification.utils.Utils.GITHUB_API_URL;
+import static io.meeds.github.gamification.utils.Utils.GITHUB_CONNECTION_ERROR;
+import static io.meeds.github.gamification.utils.Utils.ID;
+import static io.meeds.github.gamification.utils.Utils.LOGIN;
+import static io.meeds.github.gamification.utils.Utils.NAME;
+import static io.meeds.github.gamification.utils.Utils.ORGANIZATIONS;
+import static io.meeds.github.gamification.utils.Utils.TOKEN;
+import static io.meeds.github.gamification.utils.Utils.extractSubItem;
+import static io.meeds.github.gamification.utils.Utils.fromJsonStringToMap;
+import static io.meeds.github.gamification.utils.Utils.fromJsonStringToMapCollection;
+import static io.meeds.github.gamification.utils.Utils.generateRandomSecret;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.core.MediaType;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -22,20 +44,18 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HTTP;
-import org.exoplatform.commons.exception.ObjectNotFoundException;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.json.JSONObject;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import org.exoplatform.commons.exception.ObjectNotFoundException;
+import org.exoplatform.commons.utils.CommonsUtils;
 
-import static io.meeds.github.gamification.utils.Utils.*;
+import io.meeds.github.gamification.exception.GithubConnectionException;
+import io.meeds.github.gamification.model.RemoteOrganization;
+import io.meeds.github.gamification.model.RemoteRepository;
+import io.meeds.github.gamification.model.TokenStatus;
+import io.meeds.github.gamification.model.WebHook;
 
 @Repository
 public class GithubConsumerStorage {
