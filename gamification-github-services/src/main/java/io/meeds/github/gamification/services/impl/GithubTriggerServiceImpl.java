@@ -168,7 +168,7 @@ public class GithubTriggerServiceImpl implements GithubTriggerService, Startable
           }
         }
       }
-      LOG.info("Github action {} broadcasted for user {}", event.getName(), senderId);
+      LOG.debug("Github action {} broadcasted for user {}", event.getName(), senderId);
     } catch (Exception e) {
       LOG.error("Cannot broadcast github event", e);
     }
