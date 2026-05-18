@@ -39,7 +39,7 @@ import org.exoplatform.commons.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.data.domain.Pageable;
 
 @SpringBootTest(classes = { WebhookServiceImpl.class })
@@ -51,16 +51,16 @@ class WebhookServiceTest {
 
   private static final Pageable PAGEABLE   = Pageable.ofSize(2);
 
-  @MockBean
+  @MockitoBean
   private GithubConsumerService githubConsumerService;
 
-  @MockBean
+  @MockitoBean
   private WebHookStorage        webHookStorage;
 
-  @MockBean
+  @MockitoBean
   private RuleService           ruleService;
 
-  @MockBean
+  @MockitoBean
   private SettingService        settingService;
 
   @Autowired
