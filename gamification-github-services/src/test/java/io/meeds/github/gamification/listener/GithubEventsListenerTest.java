@@ -31,7 +31,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.ListenerService;
@@ -39,10 +39,10 @@ import org.exoplatform.services.listener.ListenerService;
 @SpringBootTest(classes = { GithubEventsListener.class, })
 class GithubEventsListenerTest {
 
-  @MockBean
+  @MockitoBean
   private ListenerService                    listenerService;
 
-  @MockBean
+  @MockitoBean
   private Event<Map<String, String>, String> event;
 
   @Autowired
